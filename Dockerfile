@@ -15,3 +15,5 @@ RUN pip install jupyterlab==4.0.7 \
                 tqdm==4.66.1 \
                 scipy==1.11.3 \
                 scikit-learn==1.3.2
+
+RUN apt-get -y install pandoc texlive-xetex texlive-fonts-recommended texlive-plain-generic
