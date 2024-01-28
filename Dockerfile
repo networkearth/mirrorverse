@@ -14,6 +14,8 @@ RUN pip install jupyterlab==4.0.7 \
                 plotly==5.18.0 \
                 tqdm==4.66.1 \
                 scipy==1.11.3 \
-                scikit-learn==1.3.2
+                scikit-learn==1.3.2 \
+                sphinx==7.2.6 \
+                sphinx-rtd-theme==2.0.0
 
 RUN apt-get -y install pandoc texlive-xetex texlive-fonts-recommended texlive-plain-generic
