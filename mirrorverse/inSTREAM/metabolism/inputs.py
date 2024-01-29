@@ -39,53 +39,15 @@ Metabolic Inputs
     .. math::
         f_{eat} \cdot W_{prey}
 
-.. admonition:: Required Inputs
-
-    This model requires the following derived variables:
-        - is the fish a mover or a stayer?
-        - :math:`L`: Length of a fish
-        - :math:`T`: Temperature (degrees Celsius)
-        - :math:`W`: Weight of a fish
-        - :math:`V_{wmax}`: Maximum water velocity in the habitat unit
-
-    The following constants
-        - :math:`L_{frymin}`: Minimum fry length
-        - :math:`F_{prey}`: Grams of prey per calorie
-
-    And the following calibrated parameters:
-        - :math:`f_{eat}`: Fraction of prey consumed by movers relative to stayers
-        - :math:`L_{att1}`: Length at which :math:`P_{att} = P_{att1}`
-        - :math:`L_{att2}`: Length at which :math:`P_{att} = P_{att2}`
-        - :math:`P_{att1}`: Probability of attack at :math:`L_{att1}`
-        - :math:`P_{att2}`: Probability of attack at :math:`L_{att2}`
-        - :math:`m_{drift}`: Drift slope (calories of prey per hour per square centimeter)
-
-.. admonition:: Outputs
-         
-    It creates the following variables:
-        - :math:`V_{max}`: Maximum swimming velocity of the fish
-        - :math:`V_{w}`: Water velocity to consider the model (centimeters per second).
-        - :math:`P_{att}`: Probability of attack
-        - :math:`r_{prey}`: Rate of prey encounter (grams of prey per hour per square centimeter)
-        - :math:`A_{att}`: Area of attack (square centimeters)
-        - :math:`W_{prey}`: Grams of consumed encountered per hour
-        - :math:`C_{in}`: Caloric intake (calories per hour)
-
-.. admonition:: Required Models
-
-    There are some external model dependencies:
-        - A model of the probability of capture which is used to determine :math:`A_{att}`.
-        - A model of the maximum swimming velocity of the fish which is used to determine :math:`V_{w}`.
+.. callgraph:: mirrorverse.inSTREAM.metabolism.inputs.main
+   :toctree: api
+   :zoomable:
+   :direction: vertical
 
 .. warning::
     
     - `distance_at_capture_probability` is not implemented yet.
     - `maximum_swimming_velocity` is not implemented yet.
-
-.. callgraph:: mirrorverse.inSTREAM.metabolism.inputs.main
-   :toctree: api
-   :zoomable:
-   :direction: vertical
 
 """
 
@@ -119,16 +81,18 @@ def maximum_swimming_velocity(weight, temperature):
     """
     return weight * temperature
 
-def water_velocity(weight, temperature, velocity):
+def water_velocity(velocity, weight, temperature):
     """
-    :param weight: (:math:`W`)
-    :param temperature: (:math:`T`)
     :param velocity: (:math:`V_{wmax}`)
-
-    :return: :math:`V_{w}`
+    :return: :math:`V_{w}=min(V_{max}, V_{wmax})` 
 
     Water velocity to consider the model. This is the minimum of the maximum
     swimming velocity of the fish and the maximum water velocity in the habitat.
+    
+    Pass Through:
+
+    :param weight: (:math:`W`)
+    :param temperature: (:math:`T`)
     """
     return np.minimum(
         maximum_swimming_velocity(weight, temperature),
@@ -185,16 +149,38 @@ def rate_of_prey_encounter(
     """
     :param prey_grams: (:math:`F_{prey}`)
     :param drift_slope: (:math:`m_{drift}`)
-    :param weight: (:math:`W`)
-    :param temperature: (:math:`T`)
-    :param velocity: (:math:`V_{wmax}`)
 
     :return: :math:`r_{prey} = F_{prey} \cdot m_{drift} \cdot V_{w}`
 
     Note that we're assuming the rate of prey encounter is linearly
     proportional to the water velocity.
+
+    Pass Through:
+
+    :param weight: (:math:`W`)
+    :param temperature: (:math:`T`)
+    :param velocity: (:math:`V_{wmax}`)    
     """
-    return prey_grams * drift_slope * water_velocity(weight, temperature, velocity)
+    return prey_grams * drift_slope * water_velocity(velocity, weight, temperature)
+
+def area_of_attack(velocity, length, weight, temperature):
+    """
+    :return: :math:`A_{att}=\pi \cdot D_{prey}^2` 
+
+    Find the radius of attack that gives a 90% probability of capture.
+    That becomes the radius of the area of attack and all prey within
+    are assumed captured if attacked. 
+
+    Pass Through:
+
+    :param velocity: (:math:`V_{w}`)
+    :param length: (:math:`L`)
+    :param weight: (:math:`W`)
+    :param temperature: (:math:`T`)
+    """
+    velocity = water_velocity(velocity, weight, temperature)
+    r = distance_at_capture_probability(length, velocity, temperature, 0.9)
+    return np.pi * r ** 2
 
 def rate_of_prey_consumption(
     prey_grams, drift_slope, weight, temperature, velocity, 
@@ -202,6 +188,12 @@ def rate_of_prey_consumption(
     prob_attack1, prob_attack2
 ):
     """
+    :return: :math:`W_{prey} = r_{prey} \cdot A_{att} \cdot P_{att}`
+
+    Number of grams of prey encountered per hour. 
+
+    Pass Through:
+
     :param prey_grams: (:math:`F_{prey}`)
     :param drift_slope: (:math:`m_{drift}`)
     :param weight: (:math:`W`)
@@ -212,11 +204,7 @@ def rate_of_prey_consumption(
     :param length_attack_1: (:math:`L_{att1}`)
     :param length_attack_2: (:math:`L_{att2}`)
     :param prob_attack1: (:math:`P_{att1}`)
-    :param prob_attack2: (:math:`P_{att2}`).
-
-    :return: :math:`W_{prey} = r_{prey} \cdot A_{att} \cdot P_{att}`
-    
-    Number of grams of prey encountered per hour. 
+    :param prob_attack2: (:math:`P_{att2}`)
     """
     return (
         rate_of_prey_encounter(prey_grams, drift_slope, weight, temperature, velocity) 
@@ -224,50 +212,45 @@ def rate_of_prey_consumption(
         * probability_of_attack(length, length_fry_min, length_attack_1, length_attack_2, prob_attack1, prob_attack2)
     )
 
-def area_of_attack(velocity, length, weight, temperature):
-    """
-    :param velocity: (:math:`V_{w}`)
-    :param length: (:math:`L`)
-    :param weight: (:math:`W`)
-    :param temperature: (:math:`T`)
-
-    :return: :math:`A_{att}` 
-
-    Find the radius of attack that gives a 90% probability of capture.
-    That becomes the radius of the area of attack and all prey within
-    are assumed captured if attacked. 
-    """
-    velocity = water_velocity(weight, temperature, velocity)
-    r = distance_at_capture_probability(length, velocity, temperature, 0.9)
-    return np.pi * r ** 2
-
 def main(
-    mover, weight, length, temperature, velocity,
-    prey_grams, minimum_fry_length,
+    prey_grams, mover, mover_fraction, 
+    weight, length, temperature, velocity,
+    minimum_fry_length,
     length_attack_1, length_attack_2,
     prob_attack1, prob_attack2,
-    drift_slope, mover_fraction
+    drift_slope
 ):
     """
-    :param rate_of_prey_consumption: (:math:`W_{prey}`)
     :param prey_grams: (:math:`F_{prey}`)
-    :param mover: boolean
+    :param mover: is the fish a mover or a stayer?
     :param mover_fraction: (:math:`f_{eat}`)
 
-    :return: :math:`C_{in}`
+    :return: :math:`C_{in} = W_{prey} / F_{prey}`
 
-    Caloric intake. Note that for movers we assume they only consume
-    a fraction of the prey they encounter.
+    Caloric intake. Note that for movers we multiply this by :math:`f_{eat}`.
+
+    Pass Through:
+
+    :param weight: (:math:`W`)
+    :param length: (:math:`L`)
+    :param temperature: (:math:`T`)
+    :param velocity: (:math:`V_{wmax}`)
+    :param minimum_fry_length: (:math:`L_{frymin}`)
+    :param length_attack_1: (:math:`L_{att1}`)
+    :param length_attack_2: (:math:`L_{att2}`)
+    :param prob_attack1: (:math:`P_{att1}`)
+    :param prob_attack2: (:math:`P_{att2}`)
+    :param drift_slope: (:math:`m_{drift}`)
     """
     if mover:
         return rate_of_prey_consumption(
             prey_grams, drift_slope, weight, temperature, velocity,
             length, minimum_fry_length, length_attack_1, length_attack_2,
             prob_attack1, prob_attack2
-        ) * prey_grams * mover_fraction
+        ) / prey_grams * mover_fraction
     else:
         return rate_of_prey_consumption(
             prey_grams, drift_slope, weight, temperature, velocity,
             length, minimum_fry_length, length_attack_1, length_attack_2,
             prob_attack1, prob_attack2
-        ) * prey_grams
+        ) / prey_grams
