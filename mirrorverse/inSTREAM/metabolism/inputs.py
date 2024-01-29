@@ -82,6 +82,11 @@ Metabolic Inputs
     - `distance_at_capture_probability` is not implemented yet.
     - `maximum_swimming_velocity` is not implemented yet.
 
+.. callgraph:: mirrorverse.inSTREAM.metabolism.inputs.main
+   :toctree: api
+   :zoomable:
+   :direction: vertical
+
 """
 
 import numpy as np
@@ -100,7 +105,7 @@ def distance_at_capture_probability(
 
     :return: :math:`D_{prey}` maximum distance at which prey can be captured with probability :math:`P_{cap}`
     """
-    pass
+    return length * velocity
 
 def maximum_swimming_velocity(weight, temperature):
     """
@@ -112,20 +117,23 @@ def maximum_swimming_velocity(weight, temperature):
     Maximum swimming velocity of the fish. This is a function of weight and
     temperature. 
     """
-    pass
+    return weight * temperature
 
-def water_velocity(maximum_swimming_velocity, maximum_water_velocity):
+def water_velocity(weight, temperature, velocity):
     """
-    :param maximum_swimming_velocity: (:math:`V_{max}`)
-    :param maximum_water_velocity: (:math:`V_{wmax}`)
+    :param weight: (:math:`W`)
+    :param temperature: (:math:`T`)
+    :param velocity: (:math:`V_{wmax}`)
 
     :return: :math:`V_{w}`
 
     Water velocity to consider the model. This is the minimum of the maximum
-    swimming velocity of the fish and the maximum water velocity in the habitat
-    unit.
+    swimming velocity of the fish and the maximum water velocity in the habitat.
     """
-    return np.minimum(maximum_swimming_velocity, maximum_water_velocity)
+    return np.minimum(
+        maximum_swimming_velocity(weight, temperature),
+        velocity
+    )
 
 def probability_of_attack(
     length, length_fry_min, length_attack_1, length_attack_2,
@@ -172,36 +180,55 @@ def probability_of_attack(
     )
 
 def rate_of_prey_encounter(
-    prey_grams, drift_slope, velocity
+    prey_grams, drift_slope, weight, temperature, velocity
 ):
     """
     :param prey_grams: (:math:`F_{prey}`)
     :param drift_slope: (:math:`m_{drift}`)
-    :param velocity: (:math:`V_{w}`)
+    :param weight: (:math:`W`)
+    :param temperature: (:math:`T`)
+    :param velocity: (:math:`V_{wmax}`)
 
     :return: :math:`r_{prey} = F_{prey} \cdot m_{drift} \cdot V_{w}`
 
     Note that we're assuming the rate of prey encounter is linearly
     proportional to the water velocity.
     """
-    return prey_grams * drift_slope * velocity
+    return prey_grams * drift_slope * water_velocity(weight, temperature, velocity)
 
-def rate_of_prey_consumption(rate_of_prey_encounter, area_of_attack, probability_of_attack):
+def rate_of_prey_consumption(
+    prey_grams, drift_slope, weight, temperature, velocity, 
+    length, length_fry_min, length_attack_1, length_attack_2,
+    prob_attack1, prob_attack2
+):
     """
-    :param rate_of_prey_encounter: (:math:`r_{prey}`)
-    :param area_of_attack: (:math:`A_{att}`)
-    :param probability_of_attack: (:math:`P_{att}`)
+    :param prey_grams: (:math:`F_{prey}`)
+    :param drift_slope: (:math:`m_{drift}`)
+    :param weight: (:math:`W`)
+    :param temperature: (:math:`T`)
+    :param velocity: (:math:`V_{wmax}`)
+    :param length: (:math:`L`)
+    :param length_fry_min: (:math:`L_{frymin}`)
+    :param length_attack_1: (:math:`L_{att1}`)
+    :param length_attack_2: (:math:`L_{att2}`)
+    :param prob_attack1: (:math:`P_{att1}`)
+    :param prob_attack2: (:math:`P_{att2}`).
 
     :return: :math:`W_{prey} = r_{prey} \cdot A_{att} \cdot P_{att}`
     
     Number of grams of prey encountered per hour. 
     """
-    return rate_of_prey_encounter * area_of_attack * probability_of_attack
+    return (
+        rate_of_prey_encounter(prey_grams, drift_slope, weight, temperature, velocity) 
+        * area_of_attack(velocity, length, weight, temperature) 
+        * probability_of_attack(length, length_fry_min, length_attack_1, length_attack_2, prob_attack1, prob_attack2)
+    )
 
-def area_of_attack(velocity, length, temperature):
+def area_of_attack(velocity, length, weight, temperature):
     """
-    :param velocity: (:math:`V_{f}`)
+    :param velocity: (:math:`V_{w}`)
     :param length: (:math:`L`)
+    :param weight: (:math:`W`)
     :param temperature: (:math:`T`)
 
     :return: :math:`A_{att}` 
@@ -210,10 +237,17 @@ def area_of_attack(velocity, length, temperature):
     That becomes the radius of the area of attack and all prey within
     are assumed captured if attacked. 
     """
+    velocity = water_velocity(weight, temperature, velocity)
     r = distance_at_capture_probability(length, velocity, temperature, 0.9)
     return np.pi * r ** 2
 
-def caloric_input(rate_of_prey_consumption, prey_grams, mover, mover_fraction):
+def main(
+    mover, weight, length, temperature, velocity,
+    prey_grams, minimum_fry_length,
+    length_attack_1, length_attack_2,
+    prob_attack1, prob_attack2,
+    drift_slope, mover_fraction
+):
     """
     :param rate_of_prey_consumption: (:math:`W_{prey}`)
     :param prey_grams: (:math:`F_{prey}`)
@@ -226,40 +260,14 @@ def caloric_input(rate_of_prey_consumption, prey_grams, mover, mover_fraction):
     a fraction of the prey they encounter.
     """
     if mover:
-        return rate_of_prey_consumption * prey_grams * mover_fraction
+        return rate_of_prey_consumption(
+            prey_grams, drift_slope, weight, temperature, velocity,
+            length, minimum_fry_length, length_attack_1, length_attack_2,
+            prob_attack1, prob_attack2
+        ) * prey_grams * mover_fraction
     else:
-        return rate_of_prey_consumption * prey_grams
-    
-def main(
-    mover, weight, length, temperature, velocity,
-    prey_grams, minimum_fry_length,
-    length_attack_1, length_attack_2,
-    prob_attack1, prob_attack2,
-    drift_slope, mover_fraction
-):
-    """
-    :param mover: boolean
-    :param weight: (:math:`W`)
-    :param length: (:math:`L`)
-    :param temperature: (:math:`T`)
-    :param velocity: (:math:`V_{wmax}`)
-    :param prey_grams: (:math:`F_{prey}`)
-    :param minimum_fry_length: (:math:`L_{frymin}`)
-    :param length_attack_1: (:math:`L_{att1}`)
-    :param length_attack_2: (:math:`L_{att2}`)
-    :param prob_attack1: (:math:`P_{att1}`)
-    :param prob_attack2: (:math:`P_{att2}`)
-    :param drift_slope: (:math:`m_{drift}`)
-    :param mover_fraction: (:math:`f_{eat}`)
-
-    :return: :math:`C_{in}`
-    """
-    maximum_swimming_velocity = maximum_swimming_velocity(weight, temperature)
-    water_velocity = water_velocity(maximum_swimming_velocity, velocity)
-    probability_of_attack = probability_of_attack(length, minimum_fry_length, length_attack_1, length_attack_2, prob_attack1, prob_attack2)
-    rate_of_prey_encounter = rate_of_prey_encounter(prey_grams, drift_slope, water_velocity)
-    area_of_attack = area_of_attack(water_velocity, length, temperature)
-    rate_of_prey_consumption = rate_of_prey_consumption(rate_of_prey_encounter, area_of_attack, probability_of_attack)
-    caloric_input = caloric_input(rate_of_prey_consumption, prey_grams, mover, mover_fraction)
-    return caloric_input
-    
+        return rate_of_prey_consumption(
+            prey_grams, drift_slope, weight, temperature, velocity,
+            length, minimum_fry_length, length_attack_1, length_attack_2,
+            prob_attack1, prob_attack2
+        ) * prey_grams
