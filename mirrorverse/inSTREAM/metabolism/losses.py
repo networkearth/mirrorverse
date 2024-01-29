@@ -50,7 +50,7 @@
 
     For stayers we assume that they experience the flow velocity that is generating their encounter rate :math:`V_{w}`. However
     we have two kinds of stayers. For those with cover we assume :math:`V_{wait}=S_{wait}=0`. For those without cover we assume that
-    it is less than the `V_{act}` by a factor `dv_cov`. All other speeds and velocities are considered to be zero.
+    it is less than the :math:`V_{act}` by a factor :math:`dv_{cov}`. All other speeds and velocities are considered to be zero.
 
 .. callgraph:: mirrorverse.inSTREAM.metabolism.losses.main
    :toctree: api

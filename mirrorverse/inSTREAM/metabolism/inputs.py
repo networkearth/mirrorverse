@@ -179,8 +179,6 @@ def rate_of_prey_encounter(state):
 @make_cacheable
 def area_of_attack(state):
     """
-    :param capture_probability: (:math:`P_{cap}`)
-
     :return: :math:`A_{att}=\pi \cdot D_{prey}^2`
 
     Find the radius of attack that gives a 90% probability of capture.
