@@ -5,3 +5,7 @@ docs/_templates
 docs/mirrorverse*
 .DS_Store
 *.pyc
+build/
+mirrorverse.egg-info/
+*.pkl
+*.csv
