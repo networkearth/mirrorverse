@@ -10,6 +10,7 @@ setup(
     entry_points={
         "console_scripts": [
             "train_chinook=mirrorverse.chinook.train:main",
+            "simulate_chinook=mirrorverse.chinook.simulate:main",
         ]
     },
 )

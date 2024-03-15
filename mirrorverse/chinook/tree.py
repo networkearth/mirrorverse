@@ -98,7 +98,7 @@ class DriftMovementLeaf(DecisionTree):
         pass
 
     @classmethod
-    def update_network(cls, choice, choice_state):
+    def update_branch(cls, choice, choice_state):
         choice_state["h3_index"] = choice["h3_index"]
 
     @staticmethod
@@ -152,7 +152,7 @@ class RunMovementLeaf(DecisionTree):
         pass
 
     @classmethod
-    def update_network(cls, choice, choice_state):
+    def update_branch(cls, choice, choice_state):
         choice_state["heading"] = choice["heading"]
         choice_state["h3_index"] = choice["h3_index"]
 
@@ -217,7 +217,7 @@ class RunHeadingBranch(DecisionTree):
         return "run_movement"
 
     @classmethod
-    def update_network(cls, choice, choice_state):
+    def update_branch(cls, choice, choice_state):
         choice_state["mean_heading"] = choice["mean_heading"]
 
     @staticmethod
@@ -271,7 +271,7 @@ class RunOrDriftBranch(DecisionTree):
         return "drift" if choice["drift"] else "run"
 
     @classmethod
-    def update_network(cls, choice, choice_state):
+    def update_branch(cls, choice, choice_state):
         choice_state["drifting"] = choice["drift"]
 
     @staticmethod
