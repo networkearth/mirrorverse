@@ -6,10 +6,8 @@ import h3
 from tqdm import tqdm
 
 
-from mirrorverse.chinook.tree import RunOrDriftBranch
-from mirrorverse.chinook.train import (
-    create_pairs,
-    group_headings,
+from mirrorverse.chinook.tree.run_or_drift import RunOrDriftBranch
+from mirrorverse.chinook.states import (
     get_elevation,
     get_surface_temps,
 )
@@ -62,11 +60,8 @@ def simulate(ptt, h3_index, date, steps):
 @click.option("--temps_path", "-t", help="path to surface temps file", required=True)
 @click.option("--elevation_path", "-e", help="path to elevation file", required=True)
 @click.option("--model_path", "-m", help="path to model file", required=True)
-@click.option("--state_path", "-st", help="path to state file", required=True)
 @click.option("--simulation_path", "-si", help="path to simulation file", required=True)
-def main(
-    data_path, temps_path, elevation_path, model_path, state_path, simulation_path
-):
+def main(data_path, temps_path, elevation_path, model_path, simulation_path):
 
     pd.options.mode.chained_assignment = None
 
@@ -74,60 +69,13 @@ def main(
     get_surface_temps(temps_path)
     get_elevation(elevation_path)
 
-    print(f"Loading data from {data_path}")
-    data = pd.read_csv(data_path).rename(
-        {
-            "Ptt": "ptt",
-            "Latitude": "lat",
-            "Longitude": "lon",
-            "Dates - Date Key → Date": "date",
-            "Dates - Date Key → Year": "year",
-            "Dates - Date Key → Month": "month",
-            "Dates - Date Key → Day": "day",
-        },
-        axis=1,
-    )
+    print("Loading Data...")
+    data = pd.read_csv(data_path)
 
     print("Loading Models...")
     with open(model_path, "rb") as fh:
         models = pickle.load(fh)
-
     RunOrDriftBranch.import_models(models)
-
-    print("Creating Pairs...")
-    pairs = create_pairs(data)
-
-    print("Grouping Pairs...")
-    grouped_pairs = []
-    for ptt in tqdm(pairs["ptt"].unique()):
-        df = group_headings(pairs[pairs["ptt"] == ptt], np.pi / 4, 150)
-        grouped_pairs.append(df)
-    grouped_pairs = pd.concat(grouped_pairs)
-
-    print("Building State...")
-    data = grouped_pairs.copy()
-    data["drifting"] = ~data["momentum"]
-    data.loc[data["drifting"], "steps_in_state"] = data.loc[
-        data["drifting"], "steps_since_group"
-    ]
-    data.loc[~data["drifting"], "steps_in_state"] = data.loc[
-        ~data["drifting"], "steps_in_group"
-    ]
-    data["h3_index"] = data["start_h3"]
-    data["month"] = data["start_month"]
-    data["mean_heading"] = data["mean_heading"].fillna(0)
-    data["date"] = data["start_date"]
-    data = data[
-        [
-            "ptt",
-            "h3_index",
-            "month",
-            "mean_heading",
-            "drifting",
-            "steps_in_state",
-            "date",
-        ]
-    ]
 
     print("Simulating...")
     dfs = []
@@ -146,8 +94,3 @@ def main(
 
     print("Saving...")
     df.to_csv(simulation_path, index=False)
-    data.to_csv(state_path, index=False)
-
-
-if __name__ == "__main__":
-    main()
