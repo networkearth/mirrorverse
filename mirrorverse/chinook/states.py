@@ -6,9 +6,9 @@ import geopy.distance
 
 from tqdm import tqdm
 
-from mirrorverse.chinook.tree import get_heading, diff_heading
+from mirrorverse.chinook.utils import get_heading, diff_heading
 
-import mirrorverse.chinook.tree as chinook_tree
+import mirrorverse.chinook.utils as utils
 
 
 def load_tag_tracks(file_path):
@@ -179,7 +179,7 @@ def spatial_key_to_index(spatial_key):
 
 
 def get_surface_temps(file_path):
-    chinook_tree.SURFACE_TEMPS_ENRICHMENT = pd.read_csv(file_path).rename(
+    utils.SURFACE_TEMPS_ENRICHMENT = pd.read_csv(file_path).rename(
         {
             "H3 Key 4": "h3_index",
             "Dates - Date Key → Month": "month",
@@ -187,25 +187,21 @@ def get_surface_temps(file_path):
         },
         axis=1,
     )[["h3_index", "month", "temp"]]
-    chinook_tree.SURFACE_TEMPS_ENRICHMENT["h3_index"] = (
-        chinook_tree.SURFACE_TEMPS_ENRICHMENT["h3_index"].astype(np.int64).astype(str)
+    utils.SURFACE_TEMPS_ENRICHMENT["h3_index"] = (
+        utils.SURFACE_TEMPS_ENRICHMENT["h3_index"].astype(np.int64).astype(str)
     )
-    chinook_tree.SURFACE_TEMPS_ENRICHMENT["h3_index"] = (
-        chinook_tree.SURFACE_TEMPS_ENRICHMENT.apply(
-            lambda row: spatial_key_to_index(np.int64(row["h3_index"])), axis=1
-        )
+    utils.SURFACE_TEMPS_ENRICHMENT["h3_index"] = utils.SURFACE_TEMPS_ENRICHMENT.apply(
+        lambda row: spatial_key_to_index(np.int64(row["h3_index"])), axis=1
     )
 
 
 def get_elevation(file_path):
-    chinook_tree.ELEVATION_ENRICHMENT = pd.read_csv(file_path)
-    chinook_tree.ELEVATION_ENRICHMENT["h3_index"] = (
-        chinook_tree.ELEVATION_ENRICHMENT["h3_index"].astype(np.int64).astype(str)
+    utils.ELEVATION_ENRICHMENT = pd.read_csv(file_path)
+    utils.ELEVATION_ENRICHMENT["h3_index"] = (
+        utils.ELEVATION_ENRICHMENT["h3_index"].astype(np.int64).astype(str)
     )
-    chinook_tree.ELEVATION_ENRICHMENT["h3_index"] = (
-        chinook_tree.ELEVATION_ENRICHMENT.apply(
-            lambda row: spatial_key_to_index(np.int64(row["h3_index"])), axis=1
-        )
+    utils.ELEVATION_ENRICHMENT["h3_index"] = utils.ELEVATION_ENRICHMENT.apply(
+        lambda row: spatial_key_to_index(np.int64(row["h3_index"])), axis=1
     )
 
 

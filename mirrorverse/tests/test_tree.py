@@ -201,12 +201,29 @@ def test_export_models():
     assert exported == {"StepSizeDecisionTree": "m1", "LinearGridDecisionTree": "m2"}
 
 
+def test_export_models_no_recursion():
+    decision_tree = StepSizeDecisionTree
+    decision_tree.MODEL = "m1"
+    decision_tree.BRANCHES["step_size"].MODEL = "m2"
+    exported = decision_tree.export_models(recurse=False)
+    assert exported == {"StepSizeDecisionTree": "m1"}
+
+
 def test_import_models():
     decision_tree = StepSizeDecisionTree
     models = {"StepSizeDecisionTree": "m1", "LinearGridDecisionTree": "m2"}
     decision_tree.import_models(models)
     assert decision_tree.MODEL == "m1"
     assert decision_tree.BRANCHES["step_size"].MODEL == "m2"
+
+
+def test_import_models():
+    decision_tree = StepSizeDecisionTree
+    decision_tree.BRANCHES["step_size"].MODEL = None
+    models = {"StepSizeDecisionTree": "m1", "LinearGridDecisionTree": "m2"}
+    decision_tree.import_models(models, recurse=False)
+    assert decision_tree.MODEL == "m1"
+    assert decision_tree.BRANCHES["step_size"].MODEL is None
 
 
 def test_what_state():

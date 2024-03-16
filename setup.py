@@ -9,9 +9,10 @@ setup(
     install_requires=[],
     entry_points={
         "console_scripts": [
-            "train_chinook=mirrorverse.chinook.train:main",
+            "chinook_train=mirrorverse.chinook.train:main",
             "simulate_chinook=mirrorverse.chinook.simulate:main",
             "chinook_states=mirrorverse.chinook.states:main",
+            "mirrorverse_bundle_models=mirrorverse.utils:bundle_models",
         ]
     },
 )

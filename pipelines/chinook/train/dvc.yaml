@@ -3,7 +3,7 @@ stages:
     cmd: chinook_states -d ${data} -t ${temps} -e ${elevation} -o .  -r ${resolution} -mae ${max_allowable_error} -mad ${min_allowable_distance} -ts ${training_size}
     deps:
       - ../../../mirrorverse/chinook/states.py
-      - ../../../mirrorverse/chinook/tree.py
+      - ../../../mirrorverse/chinook/utils.py
       - ${data}
       - ${temps}
       - ${elevation}
@@ -18,3 +18,72 @@ stages:
     outs:
       - training_states.csv
       - testing_states.csv
+  train_drift_movement:
+    cmd: chinook_train -n DriftMovementLeaf -tr training_states.csv -te testing_states.csv -t ${temps} -e ${elevation} -m .
+    deps:
+      - ../../../mirrorverse/tree.py
+      - ../../../mirrorverse/chinook/tree/drift_movement.py
+      - ../../../mirrorverse/chinook/train.py
+      - training_states.csv
+      - testing_states.csv
+      - ${temps}
+      - ${elevation}
+    params:
+      - temps
+      - elevation
+    outs:
+      - DriftMovementLeaf.pkl
+  train_run_movement:
+    cmd: chinook_train -n RunMovementLeaf -tr training_states.csv -te testing_states.csv -t ${temps} -e ${elevation} -m .
+    deps:
+      - ../../../mirrorverse/tree.py
+      - ../../../mirrorverse/chinook/tree/run_movement.py
+      - ../../../mirrorverse/chinook/train.py
+      - training_states.csv
+      - testing_states.csv
+      - ${temps}
+      - ${elevation}
+    params:
+      - temps
+      - elevation
+    outs:
+      - RunMovementLeaf.pkl
+  train_run_heading:
+    cmd: chinook_train -n RunHeadingBranch -tr training_states.csv -te testing_states.csv -t ${temps} -e ${elevation} -m .
+    deps:
+      - ../../../mirrorverse/tree.py
+      - ../../../mirrorverse/chinook/tree/run_heading.py
+      - ../../../mirrorverse/chinook/train.py
+      - training_states.csv
+      - testing_states.csv
+      - ${temps}
+      - ${elevation}
+    params:
+      - temps
+      - elevation
+    outs:
+      - RunHeadingBranch.pkl
+  train_run_or_drift:
+    cmd: chinook_train -n RunOrDriftBranch -tr training_states.csv -te testing_states.csv -t ${temps} -e ${elevation} -m .
+    deps:
+      - ../../../mirrorverse/tree.py
+      - ../../../mirrorverse/chinook/tree/run_or_drift.py
+      - ../../../mirrorverse/chinook/train.py
+      - training_states.csv
+      - testing_states.csv
+      - ${temps}
+      - ${elevation}
+    params:
+      - temps
+      - elevation
+    outs:
+      - RunOrDriftBranch.pkl
+  bundle_models:
+    cmd: mirrorverse_bundle_models -m .
+    deps:
+      - DriftMovementLeaf.pkl
+      - RunMovementLeaf.pkl
+      - RunHeadingBranch.pkl
+      - RunOrDriftBranch.pkl
+    outs:
+      - models.pkl

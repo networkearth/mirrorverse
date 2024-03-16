@@ -110,14 +110,16 @@ class DecisionTree(object):
         return state, choice_state
 
     @classmethod
-    def export_models(cls):
+    def export_models(cls, recurse=True):
         models = {cls.__name__: cls.MODEL}
-        for branch in cls.BRANCHES.values():
-            models.update(branch.export_models())
+        if recurse:
+            for branch in cls.BRANCHES.values():
+                models.update(branch.export_models())
         return models
 
     @classmethod
-    def import_models(cls, models):
+    def import_models(cls, models, recurse=True):
         cls.MODEL = models[cls.__name__]
-        for branch in cls.BRANCHES.values():
-            branch.import_models(models)
+        if recurse:
+            for branch in cls.BRANCHES.values():
+                branch.import_models(models)
