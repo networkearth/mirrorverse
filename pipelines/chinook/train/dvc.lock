@@ -1,0 +1,232 @@
+schema: '2.0'
+stages:
+  states:
+    cmd: chinook_states -d ../data/tag_tracks.csv -t ../data/surface_temps.csv -e
+      ../data/bathymetry.csv -o .  -r 4 -mae 0.79 -mad 150 -ts 0.7
+    deps:
+    - path: ../../../mirrorverse/chinook/states.py
+      hash: md5
+      md5: ffb5f8ea56589dbee707ad1cc47263ab
+      size: 9529
+    - path: ../../../mirrorverse/chinook/utils.py
+      hash: md5
+      md5: 115a1cac4ea0971893d9fe82e6142ce2
+      size: 1414
+    - path: ../data/bathymetry.csv
+      hash: md5
+      md5: cc85b68bea7980f10cb066f2002a5d14
+      size: 524084
+    - path: ../data/surface_temps.csv
+      hash: md5
+      md5: 2c3f8b885d1f1cae5fea697fd4941f94
+      size: 18299215
+    - path: ../data/tag_tracks.csv
+      hash: md5
+      md5: 4b45f19b5564abe0cad08559580034da
+      size: 325173
+    params:
+      params.yaml:
+        data: ../data/tag_tracks.csv
+        elevation: ../data/bathymetry.csv
+        max_allowable_error: 0.79
+        min_allowable_distance: 150
+        resolution: 4
+        temps: ../data/surface_temps.csv
+        training_size: 0.7
+    outs:
+    - path: testing_states.csv
+      hash: md5
+      md5: 4d3fce9f503a1d92d2dc00140334e6e5
+      size: 107056
+    - path: training_states.csv
+      hash: md5
+      md5: b06910db7c4305eb1a5ce3071bedd240
+      size: 300731
+  train_drift_movement:
+    cmd: chinook_train -n DriftMovementLeaf -tr training_states.csv -te testing_states.csv
+      -t ../data/surface_temps.csv -e ../data/bathymetry.csv -m .
+    deps:
+    - path: ../../../mirrorverse/chinook/train.py
+      hash: md5
+      md5: 1eeb57593b722dd6d03dcb80445568aa
+      size: 1755
+    - path: ../../../mirrorverse/chinook/tree/drift_movement.py
+      hash: md5
+      md5: 60b11e0f411cfdca5e379207b2c4eb5e
+      size: 3596
+    - path: ../../../mirrorverse/tree.py
+      hash: md5
+      md5: 51dae1ea3b7478f34cebd4911eb42a26
+      size: 4495
+    - path: ../data/bathymetry.csv
+      hash: md5
+      md5: cc85b68bea7980f10cb066f2002a5d14
+      size: 524084
+    - path: ../data/surface_temps.csv
+      hash: md5
+      md5: 2c3f8b885d1f1cae5fea697fd4941f94
+      size: 18299215
+    - path: testing_states.csv
+      hash: md5
+      md5: 4d3fce9f503a1d92d2dc00140334e6e5
+      size: 107056
+    - path: training_states.csv
+      hash: md5
+      md5: b06910db7c4305eb1a5ce3071bedd240
+      size: 300731
+    params:
+      params.yaml:
+        elevation: ../data/bathymetry.csv
+        temps: ../data/surface_temps.csv
+    outs:
+    - path: DriftMovementLeaf.pkl
+      hash: md5
+      md5: 5d0a5f6b05d85cfada28b5047028c0c5
+      size: 1846819
+  train_run_movement:
+    cmd: chinook_train -n RunMovementLeaf -tr training_states.csv -te testing_states.csv
+      -t ../data/surface_temps.csv -e ../data/bathymetry.csv -m .
+    deps:
+    - path: ../../../mirrorverse/chinook/train.py
+      hash: md5
+      md5: 1eeb57593b722dd6d03dcb80445568aa
+      size: 1755
+    - path: ../../../mirrorverse/chinook/tree/run_movement.py
+      hash: md5
+      md5: a72e8a4d8a63db7960199393080f1082
+      size: 4006
+    - path: ../../../mirrorverse/tree.py
+      hash: md5
+      md5: 51dae1ea3b7478f34cebd4911eb42a26
+      size: 4495
+    - path: ../data/bathymetry.csv
+      hash: md5
+      md5: cc85b68bea7980f10cb066f2002a5d14
+      size: 524084
+    - path: ../data/surface_temps.csv
+      hash: md5
+      md5: 2c3f8b885d1f1cae5fea697fd4941f94
+      size: 18299215
+    - path: testing_states.csv
+      hash: md5
+      md5: 4d3fce9f503a1d92d2dc00140334e6e5
+      size: 107056
+    - path: training_states.csv
+      hash: md5
+      md5: b06910db7c4305eb1a5ce3071bedd240
+      size: 300731
+    params:
+      params.yaml:
+        elevation: ../data/bathymetry.csv
+        temps: ../data/surface_temps.csv
+    outs:
+    - path: RunMovementLeaf.pkl
+      hash: md5
+      md5: 3152da0c67771e783fd4cb1a7a454e37
+      size: 2080567
+  train_run_heading:
+    cmd: chinook_train -n RunHeadingBranch -tr training_states.csv -te testing_states.csv
+      -t ../data/surface_temps.csv -e ../data/bathymetry.csv -m .
+    deps:
+    - path: ../../../mirrorverse/chinook/train.py
+      hash: md5
+      md5: 1eeb57593b722dd6d03dcb80445568aa
+      size: 1755
+    - path: ../../../mirrorverse/chinook/tree/run_heading.py
+      hash: md5
+      md5: 307ad02cb03a2cd7487c4e6d9c9d5179
+      size: 4834
+    - path: ../../../mirrorverse/tree.py
+      hash: md5
+      md5: 51dae1ea3b7478f34cebd4911eb42a26
+      size: 4495
+    - path: ../data/bathymetry.csv
+      hash: md5
+      md5: cc85b68bea7980f10cb066f2002a5d14
+      size: 524084
+    - path: ../data/surface_temps.csv
+      hash: md5
+      md5: 2c3f8b885d1f1cae5fea697fd4941f94
+      size: 18299215
+    - path: testing_states.csv
+      hash: md5
+      md5: 4d3fce9f503a1d92d2dc00140334e6e5
+      size: 107056
+    - path: training_states.csv
+      hash: md5
+      md5: b06910db7c4305eb1a5ce3071bedd240
+      size: 300731
+    params:
+      params.yaml:
+        elevation: ../data/bathymetry.csv
+        temps: ../data/surface_temps.csv
+    outs:
+    - path: RunHeadingBranch.pkl
+      hash: md5
+      md5: 01da50e7c8c1443087d27a6a5816014a
+      size: 530531
+  train_run_or_drift:
+    cmd: chinook_train -n RunOrDriftBranch -tr training_states.csv -te testing_states.csv
+      -t ../data/surface_temps.csv -e ../data/bathymetry.csv -m .
+    deps:
+    - path: ../../../mirrorverse/chinook/train.py
+      hash: md5
+      md5: 1eeb57593b722dd6d03dcb80445568aa
+      size: 1755
+    - path: ../../../mirrorverse/chinook/tree/run_or_drift.py
+      hash: md5
+      md5: b11f9134ae9f49f372103fc3c11ed6d9
+      size: 3875
+    - path: ../../../mirrorverse/tree.py
+      hash: md5
+      md5: 51dae1ea3b7478f34cebd4911eb42a26
+      size: 4495
+    - path: ../data/bathymetry.csv
+      hash: md5
+      md5: cc85b68bea7980f10cb066f2002a5d14
+      size: 524084
+    - path: ../data/surface_temps.csv
+      hash: md5
+      md5: 2c3f8b885d1f1cae5fea697fd4941f94
+      size: 18299215
+    - path: testing_states.csv
+      hash: md5
+      md5: 4d3fce9f503a1d92d2dc00140334e6e5
+      size: 107056
+    - path: training_states.csv
+      hash: md5
+      md5: b06910db7c4305eb1a5ce3071bedd240
+      size: 300731
+    params:
+      params.yaml:
+        elevation: ../data/bathymetry.csv
+        temps: ../data/surface_temps.csv
+    outs:
+    - path: RunOrDriftBranch.pkl
+      hash: md5
+      md5: 6303a781e393399688d38a6d1a30f618
+      size: 375394
+  bundle_models:
+    cmd: mirrorverse_bundle_models -m .
+    deps:
+    - path: DriftMovementLeaf.pkl
+      hash: md5
+      md5: 5d0a5f6b05d85cfada28b5047028c0c5
+      size: 1846819
+    - path: RunHeadingBranch.pkl
+      hash: md5
+      md5: 01da50e7c8c1443087d27a6a5816014a
+      size: 530531
+    - path: RunMovementLeaf.pkl
+      hash: md5
+      md5: 3152da0c67771e783fd4cb1a7a454e37
+      size: 2080567
+    - path: RunOrDriftBranch.pkl
+      hash: md5
+      md5: 6303a781e393399688d38a6d1a30f618
+      size: 375394
+    outs:
+    - path: models.pkl
+      hash: md5
+      md5: 712ffe969928a8b6d85837b0af933b03
+      size: 4845160
