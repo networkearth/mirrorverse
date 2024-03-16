@@ -9,3 +9,4 @@ build/
 mirrorverse.egg-info/
 *.pkl
 *.csv
+dvc.lock

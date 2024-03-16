@@ -11,6 +11,7 @@ setup(
         "console_scripts": [
             "train_chinook=mirrorverse.chinook.train:main",
             "simulate_chinook=mirrorverse.chinook.simulate:main",
+            "chinook_states=mirrorverse.chinook.states:main",
         ]
     },
 )
