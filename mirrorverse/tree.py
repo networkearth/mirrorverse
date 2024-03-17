@@ -34,92 +34,89 @@ class DecisionTree(object):
         to _build_model_data, return a dataframe with a
         column "selected" that is 1 for the choice selected
         and 0 for all other choices
-
-    CLASS METHODS:
-    - update_branch(cls, choice, choice_state) - given the
+    - update_branch(self, choice, choice_state) - given the
         choice made and the choice_state, update the choice_state
         to reflect the choice made. This choice state will be
         passed to the next branch.
     """
 
-    @classmethod
-    def get_choices(cls, state, choice_state):
+    def __init__(self, enrichment):
+        self.builders = [builder(enrichment) for builder in self.BUILDERS]
+        self.branches = {
+            identifier: branch(enrichment)
+            for identifier, branch in self.BRANCHES.items()
+        }
+
+    def get_choices(self, state, choice_state):
         choices = []
-        for builder in cls.BUILDERS:
+        for builder in self.builders:
             choices += [builder(state, choice_state)]
         return pd.concat(choices).reset_index(drop=True)
 
-    @classmethod
-    def choose(cls, state, choice_state):
-        choices = cls.get_choices(state, choice_state)
-        utility = cls.MODEL.predict(choices[cls.FEATURE_COLUMNS])
+    def choose(self, state, choice_state):
+        choices = self.get_choices(state, choice_state)
+        utility = self.model.predict(choices[self.FEATURE_COLUMNS])
         if utility.sum() == 0:
             probs = np.ones(len(utility)) / len(utility)
         else:
             probs = utility / utility.sum()
         choice = choices.iloc[np.random.choice(choices.index, p=probs)]
 
-        cls.update_branch(choice, choice_state)
+        self.update_branch(choice, choice_state)
 
-        identifier = cls.get_identifier(choice)
-        if cls.BRANCHES.get(identifier) is not None:
-            cls.BRANCHES[identifier].choose(state, choice_state)
+        identifier = self.get_identifier(choice)
+        if self.branches.get(identifier) is not None:
+            self.branches[identifier].choose(state, choice_state)
 
-    @classmethod
-    def _build_model_data(cls, states, choice_states, selections):
+    def _build_model_data(self, states, choice_states, selections):
         dataframes = []
         for state, choice_state, selection in zip(states, choice_states, selections):
-            choices = cls.get_choices(state, choice_state)
-            dataframe = cls._stitch_selection(choices, selection)
+            choices = self.get_choices(state, choice_state)
+            dataframe = self._stitch_selection(choices, selection)
             dataframes.append(dataframe)
         return pd.concat(dataframes)
 
-    @classmethod
-    def test_model(cls, states, choice_states, selections):
-        data = cls._build_model_data(states, choice_states, selections)
-        X = data[cls.FEATURE_COLUMNS]
+    def test_model(self, states, choice_states, selections):
+        data = self._build_model_data(states, choice_states, selections)
+        X = data[self.FEATURE_COLUMNS]
         y = data["selected"]
-        y_pred = cls.MODEL.predict(X)
+        y_pred = self.model.predict(X)
         return {"explained_variance": round(explained_variance_score(y, y_pred), 3)}
 
-    @classmethod
-    def train_model(cls, states, choice_states, selections):
-        data = cls._build_model_data(states, choice_states, selections)
-        X = data[cls.FEATURE_COLUMNS]
+    def train_model(self, states, choice_states, selections):
+        data = self._build_model_data(states, choice_states, selections)
+        X = data[self.FEATURE_COLUMNS]
         y = data["selected"]
         grid_search = GridSearchCV(
             estimator=RandomForestRegressor(random_state=42, n_jobs=3),
-            param_grid=cls.PARAM_GRID,
+            param_grid=self.PARAM_GRID,
             return_train_score=True,
-            cv=cls.CV,
+            cv=self.CV,
             refit=True,
         ).fit(X, y)
-        cls.MODEL = grid_search.best_estimator_
+        self.model = grid_search.best_estimator_
 
-    @classmethod
-    def what_state(cls):
+    def what_state(self):
         state = set()
         choice_state = set()
-        for builder in cls.BUILDERS:
+        for builder in self.builders:
             state.update(builder.STATE)
             choice_state.update(builder.CHOICE_STATE)
-        for branch in cls.BRANCHES.values():
+        for branch in self.branches.values():
             branch_state, branch_choice_state = branch.what_state()
             state.update(branch_state)
             choice_state.update(branch_choice_state)
         return state, choice_state
 
-    @classmethod
-    def export_models(cls, recurse=True):
-        models = {cls.__name__: cls.MODEL}
+    def export_models(self, recurse=True):
+        models = {self.__class__.__name__: self.model}
         if recurse:
-            for branch in cls.BRANCHES.values():
+            for branch in self.branches.values():
                 models.update(branch.export_models())
         return models
 
-    @classmethod
-    def import_models(cls, models, recurse=True):
-        cls.MODEL = models[cls.__name__]
+    def import_models(self, models, recurse=True):
+        self.model = models[self.__class__.__name__]
         if recurse:
-            for branch in cls.BRANCHES.values():
+            for branch in self.branches.values():
                 branch.import_models(models)

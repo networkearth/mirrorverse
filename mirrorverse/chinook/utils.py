@@ -2,21 +2,11 @@ import numpy as np
 import h3
 import geopy.distance
 
-# at run time this will need to be filled with
-# a dataframe of h3 index, elevation pairs
-ELEVATION_ENRICHMENT = None
-
-# at run time this will need to be filled with
-# a dataframe of h3 index, month, temp triples
-SURFACE_TEMPS_ENRICHMENT = None
-
-# Some Basic Configuration
-NEIGHBORS = {}
 MAX_KM = 100
 RESOLUTION = 4
 
 
-def find_neighbors(h3_index):
+def find_neighbors(h3_index, neighbors_index):
     h3_coords = h3.h3_to_geo(h3_index)
     checked = set()
     neighbors = set()
@@ -32,7 +22,7 @@ def find_neighbors(h3_index):
                 found_neighbors = True
             checked.add(candidate)
         distance += 1
-    NEIGHBORS[h3_index] = neighbors
+    neighbors_index[h3_index] = neighbors
 
 
 def get_heading(lat1, lon1, lat2, lon2):

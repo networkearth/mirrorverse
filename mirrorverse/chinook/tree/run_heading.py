@@ -16,6 +16,10 @@ class RunHeadingChoiceBuilder(object):
     CHOICE_STATE = []
     COLUMNS = ["mean_heading", "elevation", "temp", "last_mean_heading", "was_drifting"]
 
+    def __init__(self, enrichment):
+        self.surface_temps = enrichment["surface_temps"]
+        self.elevation = enrichment["elevation"]
+
     def __call__(self, state, choice_state):
         slices = 24
         step_size = 1
@@ -36,9 +40,9 @@ class RunHeadingChoiceBuilder(object):
 
         choices["month"] = state["month"]
         choices = choices.merge(
-            utils.SURFACE_TEMPS_ENRICHMENT, on=["h3_index", "month"], how="inner"
+            self.surface_temps, on=["h3_index", "month"], how="inner"
         )
-        choices = choices.merge(utils.ELEVATION_ENRICHMENT, on="h3_index", how="inner")
+        choices = choices.merge(self.elevation, on="h3_index", how="inner")
         del choices["month"]
 
         choices["last_mean_heading"] = (
@@ -50,7 +54,7 @@ class RunHeadingChoiceBuilder(object):
 
 
 class RunHeadingBranch(DecisionTree):
-    BUILDERS = [RunHeadingChoiceBuilder()]
+    BUILDERS = [RunHeadingChoiceBuilder]
     FEATURE_COLUMNS = [
         "mean_heading",
         "elevation",
@@ -66,8 +70,8 @@ class RunHeadingBranch(DecisionTree):
     def get_identifier(choice):
         return "run_movement"
 
-    @classmethod
-    def update_branch(cls, choice, choice_state):
+    @staticmethod
+    def update_branch(choice, choice_state):
         choice_state["mean_heading"] = choice["mean_heading"]
 
     @staticmethod
@@ -86,7 +90,7 @@ class RunHeadingBranch(DecisionTree):
         return choices
 
 
-def train_run_heading_model(training_data, testing_data):
+def train_run_heading_model(training_data, testing_data, enrichment):
     print("Training Run Heading Model...")
     start_time = time()
     heading_states_train = []
@@ -122,22 +126,23 @@ def train_run_heading_model(training_data, testing_data):
                 heading_choice_states_test.append(choice_state)
                 heading_selections_test.append(selection)
 
-    RunHeadingBranch.train_model(
+    decision_tree = RunHeadingBranch(enrichment)
+    decision_tree.train_model(
         heading_states_train, heading_choice_states_train, heading_selections_train
     )
     print(
         "Train:",
-        RunHeadingBranch.test_model(
+        decision_tree.test_model(
             heading_states_train, heading_choice_states_train, heading_selections_train
         ),
     )
     print(
         "Test:",
-        RunHeadingBranch.test_model(
+        decision_tree.test_model(
             heading_states_test, heading_choice_states_test, heading_selections_test
         ),
     )
 
     end_time = time()
     print("Time:", round(end_time - start_time, 1), "seconds")
-    return RunHeadingBranch.export_models(recurse=False)
+    return decision_tree.export_models(recurse=False)

@@ -8,8 +8,6 @@ from tqdm import tqdm
 
 from mirrorverse.chinook.utils import get_heading, diff_heading
 
-import mirrorverse.chinook.utils as utils
-
 
 def load_tag_tracks(file_path):
     data = pd.read_csv(file_path).rename(
@@ -179,7 +177,7 @@ def spatial_key_to_index(spatial_key):
 
 
 def get_surface_temps(file_path):
-    utils.SURFACE_TEMPS_ENRICHMENT = pd.read_csv(file_path).rename(
+    df = pd.read_csv(file_path).rename(
         {
             "H3 Key 4": "h3_index",
             "Dates - Date Key → Month": "month",
@@ -187,28 +185,24 @@ def get_surface_temps(file_path):
         },
         axis=1,
     )[["h3_index", "month", "temp"]]
-    utils.SURFACE_TEMPS_ENRICHMENT["h3_index"] = (
-        utils.SURFACE_TEMPS_ENRICHMENT["h3_index"].astype(np.int64).astype(str)
-    )
-    utils.SURFACE_TEMPS_ENRICHMENT["h3_index"] = utils.SURFACE_TEMPS_ENRICHMENT.apply(
+    df["h3_index"] = df["h3_index"].astype(np.int64).astype(str)
+    df["h3_index"] = df.apply(
         lambda row: spatial_key_to_index(np.int64(row["h3_index"])), axis=1
     )
+    return df
 
 
 def get_elevation(file_path):
-    utils.ELEVATION_ENRICHMENT = pd.read_csv(file_path)
-    utils.ELEVATION_ENRICHMENT["h3_index"] = (
-        utils.ELEVATION_ENRICHMENT["h3_index"].astype(np.int64).astype(str)
-    )
-    utils.ELEVATION_ENRICHMENT["h3_index"] = utils.ELEVATION_ENRICHMENT.apply(
+    df = pd.read_csv(file_path)
+    df["h3_index"] = df["h3_index"].astype(np.int64).astype(str)
+    df["h3_index"] = df.apply(
         lambda row: spatial_key_to_index(np.int64(row["h3_index"])), axis=1
     )
+    return df
 
 
 @click.command()
 @click.option("--data_path", "-d", help="path to data file", required=True)
-@click.option("--temps_path", "-t", help="path to surface temps file", required=True)
-@click.option("--elevation_path", "-e", help="path to elevation file", required=True)
 @click.option("--output_dir", "-o", help="directory to store outputs", required=True)
 @click.option("--resolution", "-r", help="resolution", type=int, required=True)
 @click.option("--max_allowable_error", "-mae", help="max allowable error", type=float)
@@ -218,8 +212,6 @@ def get_elevation(file_path):
 @click.option("--training_size", "-ts", help="training size", type=float)
 def main(
     data_path,
-    temps_path,
-    elevation_path,
     output_dir,
     resolution,
     max_allowable_error,
@@ -227,6 +219,7 @@ def main(
     training_size,
 ):
     pd.options.mode.chained_assignment = None
+    np.random.seed(42)
 
     print("Loading Data...")
     data = load_tag_tracks(data_path)
@@ -235,10 +228,6 @@ def main(
         "max_allowable_error": max_allowable_error,
         "min_allowable_distance": min_allowable_distance,
     }
-
-    print("Pulling Enrichment...")
-    get_surface_temps(temps_path)
-    get_elevation(elevation_path)
 
     print("Creating Pairs...")
     pairs = create_pairs(data, context)

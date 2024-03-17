@@ -13,21 +13,26 @@ class RunMovementChoiceBuilder(object):
     CHOICE_STATE = ["mean_heading"]
     COLUMNS = ["h3_index", "temp", "elevation", "heading", "mean_heading", "remain"]
 
+    def __init__(self, enrichment):
+        self.neighbors = enrichment["neighbors"]
+        self.surface_temps = enrichment["surface_temps"]
+        self.elevation = enrichment["elevation"]
+
     def __call__(self, state, choice_state):
         h3_index = state["h3_index"]
 
-        if h3_index not in utils.NEIGHBORS:
-            utils.find_neighbors(h3_index)
-        neighbors = utils.NEIGHBORS.get(h3_index)
+        if h3_index not in self.neighbors:
+            utils.find_neighbors(h3_index, self.neighbors)
+        neighbors = self.neighbors.get(h3_index)
 
         choices = pd.DataFrame(neighbors, columns=["h3_index"])
 
         # might be good to put some assertions around here
         choices["month"] = state["month"]
         choices = choices.merge(
-            utils.SURFACE_TEMPS_ENRICHMENT, on=["h3_index", "month"], how="inner"
+            self.surface_temps, on=["h3_index", "month"], how="inner"
         )
-        choices = choices.merge(utils.ELEVATION_ENRICHMENT, on="h3_index", how="inner")
+        choices = choices.merge(self.elevation, on="h3_index", how="inner")
         del choices["month"]
 
         choices["mean_heading"] = choice_state["mean_heading"]
@@ -42,7 +47,7 @@ class RunMovementChoiceBuilder(object):
 
 
 class RunMovementLeaf(DecisionTree):
-    BUILDERS = [RunMovementChoiceBuilder()]
+    BUILDERS = [RunMovementChoiceBuilder]
     FEATURE_COLUMNS = ["temp", "elevation", "heading", "mean_heading", "remain"]
     BRANCHES = {}
     PARAM_GRID = {"n_estimators": [10, 20, 50, 100], "min_samples_leaf": [50, 100, 200]}
@@ -52,8 +57,8 @@ class RunMovementLeaf(DecisionTree):
     def get_identifier(choice):
         pass
 
-    @classmethod
-    def update_branch(cls, choice, choice_state):
+    @staticmethod
+    def update_branch(choice, choice_state):
         choice_state["heading"] = choice["heading"]
         choice_state["h3_index"] = choice["h3_index"]
 
@@ -63,7 +68,7 @@ class RunMovementLeaf(DecisionTree):
         return choices
 
 
-def train_run_movement_model(training_data, testing_data):
+def train_run_movement_model(training_data, testing_data, enrichment):
     print("Training Run Movement Model...")
     start_time = time()
     run_states_train = []
@@ -99,22 +104,23 @@ def train_run_movement_model(training_data, testing_data):
                 run_choice_states_test.append(choice_state)
                 run_selections_test.append(selection)
 
-    RunMovementLeaf.train_model(
+    decision_tree = RunMovementLeaf(enrichment)
+    decision_tree.train_model(
         run_states_train, run_choice_states_train, run_selections_train
     )
     print(
         "Train:",
-        RunMovementLeaf.test_model(
+        decision_tree.test_model(
             run_states_train, run_choice_states_train, run_selections_train
         ),
     )
     print(
         "Test:",
-        RunMovementLeaf.test_model(
+        decision_tree.test_model(
             run_states_test, run_choice_states_test, run_selections_test
         ),
     )
 
     end_time = time()
     print("Time:", round(end_time - start_time, 1), "seconds")
-    return RunMovementLeaf.export_models(recurse=False)
+    return decision_tree.export_models(recurse=False)
