@@ -42,12 +42,12 @@ stages:
       size: 2048
     - path: ../../../mirrorverse/chinook/tree/drift_movement.py
       hash: md5
-      md5: 4a201cfef1268f513bbb1a0b9d74615f
-      size: 4652
+      md5: 617989f8f1dffdeabe60f84969b25d2c
+      size: 4680
     - path: ../../../mirrorverse/tree.py
       hash: md5
-      md5: e1b4286c06bf6c2bfa5cf19fcd00b540
-      size: 7006
+      md5: 483c1c01f2c292c4c039f2e04a4c66a3
+      size: 7213
     - path: ../data/bathymetry.csv
       hash: md5
       md5: cc85b68bea7980f10cb066f2002a5d14
@@ -71,8 +71,8 @@ stages:
     outs:
     - path: DriftMovementLeaf.pkl
       hash: md5
-      md5: 290762f2f11d21d963074d9c092bedd3
-      size: 3238583
+      md5: f9ef71408cf929207d649b91df22edf6
+      size: 1847771
   train_run_movement:
     cmd: chinook_train -n RunMovementLeaf -tr training_states.csv -te testing_states.csv
       -t ../data/surface_temps.csv -e ../data/bathymetry.csv -m .
@@ -83,12 +83,12 @@ stages:
       size: 2048
     - path: ../../../mirrorverse/chinook/tree/run_movement.py
       hash: md5
-      md5: 7b3783e30b3b30108050a27eef1c08d7
-      size: 5082
+      md5: 0ba500a55c80df7ca023aca3ea93a61c
+      size: 5121
     - path: ../../../mirrorverse/tree.py
       hash: md5
-      md5: e1b4286c06bf6c2bfa5cf19fcd00b540
-      size: 7006
+      md5: 483c1c01f2c292c4c039f2e04a4c66a3
+      size: 7213
     - path: ../data/bathymetry.csv
       hash: md5
       md5: cc85b68bea7980f10cb066f2002a5d14
@@ -112,8 +112,8 @@ stages:
     outs:
     - path: RunMovementLeaf.pkl
       hash: md5
-      md5: b15f6cd962e78c80e2bdb81e03f3100d
-      size: 954027
+      md5: 381e674998ba590393180a2325a5da85
+      size: 1909699
   train_run_heading:
     cmd: chinook_train -n RunHeadingBranch -tr training_states.csv -te testing_states.csv
       -t ../data/surface_temps.csv -e ../data/bathymetry.csv -m .
@@ -124,12 +124,12 @@ stages:
       size: 2048
     - path: ../../../mirrorverse/chinook/tree/run_heading.py
       hash: md5
-      md5: 375ec97a06f7b522ae44bc9e4b98282c
-      size: 5897
+      md5: a8a9dc27ee705ccca82f6a2e58c7b05e
+      size: 5929
     - path: ../../../mirrorverse/tree.py
       hash: md5
-      md5: e1b4286c06bf6c2bfa5cf19fcd00b540
-      size: 7006
+      md5: 483c1c01f2c292c4c039f2e04a4c66a3
+      size: 7213
     - path: ../data/bathymetry.csv
       hash: md5
       md5: cc85b68bea7980f10cb066f2002a5d14
@@ -165,12 +165,12 @@ stages:
       size: 2048
     - path: ../../../mirrorverse/chinook/tree/run_or_drift.py
       hash: md5
-      md5: 3d60ee985e0368177a67ff6794e2294b
-      size: 4746
+      md5: 8cb27134a644e29aff496a30a5a9dfe3
+      size: 4774
     - path: ../../../mirrorverse/tree.py
       hash: md5
-      md5: e1b4286c06bf6c2bfa5cf19fcd00b540
-      size: 7006
+      md5: 483c1c01f2c292c4c039f2e04a4c66a3
+      size: 7213
     - path: ../data/bathymetry.csv
       hash: md5
       md5: cc85b68bea7980f10cb066f2002a5d14
@@ -201,16 +201,16 @@ stages:
     deps:
     - path: DriftMovementLeaf.pkl
       hash: md5
-      md5: 290762f2f11d21d963074d9c092bedd3
-      size: 3238583
+      md5: f9ef71408cf929207d649b91df22edf6
+      size: 1847771
     - path: RunHeadingBranch.pkl
       hash: md5
       md5: dbcf10a236ec6629dc63ef597d4d7abc
       size: 1039344
     - path: RunMovementLeaf.pkl
       hash: md5
-      md5: b15f6cd962e78c80e2bdb81e03f3100d
-      size: 954027
+      md5: 381e674998ba590393180a2325a5da85
+      size: 1909699
     - path: RunOrDriftBranch.pkl
       hash: md5
       md5: 09689b2d59a9fe73d9942e56f92dbebd
@@ -218,5 +218,5 @@ stages:
     outs:
     - path: models.pkl
       hash: md5
-      md5: 7c58ed6aea1bd1ad984ed9dad2ce8c79
-      size: 5575853
+      md5: fd2f77e57fd5c2839bfaa2291b01f3f0
+      size: 5143404

@@ -51,6 +51,7 @@ class RunOrDriftBranch(DecisionTree):
 
     BUILDERS = [RunOrDriftBuilder]
     FEATURE_COLUMNS = ["was_drifting", "steps_in_state", "drift"]
+    OUTCOMES = ["drifting"]
     BRANCHES = {
         "run": RunHeadingBranch,
         "drift": DriftMovementLeaf,

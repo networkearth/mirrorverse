@@ -22,6 +22,9 @@ class DecisionTree:
         be called based on the choice made
     - FEATURE_COLUMNS: list of columns that will be used
         by the model to predict the utility of choices
+    - OUTCOMES: a list of keys that will be added
+        to the choice_state to track the outcome of the
+        choice made
     - PARAM_GRID: dictionary of hyperparameters to be
         searched over in the grid search
     - CV: KFold object to use in the grid search
@@ -82,6 +85,8 @@ class DecisionTree:
         choice = choices.iloc[np.random.choice(choices.index, p=probs)]
 
         self.update_branch(choice, choice_state)
+        for outcome in self.OUTCOMES:
+            assert outcome in choice_state
 
         identifier = self.get_identifier(choice)
         if self.branches.get(identifier) is not None:

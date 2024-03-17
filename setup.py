@@ -15,6 +15,7 @@ setup(
         "dvc==3.48.4",
         "click==8.1.7",
         "tqdm==4.66.1",
+        "graphviz==0.20.1",
     ],
     entry_points={
         "console_scripts": [
@@ -22,6 +23,7 @@ setup(
             "chinook_simulate=mirrorverse.chinook.simulate:main",
             "chinook_states=mirrorverse.chinook.states:main",
             "mirrorverse_bundle_models=mirrorverse.utils:bundle_models",
+            "mirrorverse_graph_decision_tree=mirrorverse.graph:main",
         ]
     },
 )

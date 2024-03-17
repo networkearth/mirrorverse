@@ -63,6 +63,7 @@ class LinearGridDecisionTree(DecisionTree):
     ]
     BRANCHES = {}
     FEATURE_COLUMNS = ["x", "y"]
+    OUTCOMES = ["x", "y"]
     PARAM_GRID = {"n_estimators": [10, 20, 50], "min_samples_leaf": [1, 2, 5, 10]}
     CV = KFold(n_splits=3, shuffle=True, random_state=42)
 
@@ -191,6 +192,7 @@ class StepSizeDecisionTree(DecisionTree):
     BUILDERS = [StepSizeChoiceBuilder]
     BRANCHES = {"step_size": LinearGridDecisionTree}
     FEATURE_COLUMNS = ["step_size"]
+    OUTCOMES = ["step_size"]
     PARAM_GRID = {"n_estimators": [10, 20, 50], "min_samples_leaf": [1, 2, 5, 10]}
     CV = KFold(n_splits=3, shuffle=True, random_state=42)
 

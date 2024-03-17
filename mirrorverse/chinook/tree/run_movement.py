@@ -64,6 +64,7 @@ class RunMovementLeaf(DecisionTree):
 
     BUILDERS = [RunMovementChoiceBuilder]
     FEATURE_COLUMNS = ["temp", "elevation", "heading", "mean_heading", "remain"]
+    OUTCOMES = ["h3_index", "heading"]
     BRANCHES = {}
     PARAM_GRID = {"n_estimators": [10, 20, 50, 100], "min_samples_leaf": [50, 100, 200]}
     CV = KFold(n_splits=5, shuffle=True, random_state=42)
