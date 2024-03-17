@@ -56,6 +56,7 @@ class DriftMovementLeaf(DecisionTree):
 
     BUILDERS = [DriftMovementChoiceBuilder]
     FEATURE_COLUMNS = ["temp", "elevation", "remain"]
+    OUTCOMES = ["h3_index"]
     BRANCHES = {}
     PARAM_GRID = {"n_estimators": [10, 20, 50, 100], "min_samples_leaf": [50, 100, 200]}
     CV = KFold(n_splits=5, shuffle=True, random_state=42)

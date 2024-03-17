@@ -1,0 +1,49 @@
+digraph RunOrDriftBranch {
+	RunOrDriftBranch [label=<
+        <FONT>RunOrDriftBranch</FONT>
+        <BR/>
+        <FONT POINT-SIZE="10">States: ['drifting', 'steps_in_state']</FONT>
+        <BR/>
+        <FONT POINT-SIZE="10">Choice States: []</FONT>
+        <BR/>
+        <FONT POINT-SIZE="10">Features: ['drift', 'steps_in_state', 'was_drifting']</FONT>
+        <BR/>
+        <FONT POINT-SIZE="10"><B>Outcomes:</B> ['drifting']</FONT>
+        > shape=box]
+	RunHeadingBranch [label=<
+        <FONT>RunHeadingBranch</FONT>
+        <BR/>
+        <FONT POINT-SIZE="10">States: ['drifting', 'h3_index', 'mean_heading', 'month']</FONT>
+        <BR/>
+        <FONT POINT-SIZE="10">Choice States: []</FONT>
+        <BR/>
+        <FONT POINT-SIZE="10">Features: ['elevation', 'last_mean_heading', 'mean_heading', 'temp', 'was_drifting']</FONT>
+        <BR/>
+        <FONT POINT-SIZE="10"><B>Outcomes:</B> ['mean_heading']</FONT>
+        > shape=box]
+	RunMovementLeaf [label=<
+        <FONT>RunMovementLeaf</FONT>
+        <BR/>
+        <FONT POINT-SIZE="10">States: ['h3_index', 'month']</FONT>
+        <BR/>
+        <FONT POINT-SIZE="10">Choice States: ['mean_heading']</FONT>
+        <BR/>
+        <FONT POINT-SIZE="10">Features: ['elevation', 'heading', 'mean_heading', 'remain', 'temp']</FONT>
+        <BR/>
+        <FONT POINT-SIZE="10"><B>Outcomes:</B> ['h3_index', 'heading']</FONT>
+        > shape=box]
+	RunHeadingBranch -> RunMovementLeaf
+	RunOrDriftBranch -> RunHeadingBranch [label=run]
+	DriftMovementLeaf [label=<
+        <FONT>DriftMovementLeaf</FONT>
+        <BR/>
+        <FONT POINT-SIZE="10">States: ['h3_index', 'month']</FONT>
+        <BR/>
+        <FONT POINT-SIZE="10">Choice States: []</FONT>
+        <BR/>
+        <FONT POINT-SIZE="10">Features: ['elevation', 'remain', 'temp']</FONT>
+        <BR/>
+        <FONT POINT-SIZE="10"><B>Outcomes:</B> ['h3_index']</FONT>
+        > shape=box]
+	RunOrDriftBranch -> DriftMovementLeaf [label=drift]
+}
