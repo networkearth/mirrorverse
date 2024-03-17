@@ -24,3 +24,9 @@ jobs:
     - name: Run unittests
       run: |
         pytest
+    - name: Install pylint
+      run: |
+        pip install pylint
+    - name: Run pylint
+      run: |
+        pylint mirrorverse

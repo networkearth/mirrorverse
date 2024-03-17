@@ -1,14 +1,25 @@
+"""
+Run Movement Model for Chinook salmon
+"""
+
+# pylint: disable=duplicate-code
+
+from time import time
+
 import pandas as pd
 import h3
 from tqdm import tqdm
-from time import time
 from sklearn.model_selection import KFold
 
 from mirrorverse.tree import DecisionTree
 from mirrorverse.chinook import utils
 
 
-class RunMovementChoiceBuilder(object):
+class RunMovementChoiceBuilder:
+    """
+    Run Movement choice builder for Chinook salmon.
+    """
+
     STATE = ["h3_index", "month"]
     CHOICE_STATE = ["mean_heading"]
     COLUMNS = ["h3_index", "temp", "elevation", "heading", "mean_heading", "remain"]
@@ -47,28 +58,58 @@ class RunMovementChoiceBuilder(object):
 
 
 class RunMovementLeaf(DecisionTree):
+    """
+    Run Movement model for Chinook salmon.
+    """
+
     BUILDERS = [RunMovementChoiceBuilder]
     FEATURE_COLUMNS = ["temp", "elevation", "heading", "mean_heading", "remain"]
     BRANCHES = {}
     PARAM_GRID = {"n_estimators": [10, 20, 50, 100], "min_samples_leaf": [50, 100, 200]}
     CV = KFold(n_splits=5, shuffle=True, random_state=42)
 
+    # pylint: disable=unused-argument
     @staticmethod
     def get_identifier(choice):
-        pass
+        """
+        Input:
+        - choice (dict): the choice made
+
+        Does nothing
+        """
 
     @staticmethod
     def update_branch(choice, choice_state):
+        """
+        Input:
+        - choice (dict): the choice made
+        - choice_state (dict): the state of the choice
+            thus far
+
+        Updates the choice with a "heading" and
+        "h3_index" key.
+        """
         choice_state["heading"] = choice["heading"]
         choice_state["h3_index"] = choice["h3_index"]
 
     @staticmethod
     def _stitch_selection(choices, selection):
+        """
+        Input:
+        - choices (pd.DataFrame): the choices possible
+        - selection (dict): the selection made
+
+        Returns the choices with a "selected" column.
+        Selection is based on the h3_index.
+        """
         choices["selected"] = choices["h3_index"] == selection
         return choices
 
 
 def train_run_movement_model(training_data, testing_data, enrichment):
+    """
+    Trains a Run Movement model.
+    """
     print("Training Run Movement Model...")
     start_time = time()
     run_states_train = []

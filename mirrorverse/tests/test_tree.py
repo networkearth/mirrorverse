@@ -1,14 +1,20 @@
+"""
+Tree Tests
+"""
+
+# pylint: disable=missing-function-docstring, missing-class-docstring, attribute-defined-outside-init, invalid-name
+
+from functools import partial
+
 import pandas as pd
 import numpy as np
 from pandas.testing import assert_frame_equal
-from functools import partial
-
 from sklearn.model_selection import KFold
 
 from mirrorverse.tree import DecisionTree
 
 
-class StepSizeChoiceBuilder(object):
+class StepSizeChoiceBuilder:
     STATE = ["min_step_size", "max_step_size"]
     CHOICE_STATE = []
     COLUMNS = ["step_size"]
@@ -28,7 +34,7 @@ class StepSizeChoiceBuilder(object):
         return df
 
 
-class LinearGridChoiceBuilder(object):
+class LinearGridChoiceBuilder:
     STATE = ["min", "max"]
     CHOICE_STATE = ["step_size"]
     COLUMNS = ["x", "y"]
@@ -91,6 +97,7 @@ def test_get_choices():
     assert_frame_equal(choices, expected_choices)
 
 
+# pylint: disable=protected-access
 def test_build_model_data():
     states = [{"min": 0, "max": 1}, {"min": 0, "max": 1}]
     choice_states = [{"step_size": 0.1}, {"step_size": 0.1}]
@@ -150,11 +157,12 @@ def test_test_model():
     assert explained_variance["explained_variance"] == 1.0
 
 
-class MockModel(object):
+class MockModel:
 
     def __init__(self, to_return):
         self.to_return = np.array(to_return)
 
+    # pylint: disable=unused-argument
     def predict(self, X):
         return self.to_return
 
@@ -186,6 +194,7 @@ class StepSizeDecisionTree(DecisionTree):
     PARAM_GRID = {"n_estimators": [10, 20, 50], "min_samples_leaf": [1, 2, 5, 10]}
     CV = KFold(n_splits=3, shuffle=True, random_state=42)
 
+    # pylint: disable=unused-argument
     @staticmethod
     def get_identifier(choice):
         return "step_size"
@@ -236,7 +245,7 @@ def test_import_models():
     assert decision_tree.branches["step_size"].model == "m2"
 
 
-def test_import_models():
+def test_import_models_no_recursion():
     decision_tree = StepSizeDecisionTree(0)
     decision_tree.branches["step_size"].model = None
     models = {"StepSizeDecisionTree": "m1", "LinearGridDecisionTree": "m2"}

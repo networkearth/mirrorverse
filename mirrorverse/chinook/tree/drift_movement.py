@@ -1,13 +1,24 @@
+"""
+Drift Movement Model for Chinook salmon
+"""
+
+# pylint: disable=duplicate-code
+
+from time import time
+
 import pandas as pd
 from tqdm import tqdm
-from time import time
 from sklearn.model_selection import KFold
 
 from mirrorverse.tree import DecisionTree
 from mirrorverse.chinook import utils
 
 
-class DriftMovementChoiceBuilder(object):
+class DriftMovementChoiceBuilder:
+    """
+    Drift Movement choice builder for Chinook salmon.
+    """
+
     STATE = ["h3_index", "month"]
     CHOICE_STATE = []
     COLUMNS = ["h3_index", "temp", "elevation", "remain"]
@@ -39,27 +50,56 @@ class DriftMovementChoiceBuilder(object):
 
 
 class DriftMovementLeaf(DecisionTree):
+    """
+    Drift Movement model for Chinook salmon.
+    """
+
     BUILDERS = [DriftMovementChoiceBuilder]
     FEATURE_COLUMNS = ["temp", "elevation", "remain"]
     BRANCHES = {}
     PARAM_GRID = {"n_estimators": [10, 20, 50, 100], "min_samples_leaf": [50, 100, 200]}
     CV = KFold(n_splits=5, shuffle=True, random_state=42)
 
+    # pylint: disable=unused-argument
     @staticmethod
     def get_identifier(choice):
-        pass
+        """
+        Input:
+        - choice (dict): the choice made
+
+        Does nothing
+        """
 
     @staticmethod
     def update_branch(choice, choice_state):
+        """
+        Input:
+        - choice (dict): the choice made
+        - choice_state (dict): the state of the choice
+            thus far
+
+        Updates the choice with a "h3_index" key.
+        """
         choice_state["h3_index"] = choice["h3_index"]
 
     @staticmethod
     def _stitch_selection(choices, selection):
+        """
+        Input:
+        - choices (pd.DataFrame): the choices possible
+        - selection (dict): the selection made
+
+        Returns the choices with a "selected" column.
+        Selection is based on the h3_index.
+        """
         choices["selected"] = choices["h3_index"] == selection
         return choices
 
 
 def train_drift_movement_model(training_data, testing_data, enrichment):
+    """
+    Trains a Drift Movement model.
+    """
     print("Training Drift Movement Model...")
     start_time = time()
     drift_states_train = []

@@ -1,15 +1,22 @@
+"""
+Code for building Chinook salmon states
+from tag data.
+"""
+
 import click
 import pandas as pd
 import numpy as np
 import h3
 import geopy.distance
-
 from tqdm import tqdm
 
 from mirrorverse.chinook.utils import get_heading, diff_heading
 
 
 def load_tag_tracks(file_path):
+    """
+    Loads the tag tracks
+    """
     data = pd.read_csv(file_path).rename(
         {
             "Ptt": "ptt",
@@ -26,6 +33,13 @@ def load_tag_tracks(file_path):
 
 
 def create_pairs(data, context):
+    """
+    Input:
+    - data (pd.DataFrame): the tag tracks
+    - context (dict): context including "resolution"
+
+    Returns a DataFrame of pairs of tag tracks
+    """
     resolution = context["resolution"]
     pairs = []
     for ptt in tqdm(data["ptt"].unique()):
@@ -63,10 +77,28 @@ def create_pairs(data, context):
 
 
 def squared_error_func(headings, heading):
+    """
+    Input:
+    - headings (list): the headings
+    - heading (float): the heading
+
+    Returns the squared error between the headings
+    and the heading.
+    """
     return np.mean([diff_heading(h, heading) ** 2 for h in headings])
 
 
 def find_average_heading(headings, error_func=squared_error_func, tolerance=0.001):
+    """
+    Input:
+    - headings (list): the headings
+    - error_func (function): the error function
+    - tolerance (float): the tolerance in radians
+
+    Uses a binary search to find the heading that
+    minimizes the error function against the input
+    headings.
+    """
     step_size = np.pi / 8
     direction = 1
     proposed_heading = 0
@@ -86,6 +118,16 @@ def find_average_heading(headings, error_func=squared_error_func, tolerance=0.00
 
 
 def group_headings(df, context):
+    """
+    Input:
+    - df (pd.DataFrame): the pairs
+    - context (dict): context including "max_allowable_error"
+        and "min_allowable_distance"
+
+    Returns the pairs with the headings grouped into
+    drifts and runs. The pairs are also assigned a
+    "group" and "momentum" column.
+    """
     max_allowable_error, min_allowable_distance = (
         context["max_allowable_error"],
         context["min_allowable_distance"],
@@ -106,7 +148,7 @@ def group_headings(df, context):
         else:
             headings = group["headings"] + [row["heading"]]
             mean_heading = find_average_heading(headings)
-            max_error = max([diff_heading(h, mean_heading) for h in headings])
+            max_error = max(diff_heading(h, mean_heading) for h in headings)
             if max_error <= max_allowable_error:
                 group["rows"].append(row)
                 group["headings"] = headings
@@ -173,10 +215,19 @@ def group_headings(df, context):
 
 
 def spatial_key_to_index(spatial_key):
+    """
+    Input:
+    - spatial_key (int): the spatial key
+
+    Returns the index of the spatial key.
+    """
     return hex(spatial_key)[2:]
 
 
 def get_surface_temps(file_path):
+    """
+    Loads surface temperature data.
+    """
     df = pd.read_csv(file_path).rename(
         {
             "H3 Key 4": "h3_index",
@@ -193,6 +244,9 @@ def get_surface_temps(file_path):
 
 
 def get_elevation(file_path):
+    """
+    Loads elevation data.
+    """
     df = pd.read_csv(file_path)
     df["h3_index"] = df["h3_index"].astype(np.int64).astype(str)
     df["h3_index"] = df.apply(
@@ -218,6 +272,9 @@ def main(
     min_allowable_distance,
     training_size,
 ):
+    """
+    Main function for building states.
+    """
     pd.options.mode.chained_assignment = None
     np.random.seed(42)
 

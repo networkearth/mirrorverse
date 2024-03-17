@@ -1,7 +1,13 @@
+"""
+Code for simulating using the Chinook decision tree.
+"""
+
+# pylint: disable=duplicate-code
+
+import pickle
+
 import click
 import pandas as pd
-import numpy as np
-import pickle
 import h3
 from tqdm import tqdm
 
@@ -14,6 +20,16 @@ from mirrorverse.chinook.states import (
 
 
 def simulate(ptt, h3_index, date, steps, decision_tree):
+    """
+    Input:
+    - ptt: ptt
+    - h3_index (str): starting h3 index
+    - date (pd.Timestamp): starting date
+    - steps (int): number of steps to simulate
+    - decision_tree (DecisionTree): decision tree to use
+
+    Returns a DataFrame with the simulated data.
+    """
     state = {
         "drifting": True,
         "steps_in_state": 1,
@@ -21,11 +37,11 @@ def simulate(ptt, h3_index, date, steps, decision_tree):
         "month": date.month,
         "mean_heading": 0,
     }
-    row = {k: v for k, v in state.items()}
+    row = dict(state)
     row["ptt"] = ptt
     row["date"] = date
     rows = [row]
-    for i in range(steps):
+    for _ in range(steps):
         choice_state = {}
         decision_tree.choose(state, choice_state)
 
@@ -45,7 +61,7 @@ def simulate(ptt, h3_index, date, steps, decision_tree):
             ),
         }
 
-        row = {k: v for k, v in new_state.items()}
+        row = dict(new_state)
         row["ptt"] = ptt
         row["date"] = date
         rows.append(row)
@@ -62,7 +78,9 @@ def simulate(ptt, h3_index, date, steps, decision_tree):
 @click.option("--model_path", "-m", help="path to model file", required=True)
 @click.option("--simulation_path", "-si", help="path to simulation file", required=True)
 def main(data_path, temps_path, elevation_path, model_path, simulation_path):
-
+    """
+    Main function for simulating using the Chinook decision tree.
+    """
     pd.options.mode.chained_assignment = None
 
     print("Pulling Enrichment...")
