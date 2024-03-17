@@ -16,6 +16,7 @@ setup(
         "click==8.1.7",
         "tqdm==4.66.1",
         "graphviz==0.20.1",
+        "Sphinx==7.2.6",
     ],
     entry_points={
         "console_scripts": [
