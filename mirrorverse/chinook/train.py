@@ -22,8 +22,11 @@ def main(node, train_data_path, test_data_path, temps_path, elevation_path, mode
     pd.options.mode.chained_assignment = None
 
     print("Pulling Enrichment...")
-    get_surface_temps(temps_path)
-    get_elevation(elevation_path)
+    enrichment = {
+        "elevation": get_elevation(elevation_path),
+        "surface_temps": get_surface_temps(temps_path),
+        "neighbors": {},
+    }
 
     print("Loading Data...")
     training_data = pd.read_csv(train_data_path)
@@ -34,7 +37,7 @@ def main(node, train_data_path, test_data_path, temps_path, elevation_path, mode
         "RunMovementLeaf": train_run_movement_model,
         "RunHeadingBranch": train_run_heading_model,
         "RunOrDriftBranch": train_run_or_drift_model,
-    }[node](training_data, testing_data)
+    }[node](training_data, testing_data, enrichment)
 
     print("Exporting Models...")
     model_export_path = f"{model_dir}/{node}.pkl"

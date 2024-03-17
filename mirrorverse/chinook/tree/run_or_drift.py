@@ -14,6 +14,9 @@ class RunOrDriftBuilder(object):
     CHOICE_STATE = []
     COLUMNS = ["was_drifting", "steps_in_state", "drift"]
 
+    def __init__(self, enrichment):
+        pass
+
     def __call__(self, state, choice_state):
         return pd.DataFrame(
             [
@@ -32,7 +35,7 @@ class RunOrDriftBuilder(object):
 
 
 class RunOrDriftBranch(DecisionTree):
-    BUILDERS = [RunOrDriftBuilder()]
+    BUILDERS = [RunOrDriftBuilder]
     FEATURE_COLUMNS = ["was_drifting", "steps_in_state", "drift"]
     BRANCHES = {
         "run": RunHeadingBranch,
@@ -45,8 +48,8 @@ class RunOrDriftBranch(DecisionTree):
     def get_identifier(choice):
         return "drift" if choice["drift"] else "run"
 
-    @classmethod
-    def update_branch(cls, choice, choice_state):
+    @staticmethod
+    def update_branch(choice, choice_state):
         choice_state["drifting"] = choice["drift"]
 
     @staticmethod
@@ -58,7 +61,7 @@ class RunOrDriftBranch(DecisionTree):
         return choices
 
 
-def train_run_or_drift_model(training_data, testing_data):
+def train_run_or_drift_model(training_data, testing_data, enrichment):
     print("Training Run or Drift Model...")
     start_time = time()
     run_or_drift_states_train = []
@@ -90,14 +93,15 @@ def train_run_or_drift_model(training_data, testing_data):
                 run_or_drift_choice_states_test.append(choice_state)
                 run_or_drift_selections_test.append(selection)
 
-    RunOrDriftBranch.train_model(
+    decision_tree = RunOrDriftBranch(enrichment)
+    decision_tree.train_model(
         run_or_drift_states_train,
         run_or_drift_choice_states_train,
         run_or_drift_selections_train,
     )
     print(
         "Train:",
-        RunOrDriftBranch.test_model(
+        decision_tree.test_model(
             run_or_drift_states_train,
             run_or_drift_choice_states_train,
             run_or_drift_selections_train,
@@ -105,7 +109,7 @@ def train_run_or_drift_model(training_data, testing_data):
     )
     print(
         "Test:",
-        RunOrDriftBranch.test_model(
+        decision_tree.test_model(
             run_or_drift_states_test,
             run_or_drift_choice_states_test,
             run_or_drift_selections_test,
@@ -114,4 +118,4 @@ def train_run_or_drift_model(training_data, testing_data):
 
     end_time = time()
     print("Time:", round(end_time - start_time, 1), "seconds")
-    return RunOrDriftBranch.export_models(recurse=False)
+    return decision_tree.export_models(recurse=False)

@@ -1,16 +1,12 @@
 stages:
   states:
-    cmd: chinook_states -d ${data} -t ${temps} -e ${elevation} -o .  -r ${resolution} -mae ${max_allowable_error} -mad ${min_allowable_distance} -ts ${training_size}
+    cmd: chinook_states -d ${data} -o .  -r ${resolution} -mae ${max_allowable_error} -mad ${min_allowable_distance} -ts ${training_size}
     deps:
       - ../../../mirrorverse/chinook/states.py
       - ../../../mirrorverse/chinook/utils.py
       - ${data}
-      - ${temps}
-      - ${elevation}
     params: 
       - data
-      - temps
-      - elevation
       - resolution
       - max_allowable_error
       - min_allowable_distance

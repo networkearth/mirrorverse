@@ -12,21 +12,26 @@ class DriftMovementChoiceBuilder(object):
     CHOICE_STATE = []
     COLUMNS = ["h3_index", "temp", "elevation", "remain"]
 
+    def __init__(self, enrichment):
+        self.neighbors = enrichment["neighbors"]
+        self.surface_temps = enrichment["surface_temps"]
+        self.elevation = enrichment["elevation"]
+
     def __call__(self, state, choice_state):
         h3_index = state["h3_index"]
 
-        if h3_index not in utils.NEIGHBORS:
-            utils.find_neighbors(h3_index)
-        neighbors = utils.NEIGHBORS.get(h3_index)
+        if h3_index not in self.neighbors:
+            utils.find_neighbors(h3_index, self.neighbors)
+        neighbors = self.neighbors.get(h3_index)
 
         choices = pd.DataFrame(neighbors, columns=["h3_index"])
 
         # might be good to put some assertions around here
         choices["month"] = state["month"]
         choices = choices.merge(
-            utils.SURFACE_TEMPS_ENRICHMENT, on=["h3_index", "month"], how="inner"
+            self.surface_temps, on=["h3_index", "month"], how="inner"
         )
-        choices = choices.merge(utils.ELEVATION_ENRICHMENT, on="h3_index", how="inner")
+        choices = choices.merge(self.elevation, on="h3_index", how="inner")
         del choices["month"]
 
         choices["remain"] = choices["h3_index"] == h3_index
@@ -34,7 +39,7 @@ class DriftMovementChoiceBuilder(object):
 
 
 class DriftMovementLeaf(DecisionTree):
-    BUILDERS = [DriftMovementChoiceBuilder()]
+    BUILDERS = [DriftMovementChoiceBuilder]
     FEATURE_COLUMNS = ["temp", "elevation", "remain"]
     BRANCHES = {}
     PARAM_GRID = {"n_estimators": [10, 20, 50, 100], "min_samples_leaf": [50, 100, 200]}
@@ -44,8 +49,8 @@ class DriftMovementLeaf(DecisionTree):
     def get_identifier(choice):
         pass
 
-    @classmethod
-    def update_branch(cls, choice, choice_state):
+    @staticmethod
+    def update_branch(choice, choice_state):
         choice_state["h3_index"] = choice["h3_index"]
 
     @staticmethod
@@ -54,7 +59,7 @@ class DriftMovementLeaf(DecisionTree):
         return choices
 
 
-def train_drift_movement_model(training_data, testing_data):
+def train_drift_movement_model(training_data, testing_data, enrichment):
     print("Training Drift Movement Model...")
     start_time = time()
     drift_states_train = []
@@ -88,22 +93,23 @@ def train_drift_movement_model(training_data, testing_data):
                 drift_choice_states_test.append(choice_state)
                 drift_selections_test.append(selection)
 
-    DriftMovementLeaf.train_model(
+    decision_tree = DriftMovementLeaf(enrichment)
+    decision_tree.train_model(
         drift_states_train, drift_choice_states_train, drift_selections_train
     )
     print(
         "Train",
-        DriftMovementLeaf.test_model(
+        decision_tree.test_model(
             drift_states_train, drift_choice_states_train, drift_selections_train
         ),
     )
     print(
         "Test:",
-        DriftMovementLeaf.test_model(
+        decision_tree.test_model(
             drift_states_test, drift_choice_states_test, drift_selections_test
         ),
     )
 
     end_time = time()
     print("Time:", round(end_time - start_time, 1), "seconds")
-    return DriftMovementLeaf.export_models(recurse=False)
+    return decision_tree.export_models(recurse=False)

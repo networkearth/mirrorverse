@@ -13,7 +13,7 @@ from mirrorverse.chinook.states import (
 )
 
 
-def simulate(ptt, h3_index, date, steps):
+def simulate(ptt, h3_index, date, steps, decision_tree):
     state = {
         "drifting": True,
         "steps_in_state": 1,
@@ -27,7 +27,7 @@ def simulate(ptt, h3_index, date, steps):
     rows = [row]
     for i in range(steps):
         choice_state = {}
-        RunOrDriftBranch.choose(state, choice_state)
+        decision_tree.choose(state, choice_state)
 
         date = date + pd.Timedelta(days=1)
         steps_in_state = (
@@ -66,16 +66,21 @@ def main(data_path, temps_path, elevation_path, model_path, simulation_path):
     pd.options.mode.chained_assignment = None
 
     print("Pulling Enrichment...")
-    get_surface_temps(temps_path)
-    get_elevation(elevation_path)
+    enrichment = {
+        "elevation": get_elevation(elevation_path),
+        "surface_temps": get_surface_temps(temps_path),
+        "neighbors": {},
+    }
 
     print("Loading Data...")
     data = pd.read_csv(data_path)
 
+    decision_tree = RunOrDriftBranch(enrichment)
+
     print("Loading Models...")
     with open(model_path, "rb") as fh:
         models = pickle.load(fh)
-    RunOrDriftBranch.import_models(models)
+    decision_tree.import_models(models)
 
     print("Simulating...")
     dfs = []
@@ -84,7 +89,7 @@ def main(data_path, temps_path, elevation_path, model_path, simulation_path):
         df = data[data["ptt"] == ptt].sort_values("date", ascending=True).iloc[0]
         steps = data[data["ptt"] == ptt].shape[0]
         date = pd.to_datetime(df["date"])
-        df = simulate(df["ptt"], df["h3_index"], date, steps)
+        df = simulate(df["ptt"], df["h3_index"], date, steps, decision_tree)
         dfs.append(df)
 
     df = pd.concat(dfs)

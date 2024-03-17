@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from pandas.testing import assert_frame_equal
+from functools import partial
 
 from sklearn.model_selection import KFold
 
@@ -12,7 +13,10 @@ class StepSizeChoiceBuilder(object):
     CHOICE_STATE = []
     COLUMNS = ["step_size"]
 
-    def __call__(self, state, choice_state, enrichment):
+    def __init__(self, enrichment):
+        pass
+
+    def __call__(self, state, choice_state):
         step_size = 0.1
         df = pd.DataFrame(
             {
@@ -29,15 +33,16 @@ class LinearGridChoiceBuilder(object):
     CHOICE_STATE = ["step_size"]
     COLUMNS = ["x", "y"]
 
-    def __init__(self, y):
+    def __init__(self, y, enrichment):
         self.y = y
+        self.enrichment = enrichment
 
-    def __call__(self, state, choice_state, enrichment):
+    def __call__(self, state, choice_state):
         df = pd.DataFrame(
             {
                 "x": (
                     np.arange(state["min"], state["max"], choice_state["step_size"])
-                    + enrichment
+                    + self.enrichment
                 )
             }
         )
@@ -47,8 +52,8 @@ class LinearGridChoiceBuilder(object):
 
 class LinearGridDecisionTree(DecisionTree):
     BUILDERS = [
-        LinearGridChoiceBuilder(1),
-        LinearGridChoiceBuilder(2),
+        partial(LinearGridChoiceBuilder, 1),
+        partial(LinearGridChoiceBuilder, 2),
     ]
     BRANCHES = {}
     FEATURE_COLUMNS = ["x", "y"]
@@ -66,8 +71,8 @@ class LinearGridDecisionTree(DecisionTree):
         choices["selected"] = (choices["x"] == x) & (choices["y"] == y)
         return choices
 
-    @classmethod
-    def update_branch(cls, choice, choice_state):
+    @staticmethod
+    def update_branch(choice, choice_state):
         choice_state["x"] = choice["x"]
         choice_state["y"] = choice["y"]
 
@@ -76,7 +81,7 @@ def test_get_choices():
     state = {"min": 0, "max": 1}
     choice_state = {"step_size": 0.1}
     enrichment = 0
-    choices = LinearGridDecisionTree.get_choices(state, choice_state, enrichment)
+    choices = LinearGridDecisionTree(enrichment).get_choices(state, choice_state)
     expected_choices = pd.concat(
         [
             pd.DataFrame({"x": np.arange(0, 1, 0.1), "y": 1}),
@@ -91,8 +96,8 @@ def test_build_model_data():
     choice_states = [{"step_size": 0.1}, {"step_size": 0.1}]
     selections = [{"x": 0, "y": 1}, {"x": 0, "y": 2}]
     enrichment = 0
-    data = LinearGridDecisionTree._build_model_data(
-        states, choice_states, selections, enrichment
+    data = LinearGridDecisionTree(enrichment)._build_model_data(
+        states, choice_states, selections
     )
     expected_data_1 = pd.concat(
         [
@@ -124,10 +129,10 @@ def test_train_model():
     choice_states = [{"step_size": 0.1}] * N
     selections = [{"x": 0, "y": 2}] * N
     enrichment = 0
-    decision_tree = LinearGridDecisionTree
-    decision_tree.train_model(states, choice_states, selections, enrichment)
-    X = decision_tree.get_choices({"min": 0, "max": 1}, {"step_size": 0.1}, enrichment)
-    y = decision_tree.MODEL.predict(X[decision_tree.FEATURE_COLUMNS])
+    decision_tree = LinearGridDecisionTree(enrichment)
+    decision_tree.train_model(states, choice_states, selections)
+    X = decision_tree.get_choices({"min": 0, "max": 1}, {"step_size": 0.1})
+    y = decision_tree.model.predict(X[decision_tree.FEATURE_COLUMNS])
     X["utility"] = y
     X["expected_utility"] = (X["x"] == 0) & (X["y"] == 2)
     assert (X["utility"] == X["expected_utility"]).all()
@@ -139,11 +144,9 @@ def test_test_model():
     choice_states = [{"step_size": 0.1}] * N
     selections = [{"x": 0, "y": 2}] * N
     enrichment = 0
-    decision_tree = LinearGridDecisionTree
-    decision_tree.train_model(states, choice_states, selections, enrichment)
-    explained_variance = decision_tree.test_model(
-        states, choice_states, selections, enrichment
-    )
+    decision_tree = LinearGridDecisionTree(enrichment)
+    decision_tree.train_model(states, choice_states, selections)
+    explained_variance = decision_tree.test_model(states, choice_states, selections)
     assert explained_variance["explained_variance"] == 1.0
 
 
@@ -160,9 +163,9 @@ def test_choose_w_leaf():
     state = {"min": 0, "max": 1}
     choice_state = {"step_size": 0.1}
     enrichment = 0
-    decision_tree = LinearGridDecisionTree
-    decision_tree.MODEL = MockModel([0] * 10 + [1] * 10)
-    decision_tree.choose(state, choice_state, enrichment)
+    decision_tree = LinearGridDecisionTree(enrichment)
+    decision_tree.model = MockModel([0] * 10 + [1] * 10)
+    decision_tree.choose(state, choice_state)
     assert choice_state["y"] == 2
 
 
@@ -171,13 +174,13 @@ def test_zeros_arent_a_problem():
     state = {"min": 0, "max": 1}
     choice_state = {"step_size": 0.1}
     enrichment = 0
-    decision_tree = LinearGridDecisionTree
-    decision_tree.MODEL = MockModel([0] * 20)
-    decision_tree.choose(state, choice_state, enrichment)
+    decision_tree = LinearGridDecisionTree(enrichment)
+    decision_tree.model = MockModel([0] * 20)
+    decision_tree.choose(state, choice_state)
 
 
 class StepSizeDecisionTree(DecisionTree):
-    BUILDERS = [StepSizeChoiceBuilder()]
+    BUILDERS = [StepSizeChoiceBuilder]
     BRANCHES = {"step_size": LinearGridDecisionTree}
     FEATURE_COLUMNS = ["step_size"]
     PARAM_GRID = {"n_estimators": [10, 20, 50], "min_samples_leaf": [1, 2, 5, 10]}
@@ -192,8 +195,8 @@ class StepSizeDecisionTree(DecisionTree):
         choices["selected"] = choices["step_size"] == selection["step_size"]
         return choices
 
-    @classmethod
-    def update_branch(cls, choice, choice_state):
+    @staticmethod
+    def update_branch(choice, choice_state):
         choice_state["step_size"] = choice["step_size"]
 
 
@@ -201,49 +204,49 @@ def test_choose_w_branch():
     state = {"min_step_size": 0, "max_step_size": 1, "min": 0, "max": 1}
     choice_state = {}
     enrichment = 0
-    decision_tree = StepSizeDecisionTree
-    decision_tree.MODEL = MockModel([0, 1, 0, 0, 0, 0, 0, 0, 0, 0])
-    decision_tree.BRANCHES["step_size"].MODEL = MockModel([0] * 10 + [1] * 10)
-    decision_tree.choose(state, choice_state, enrichment)
+    decision_tree = StepSizeDecisionTree(enrichment)
+    decision_tree.model = MockModel([0, 1, 0, 0, 0, 0, 0, 0, 0, 0])
+    decision_tree.branches["step_size"].model = MockModel([0] * 10 + [1] * 10)
+    decision_tree.choose(state, choice_state)
     assert choice_state["step_size"] == 0.1
     assert choice_state["y"] == 2
 
 
 def test_export_models():
-    decision_tree = StepSizeDecisionTree
-    decision_tree.MODEL = "m1"
-    decision_tree.BRANCHES["step_size"].MODEL = "m2"
+    decision_tree = StepSizeDecisionTree(0)
+    decision_tree.model = "m1"
+    decision_tree.branches["step_size"].model = "m2"
     exported = decision_tree.export_models()
     assert exported == {"StepSizeDecisionTree": "m1", "LinearGridDecisionTree": "m2"}
 
 
 def test_export_models_no_recursion():
-    decision_tree = StepSizeDecisionTree
-    decision_tree.MODEL = "m1"
-    decision_tree.BRANCHES["step_size"].MODEL = "m2"
+    decision_tree = StepSizeDecisionTree(0)
+    decision_tree.model = "m1"
+    decision_tree.branches["step_size"].model = "m2"
     exported = decision_tree.export_models(recurse=False)
     assert exported == {"StepSizeDecisionTree": "m1"}
 
 
 def test_import_models():
-    decision_tree = StepSizeDecisionTree
+    decision_tree = StepSizeDecisionTree(0)
     models = {"StepSizeDecisionTree": "m1", "LinearGridDecisionTree": "m2"}
     decision_tree.import_models(models)
-    assert decision_tree.MODEL == "m1"
-    assert decision_tree.BRANCHES["step_size"].MODEL == "m2"
+    assert decision_tree.model == "m1"
+    assert decision_tree.branches["step_size"].model == "m2"
 
 
 def test_import_models():
-    decision_tree = StepSizeDecisionTree
-    decision_tree.BRANCHES["step_size"].MODEL = None
+    decision_tree = StepSizeDecisionTree(0)
+    decision_tree.branches["step_size"].model = None
     models = {"StepSizeDecisionTree": "m1", "LinearGridDecisionTree": "m2"}
     decision_tree.import_models(models, recurse=False)
-    assert decision_tree.MODEL == "m1"
-    assert decision_tree.BRANCHES["step_size"].MODEL is None
+    assert decision_tree.model == "m1"
+    assert decision_tree.branches["step_size"].model is None
 
 
 def test_what_state():
-    decision_tree = StepSizeDecisionTree
+    decision_tree = StepSizeDecisionTree(0)
     state, choice_state = decision_tree.what_state()
     assert state == {"min_step_size", "max_step_size", "min", "max"}
     assert choice_state == {"step_size"}
