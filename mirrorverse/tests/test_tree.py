@@ -12,12 +12,12 @@ class StepSizeChoiceBuilder(object):
     CHOICE_STATE = []
     COLUMNS = ["step_size"]
 
-    def __call__(self, state, choice_state):
+    def __call__(self, state, choice_state, enrichment):
         step_size = 0.1
         df = pd.DataFrame(
             {
-                "step_size": np.arange(
-                    state["min_step_size"], state["max_step_size"], step_size
+                "step_size": (
+                    np.arange(state["min_step_size"], state["max_step_size"], step_size)
                 )
             }
         )
@@ -32,9 +32,14 @@ class LinearGridChoiceBuilder(object):
     def __init__(self, y):
         self.y = y
 
-    def __call__(self, state, choice_state):
+    def __call__(self, state, choice_state, enrichment):
         df = pd.DataFrame(
-            {"x": np.arange(state["min"], state["max"], choice_state["step_size"])}
+            {
+                "x": (
+                    np.arange(state["min"], state["max"], choice_state["step_size"])
+                    + enrichment
+                )
+            }
         )
         df["y"] = self.y
         return df
@@ -70,7 +75,8 @@ class LinearGridDecisionTree(DecisionTree):
 def test_get_choices():
     state = {"min": 0, "max": 1}
     choice_state = {"step_size": 0.1}
-    choices = LinearGridDecisionTree.get_choices(state, choice_state)
+    enrichment = 0
+    choices = LinearGridDecisionTree.get_choices(state, choice_state, enrichment)
     expected_choices = pd.concat(
         [
             pd.DataFrame({"x": np.arange(0, 1, 0.1), "y": 1}),
@@ -84,7 +90,10 @@ def test_build_model_data():
     states = [{"min": 0, "max": 1}, {"min": 0, "max": 1}]
     choice_states = [{"step_size": 0.1}, {"step_size": 0.1}]
     selections = [{"x": 0, "y": 1}, {"x": 0, "y": 2}]
-    data = LinearGridDecisionTree._build_model_data(states, choice_states, selections)
+    enrichment = 0
+    data = LinearGridDecisionTree._build_model_data(
+        states, choice_states, selections, enrichment
+    )
     expected_data_1 = pd.concat(
         [
             pd.DataFrame({"x": np.arange(0, 1, 0.1), "y": 1}),
@@ -114,9 +123,10 @@ def test_train_model():
     states = [{"min": 0, "max": 1}] * N
     choice_states = [{"step_size": 0.1}] * N
     selections = [{"x": 0, "y": 2}] * N
+    enrichment = 0
     decision_tree = LinearGridDecisionTree
-    decision_tree.train_model(states, choice_states, selections)
-    X = decision_tree.get_choices({"min": 0, "max": 1}, {"step_size": 0.1})
+    decision_tree.train_model(states, choice_states, selections, enrichment)
+    X = decision_tree.get_choices({"min": 0, "max": 1}, {"step_size": 0.1}, enrichment)
     y = decision_tree.MODEL.predict(X[decision_tree.FEATURE_COLUMNS])
     X["utility"] = y
     X["expected_utility"] = (X["x"] == 0) & (X["y"] == 2)
@@ -128,9 +138,12 @@ def test_test_model():
     states = [{"min": 0, "max": 1}] * N
     choice_states = [{"step_size": 0.1}] * N
     selections = [{"x": 0, "y": 2}] * N
+    enrichment = 0
     decision_tree = LinearGridDecisionTree
-    decision_tree.train_model(states, choice_states, selections)
-    explained_variance = decision_tree.test_model(states, choice_states, selections)
+    decision_tree.train_model(states, choice_states, selections, enrichment)
+    explained_variance = decision_tree.test_model(
+        states, choice_states, selections, enrichment
+    )
     assert explained_variance["explained_variance"] == 1.0
 
 
@@ -146,9 +159,10 @@ class MockModel(object):
 def test_choose_w_leaf():
     state = {"min": 0, "max": 1}
     choice_state = {"step_size": 0.1}
+    enrichment = 0
     decision_tree = LinearGridDecisionTree
     decision_tree.MODEL = MockModel([0] * 10 + [1] * 10)
-    decision_tree.choose(state, choice_state)
+    decision_tree.choose(state, choice_state, enrichment)
     assert choice_state["y"] == 2
 
 
@@ -156,9 +170,10 @@ def test_zeros_arent_a_problem():
     # if this test doesn't throw an error, then we're good
     state = {"min": 0, "max": 1}
     choice_state = {"step_size": 0.1}
+    enrichment = 0
     decision_tree = LinearGridDecisionTree
     decision_tree.MODEL = MockModel([0] * 20)
-    decision_tree.choose(state, choice_state)
+    decision_tree.choose(state, choice_state, enrichment)
 
 
 class StepSizeDecisionTree(DecisionTree):
@@ -185,10 +200,11 @@ class StepSizeDecisionTree(DecisionTree):
 def test_choose_w_branch():
     state = {"min_step_size": 0, "max_step_size": 1, "min": 0, "max": 1}
     choice_state = {}
+    enrichment = 0
     decision_tree = StepSizeDecisionTree
     decision_tree.MODEL = MockModel([0, 1, 0, 0, 0, 0, 0, 0, 0, 0])
     decision_tree.BRANCHES["step_size"].MODEL = MockModel([0] * 10 + [1] * 10)
-    decision_tree.choose(state, choice_state)
+    decision_tree.choose(state, choice_state, enrichment)
     assert choice_state["step_size"] == 0.1
     assert choice_state["y"] == 2
 

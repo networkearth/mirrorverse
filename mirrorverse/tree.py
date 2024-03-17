@@ -43,15 +43,15 @@ class DecisionTree(object):
     """
 
     @classmethod
-    def get_choices(cls, state, choice_state):
+    def get_choices(cls, state, choice_state, enrichment=None):
         choices = []
         for builder in cls.BUILDERS:
-            choices += [builder(state, choice_state)]
+            choices += [builder(state, choice_state, enrichment)]
         return pd.concat(choices).reset_index(drop=True)
 
     @classmethod
-    def choose(cls, state, choice_state):
-        choices = cls.get_choices(state, choice_state)
+    def choose(cls, state, choice_state, enrichment=None):
+        choices = cls.get_choices(state, choice_state, enrichment)
         utility = cls.MODEL.predict(choices[cls.FEATURE_COLUMNS])
         if utility.sum() == 0:
             probs = np.ones(len(utility)) / len(utility)
@@ -63,28 +63,28 @@ class DecisionTree(object):
 
         identifier = cls.get_identifier(choice)
         if cls.BRANCHES.get(identifier) is not None:
-            cls.BRANCHES[identifier].choose(state, choice_state)
+            cls.BRANCHES[identifier].choose(state, choice_state, enrichment)
 
     @classmethod
-    def _build_model_data(cls, states, choice_states, selections):
+    def _build_model_data(cls, states, choice_states, selections, enrichment=None):
         dataframes = []
         for state, choice_state, selection in zip(states, choice_states, selections):
-            choices = cls.get_choices(state, choice_state)
+            choices = cls.get_choices(state, choice_state, enrichment)
             dataframe = cls._stitch_selection(choices, selection)
             dataframes.append(dataframe)
         return pd.concat(dataframes)
 
     @classmethod
-    def test_model(cls, states, choice_states, selections):
-        data = cls._build_model_data(states, choice_states, selections)
+    def test_model(cls, states, choice_states, selections, enrichment=None):
+        data = cls._build_model_data(states, choice_states, selections, enrichment)
         X = data[cls.FEATURE_COLUMNS]
         y = data["selected"]
         y_pred = cls.MODEL.predict(X)
         return {"explained_variance": round(explained_variance_score(y, y_pred), 3)}
 
     @classmethod
-    def train_model(cls, states, choice_states, selections):
-        data = cls._build_model_data(states, choice_states, selections)
+    def train_model(cls, states, choice_states, selections, enrichment=None):
+        data = cls._build_model_data(states, choice_states, selections, enrichment)
         X = data[cls.FEATURE_COLUMNS]
         y = data["selected"]
         grid_search = GridSearchCV(
@@ -97,7 +97,7 @@ class DecisionTree(object):
         cls.MODEL = grid_search.best_estimator_
 
     @classmethod
-    def what_state(cls):
+    def what_state(cls, **kwargs):
         state = set()
         choice_state = set()
         for builder in cls.BUILDERS:
@@ -110,7 +110,7 @@ class DecisionTree(object):
         return state, choice_state
 
     @classmethod
-    def export_models(cls, recurse=True):
+    def export_models(cls, recurse=True, **kwargs):
         models = {cls.__name__: cls.MODEL}
         if recurse:
             for branch in cls.BRANCHES.values():
@@ -118,7 +118,7 @@ class DecisionTree(object):
         return models
 
     @classmethod
-    def import_models(cls, models, recurse=True):
+    def import_models(cls, models, recurse=True, **kwargs):
         cls.MODEL = models[cls.__name__]
         if recurse:
             for branch in cls.BRANCHES.values():
