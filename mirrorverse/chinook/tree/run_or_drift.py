@@ -1,15 +1,25 @@
-import pandas as pd
-from tqdm import tqdm
+"""
+RunOrDrift model for Chinook salmon.
+"""
+
+# pylint: disable=duplicate-code
+
 from time import time
+
+from tqdm import tqdm
+import pandas as pd
 from sklearn.model_selection import KFold
 
 from mirrorverse.tree import DecisionTree
-
 from mirrorverse.chinook.tree.run_heading import RunHeadingBranch
 from mirrorverse.chinook.tree.drift_movement import DriftMovementLeaf
 
 
-class RunOrDriftBuilder(object):
+class RunOrDriftBuilder:
+    """
+    Run or Drift choice builder for Chinook salmon.
+    """
+
     STATE = ["drifting", "steps_in_state"]
     CHOICE_STATE = []
     COLUMNS = ["was_drifting", "steps_in_state", "drift"]
@@ -35,6 +45,10 @@ class RunOrDriftBuilder(object):
 
 
 class RunOrDriftBranch(DecisionTree):
+    """
+    Run or Drift model for Chinook salmon.
+    """
+
     BUILDERS = [RunOrDriftBuilder]
     FEATURE_COLUMNS = ["was_drifting", "steps_in_state", "drift"]
     BRANCHES = {
@@ -46,22 +60,46 @@ class RunOrDriftBranch(DecisionTree):
 
     @staticmethod
     def get_identifier(choice):
+        """
+        Input:
+        - choice (dict): the choice made
+
+        Returns either "drift" or "run" based on the choice.
+        """
         return "drift" if choice["drift"] else "run"
 
     @staticmethod
     def update_branch(choice, choice_state):
+        """
+        Input:
+        - choice (dict): the choice made
+        - choice_state (dict): the state of the choice
+            thus far
+
+        Updates the choice with a "drifting" key.
+        """
         choice_state["drifting"] = choice["drift"]
 
     @staticmethod
     def _stitch_selection(choices, selection):
+        """
+        Input:
+        - choices (pd.DataFrame): the choices possible
+        - selection (dict): the selection made
+
+        Returns the choices with a "selected" column
+        """
         if selection == "run":
-            choices["selected"] = choices["drift"] == False
+            choices["selected"] = ~choices["drift"]
         else:
-            choices["selected"] = choices["drift"] == True
+            choices["selected"] = choices["drift"]
         return choices
 
 
 def train_run_or_drift_model(training_data, testing_data, enrichment):
+    """
+    Trains a Run or Drift model.
+    """
     print("Training Run or Drift Model...")
     start_time = time()
     run_or_drift_states_train = []

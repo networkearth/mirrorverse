@@ -10,7 +10,8 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import explained_variance_score
 
 
-class DecisionTree(object):
+# pylint: disable=no-member, invalid-name, attribute-defined-outside-init
+class DecisionTree:
     """
     This class is not complete and requires subclassing
     that implements the following:
@@ -48,12 +49,30 @@ class DecisionTree(object):
         }
 
     def get_choices(self, state, choice_state):
+        """
+        Input:
+        - state (dict): dictionary of state variables
+        - choice_state (dict): dictionary of choice state variables
+
+        Builds the full set of choices given the
+        state, choice_state, and builders
+        """
         choices = []
         for builder in self.builders:
             choices += [builder(state, choice_state)]
         return pd.concat(choices).reset_index(drop=True)
 
     def choose(self, state, choice_state):
+        """
+        Input:
+        - state (dict): dictionary of state variables
+        - choice_state (dict): dictionary of choice state variables
+
+        Uses the state and choice_state to make a choice
+        and update the choice_state if necessary.
+
+        Also calls the next branch if applicable.
+        """
         choices = self.get_choices(state, choice_state)
         utility = self.model.predict(choices[self.FEATURE_COLUMNS])
         if utility.sum() == 0:
@@ -69,6 +88,16 @@ class DecisionTree(object):
             self.branches[identifier].choose(state, choice_state)
 
     def _build_model_data(self, states, choice_states, selections):
+        """
+        Input:
+        - states (list): list of dictionaries of state variables
+        - choice_states (list): list of dictionaries of choice state variables
+        - selections (list): list of selection designations
+
+        Uses the builders to build choices and then
+        stitches the selections to the choices to build
+        the model data
+        """
         dataframes = []
         for state, choice_state, selection in zip(states, choice_states, selections):
             choices = self.get_choices(state, choice_state)
@@ -77,6 +106,15 @@ class DecisionTree(object):
         return pd.concat(dataframes)
 
     def test_model(self, states, choice_states, selections):
+        """
+        Input:
+        - states (list): list of dictionaries of state variables
+        - choice_states (list): list of dictionaries of choice state variables
+        - selections (list): list of selection designations
+
+        Evaluate the model on the given states, choice_states,
+        and selections. Returns a dictionary of metrics.
+        """
         data = self._build_model_data(states, choice_states, selections)
         X = data[self.FEATURE_COLUMNS]
         y = data["selected"]
@@ -84,6 +122,15 @@ class DecisionTree(object):
         return {"explained_variance": round(explained_variance_score(y, y_pred), 3)}
 
     def train_model(self, states, choice_states, selections):
+        """
+        Input:
+        - states (list): list of dictionaries of state variables
+        - choice_states (list): list of dictionaries of choice state variables
+        - selections (list): list of selection designations
+
+        Train a model on the given states, choice_states,
+        and selections.
+        """
         data = self._build_model_data(states, choice_states, selections)
         X = data[self.FEATURE_COLUMNS]
         y = data["selected"]
@@ -97,6 +144,10 @@ class DecisionTree(object):
         self.model = grid_search.best_estimator_
 
     def what_state(self):
+        """
+        Returns the state and choice state variables
+        that are used by this tree and its branches
+        """
         state = set()
         choice_state = set()
         for builder in self.builders:
@@ -109,6 +160,14 @@ class DecisionTree(object):
         return state, choice_state
 
     def export_models(self, recurse=True):
+        """
+        Input:
+        - recurse (boolean): defaults to True
+
+        Returns a dictionary of the models used by this
+        tree and its branches if recurse is True. Otherwise
+        just returns the model used by this tree.
+        """
         models = {self.__class__.__name__: self.model}
         if recurse:
             for branch in self.branches.values():
@@ -116,6 +175,15 @@ class DecisionTree(object):
         return models
 
     def import_models(self, models, recurse=True):
+        """
+        Input:
+        - models (dict): dictionary of models
+        - recurse (boolean): defaults to True
+
+        Imports the models into this tree and its branches
+        if recurse is True. Otherwise just imports the model
+        into this tree.
+        """
         self.model = models[self.__class__.__name__]
         if recurse:
             for branch in self.branches.values():

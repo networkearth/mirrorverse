@@ -1,11 +1,20 @@
-import click
+"""
+Mirrorverse utility functions
+"""
+
 import os
 import pickle
+import click
 
 
 @click.command()
 @click.option("--model_dir", "-m", help="Directory to save models to")
 def bundle_models(model_dir):
+    """
+    Input:
+    - model_dir (str): directory to pull models from and
+        save models to
+    """
     model_export = {}
     for file_path in os.listdir(model_dir):
         if file_path.endswith(".pkl"):

@@ -1,17 +1,27 @@
+"""
+Run Heading Model for Chinook salmon
+"""
+
+# pylint: disable=duplicate-code
+
+from time import time
+
 import pandas as pd
 import numpy as np
 import h3
 from tqdm import tqdm
-from time import time
 from sklearn.model_selection import KFold
 
 from mirrorverse.tree import DecisionTree
 from mirrorverse.chinook import utils
-
 from mirrorverse.chinook.tree.run_movement import RunMovementLeaf
 
 
-class RunHeadingChoiceBuilder(object):
+class RunHeadingChoiceBuilder:
+    """
+    Run Heading choice builder for Chinook salmon.
+    """
+
     STATE = ["h3_index", "month", "mean_heading", "drifting"]
     CHOICE_STATE = []
     COLUMNS = ["mean_heading", "elevation", "temp", "last_mean_heading", "was_drifting"]
@@ -54,6 +64,10 @@ class RunHeadingChoiceBuilder(object):
 
 
 class RunHeadingBranch(DecisionTree):
+    """
+    Run Heading model for Chinook salmon.
+    """
+
     BUILDERS = [RunHeadingChoiceBuilder]
     FEATURE_COLUMNS = [
         "mean_heading",
@@ -66,16 +80,40 @@ class RunHeadingBranch(DecisionTree):
     PARAM_GRID = {"n_estimators": [10, 20, 50, 100], "min_samples_leaf": [50, 100, 200]}
     CV = KFold(n_splits=5, shuffle=True, random_state=42)
 
+    # pylint: disable=unused-argument
     @staticmethod
     def get_identifier(choice):
+        """
+        Input:
+        - choice (dict): the choice made
+
+        Always returns "run_movement".
+        """
         return "run_movement"
 
     @staticmethod
     def update_branch(choice, choice_state):
+        """
+        Input:
+        - choice (dict): the choice made
+        - choice_state (dict): the state of the choice
+            thus far
+
+        Updates the choice with a "mean_heading" key.
+        """
         choice_state["mean_heading"] = choice["mean_heading"]
 
     @staticmethod
     def _stitch_selection(choices, selection):
+        """
+        Input:
+        - choices (pd.DataFrame): the choices possible
+        - selection (dict): the selection made
+
+        Returns the choices with a "selected" column.
+        Selected is given to be the closest mean_heading
+        to the given selection.
+        """
         df = choices[["mean_heading"]]
         df["selected_heading"] = selection
         df["diff"] = df.apply(
@@ -91,6 +129,9 @@ class RunHeadingBranch(DecisionTree):
 
 
 def train_run_heading_model(training_data, testing_data, enrichment):
+    """
+    Trains a Run Heading model.
+    """
     print("Training Run Heading Model...")
     start_time = time()
     heading_states_train = []
