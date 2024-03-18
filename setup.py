@@ -17,6 +17,7 @@ setup(
         "tqdm==4.66.1",
         "graphviz==0.20.1",
         "Sphinx==7.2.6",
+        "SQLAlchemy==2.0.28",
     ],
     entry_points={
         "console_scripts": [
