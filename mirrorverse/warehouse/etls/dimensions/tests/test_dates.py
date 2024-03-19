@@ -2,6 +2,8 @@
 Test Dates ETLs
 """
 
+# pylint: disable=missing-function-docstring
+
 from datetime import datetime
 
 import pandas as pd

@@ -17,7 +17,7 @@ def format_cwt_recoveries_data(raw_data):
     # some basic renaming
     dataframe = raw_data.rename(
         {
-            "recovery_location": "cwt_location_key",
+            "recovery_location_name": "cwt_recovery_location_key",
             "species": "species_key",
             "reporting_agency": "cwt_reporting_agency_key",
             "number_cwt_estimated": "number_estimated",
@@ -35,5 +35,5 @@ def format_cwt_recoveries_data(raw_data):
     dataframe = add_date_keys_to_facts(dataframe, "recovery_date", "recovery_date_key")
 
     # filter down to the columns in our table
-    columns = [column.key for column in CWTRetrievals.__table__.columns]
+    columns = [column.key for column in CWTRecoveries.__table__.columns]
     return dataframe[columns]
