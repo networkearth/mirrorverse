@@ -1,0 +1,13 @@
+stages:
+  states:
+    cmd: mirrorverse_format -t cwt_recoveries -f ${raw_data} -o cwt_recoveries.csv
+    deps:
+      - ../../../mirrorverse/warehouse/commands.py
+      - ../../../mirrorverse/warehouse/etls/facts/cwt.py
+      - ../../../mirrorverse/warehouse/etls/dimensions/dates.py
+      - ../../../mirrorverse/warehouse/models/facts.py
+      - ${raw_data}
+    params: 
+      - raw_data
+    outs:
+      - cwt_recoveries.csv

@@ -1,0 +1,33 @@
+schema: '2.0'
+stages:
+  states:
+    cmd: mirrorverse_format -t cwt_recoveries -f data/recoveries.csv -o cwt_recoveries.csv
+    deps:
+    - path: ../../../mirrorverse/warehouse/commands.py
+      hash: md5
+      md5: 64608b6b024ca5e7015a46b5aedec529
+      size: 730
+    - path: ../../../mirrorverse/warehouse/etls/dimensions/dates.py
+      hash: md5
+      md5: cc9b5c4e8a9e9f597113ca114b40ac81
+      size: 586
+    - path: ../../../mirrorverse/warehouse/etls/facts/cwt.py
+      hash: md5
+      md5: a259cee542e9ea93eb12acdf5bb02fec
+      size: 1229
+    - path: ../../../mirrorverse/warehouse/models/facts.py
+      hash: md5
+      md5: 2240bb51cb875ab765d6b751a2ce877c
+      size: 1138
+    - path: data/recoveries.csv
+      hash: md5
+      md5: 2af13d58a8ac53a11e6930bef580806a
+      size: 5928464
+    params:
+      params.yaml:
+        raw_data: data/recoveries.csv
+    outs:
+    - path: cwt_recoveries.csv
+      hash: md5
+      md5: 582e2be9b4417ea5b259c3da8a066e60
+      size: 1822188

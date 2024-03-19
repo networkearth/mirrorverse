@@ -26,6 +26,7 @@ setup(
             "chinook_states=mirrorverse.chinook.states:main",
             "mirrorverse_bundle_models=mirrorverse.utils:bundle_models",
             "mirrorverse_graph_decision_tree=mirrorverse.graph:main",
+            "mirrorverse_format=mirrorverse.warehouse.commands:format_data",
         ]
     },
 )
