@@ -2,6 +2,8 @@
 Queries to Help Identify Missing Dimensions
 """
 
+# pylint: disable=duplicate-code
+
 import json
 
 import click
@@ -99,3 +101,29 @@ def enumerate_missing_dimensions(table, output_path):
     # pylint: disable=unspecified-encoding
     with open(output_path, "w") as fh:
         json.dump(missing_keys, fh, indent=2, sort_keys=True)
+
+
+# pylint: disable=unspecified-encoding
+@click.command()
+@click.option("--table", "-t", help="The table to upload to", required=True)
+@click.option(
+    "--missing_dimensions_path",
+    "-m",
+    help="Path to the missing dimensions data",
+    required=True,
+)
+@click.option("--output_path", "-o", help="Path to the output data", required=True)
+def prep_cwt_query(table, missing_dimensions_path, output_path):
+    """
+    Prep the missing dimensions for the CWT recoveries fact table.
+    """
+    model = MODEL_KEY[table]
+    primary_key = get_primary_key(model)
+
+    with open(missing_dimensions_path, "r") as fh:
+        missing_dimensions = json.load(fh)
+
+    missing_keys = missing_dimensions[primary_key]
+    if table == "cwt_locations":
+        with open(output_path, "w") as fh:
+            fh.writelines([f"{key}\n" for key in missing_keys])

@@ -10,3 +10,4 @@ mirrorverse.egg-info/
 *.pkl
 *.csv
 *.db
+cwt_query.txt

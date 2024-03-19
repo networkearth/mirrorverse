@@ -4,7 +4,7 @@ Dimension Tables
 
 from datetime import date
 
-from sqlalchemy import String
+from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
 from mirrorverse.warehouse.models import ModelBase
@@ -37,6 +37,7 @@ class CWTLocations(ModelBase):
     cwt_location_name: Mapped[str]
     lon: Mapped[float]
     lat: Mapped[float]
+    h3_level_4_key: Mapped[int] = mapped_column(ForeignKey("h3_level_4.h3_level_4_key"))
 
 
 class CWTReportingAgencies(ModelBase):
@@ -71,3 +72,17 @@ class Species(ModelBase):
     species_key: Mapped[int] = mapped_column(primary_key=True)
 
     species_name: Mapped[str]
+
+
+class H3Level4(ModelBase):
+    """
+    H3 Level 4 Dimension Table
+    """
+
+    __tablename__ = "h3_level_4"
+
+    h3_level_4_key: Mapped[int] = mapped_column(primary_key=True)
+
+    lon: Mapped[float]
+    lat: Mapped[float]
+    geometry: Mapped[str]

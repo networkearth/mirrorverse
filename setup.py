@@ -29,6 +29,7 @@ setup(
             "mirrorverse_upload_facts=mirrorverse.warehouse.commands:upload_facts",
             "mirrorverse_enumerate_missing_dimensions=mirrorverse.warehouse.etls.missing_dimensions:enumerate_missing_dimensions",
             "mirrorverse_upload_dimensions=mirrorverse.warehouse.commands:upload_dimensions",
+            "mirrorverse_prep_cwt_query=mirrorverse.warehouse.etls.missing_dimensions:prep_cwt_query",
         ]
     },
 )

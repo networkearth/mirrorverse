@@ -17,7 +17,7 @@ def format_cwt_recoveries_data(raw_data):
     # some basic renaming
     dataframe = raw_data.rename(
         {
-            "recovery_location_name": "cwt_recovery_location_key",
+            "recovery_location_code": "cwt_recovery_location_key",
             "species": "species_key",
             "reporting_agency": "cwt_reporting_agency_key",
             "number_cwt_estimated": "number_estimated",
