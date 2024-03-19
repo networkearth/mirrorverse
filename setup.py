@@ -18,6 +18,8 @@ setup(
         "graphviz==0.20.1",
         "Sphinx==7.2.6",
         "SQLAlchemy==2.0.28",
+        "Fiona==1.8.22",
+        "geopandas==0.14.3",
     ],
     entry_points={
         "console_scripts": [

@@ -89,6 +89,4 @@ class H3Level4(ModelBase):
 
     h3_level_4_key: Mapped[int] = mapped_column(primary_key=True)
 
-    lon: Mapped[float]
-    lat: Mapped[float]
     geometry: Mapped[str]

@@ -24,3 +24,4 @@ RUN apt-get -y install graphviz
 RUN apt-get -y install pandoc texlive-xetex texlive-fonts-recommended texlive-plain-generic
 
 RUN apt-get -y install locales-all
+RUN apt-get -y install libgdal-dev

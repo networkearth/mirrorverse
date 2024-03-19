@@ -3,6 +3,10 @@ Spatial Dimension ETLs
 """
 
 import h3
+import geopandas as gpd
+from shapely.geometry import Polygon
+
+from mirrorverse.warehouse.models import H3Level4
 
 
 def spatial_index_to_key(spatial_index):
@@ -44,3 +48,48 @@ def add_spatial_keys_to_facts(dataframe, lon_col="lon", lat_col="lat"):
             axis=1,
         )
     return dataframe
+
+
+def get_coords(h3_index):
+    """
+    Input:
+    - h3_index (str): A hex string representing the h3 index
+
+    Returns a tuple of (lon, lat) coordinates for the h3 cell
+        geometry
+    """
+    coords = h3.h3_to_geo_boundary(h3_index, True)
+    coords = tuple((lon, lat) for lon, lat in coords)
+    lons = [lon for lon, _ in coords]
+    if max(lons) - min(lons) > 180:
+        coords = tuple(
+            (lon if lon > 0 else 180 + (180 + lon), lat) for lon, lat in coords
+        )
+    return coords
+
+
+def build_spatial(resolution, missing_keys):
+    """
+    Input:
+    - resolution (int): The resolution of the h3 index
+    - missing_keys (list): A list of missing h3 keys
+
+    Returns a pd.DataFrame
+    """
+
+    dataframe = gpd.GeoDataFrame(
+        [
+            {
+                f"h3_level_{resolution}_key": key,
+                "geometry": Polygon(get_coords(spatial_key_to_index(key))),
+            }
+            for key in missing_keys
+        ]
+    ).to_wkt()
+
+    model = {
+        4: H3Level4,
+    }[resolution]
+
+    columns = [column.key for column in model.__table__.columns]
+    return dataframe[columns]

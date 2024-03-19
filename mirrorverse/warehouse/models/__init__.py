@@ -13,5 +13,12 @@ class ModelBase(DeclarativeBase):
     """
 
 
-from .dimensions import Dates, CWTLocations, CWTReportingAgencies, CWTTags, Species
+from .dimensions import (
+    Dates,
+    CWTLocations,
+    CWTReportingAgencies,
+    CWTTags,
+    Species,
+    H3Level4,
+)
 from .facts import CWTRecoveries

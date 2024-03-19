@@ -1,0 +1,38 @@
+schema: '2.0'
+stages:
+  build:
+    cmd: mirrorverse_upload_dimensions -t h3_level_4 -m ../cwt_locations/missing_dimensions.json
+      -o status.json
+    deps:
+    - path: ../../../mirrorverse/warehouse/commands.py
+      hash: md5
+      md5: a460cdbb2107569db6c1a94b4153a49e
+      size: 2657
+    - path: ../../../mirrorverse/warehouse/etls/dimensions/spatial.py
+      hash: md5
+      md5: b151c495f1107cb1f8b304474d6dc927
+      size: 2408
+    - path: ../../../mirrorverse/warehouse/etls/missing_dimensions.py
+      hash: md5
+      md5: eac6c00ab1ae4da5367a809f07d7f76f
+      size: 4344
+    - path: ../../../mirrorverse/warehouse/models/dimensions.py
+      hash: md5
+      md5: 798753b105ca2972ae9cd3b47e2117c6
+      size: 1856
+    - path: ../../../mirrorverse/warehouse/utils.py
+      hash: md5
+      md5: f9578063005fd9df9f998a720cbc9339
+      size: 811
+    - path: ../cwt_locations/missing_dimensions.json
+      hash: md5
+      md5: 73605c75647c472af7a7371fcd4f6cd9
+      size: 4252
+    params:
+      params.yaml:
+        missing_dimensions: ../cwt_locations/missing_dimensions.json
+    outs:
+    - path: status.json
+      hash: md5
+      md5: 12a140edd84573256efcf683cc515591
+      size: 54
