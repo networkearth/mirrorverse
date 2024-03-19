@@ -19,9 +19,7 @@ from mirrorverse.warehouse.models import (
     CWTRecoveries,
     Dates,
     CWTLocations,
-    CWTReportingAgencies,
     CWTTags,
-    Species,
 )
 from mirrorverse.warehouse.data.cwt import CWT_RETRIEVAL_DATA
 from mirrorverse.warehouse.utils import get_engine, upload_dataframe
@@ -35,18 +33,14 @@ def test_get_associated_dimensions():
     keys, models = get_associated_dimensions(CWTRecoveries)
     assert set(keys) == set(
         [
-            "species_key",
             "cwt_tag_key",
-            "cwt_reporting_agency_key",
             "recovery_date_key",
             "cwt_recovery_location_key",
         ]
     )
     assert set(models) == set(
         [
-            Species,
             CWTTags,
-            CWTReportingAgencies,
             Dates,
             CWTLocations,
         ]

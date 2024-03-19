@@ -41,18 +41,6 @@ class CWTLocations(ModelBase):
     h3_level_4_key: Mapped[int] = mapped_column(ForeignKey("h3_level_4.h3_level_4_key"))
 
 
-class CWTReportingAgencies(ModelBase):
-    """
-    CWT Reporting Agencies Dimension Table
-    """
-
-    __tablename__ = "cwt_reporting_agencies"
-
-    cwt_reporting_agency_key: Mapped[str] = mapped_column(String(10), primary_key=True)
-
-    cwt_reporting_agency_name: Mapped[str]
-
-
 class CWTTags(ModelBase):
     """
     CWT Tags Dimension Table
@@ -66,18 +54,6 @@ class CWTTags(ModelBase):
         ForeignKey("cwt_locations.cwt_location_key")
     )
     run: Mapped[Optional[int]]
-
-
-class Species(ModelBase):
-    """
-    Species Dimension Table
-    """
-
-    __tablename__ = "species"
-
-    species_key: Mapped[int] = mapped_column(primary_key=True)
-
-    species_name: Mapped[str]
 
 
 class H3Level4(ModelBase):
