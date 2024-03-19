@@ -20,6 +20,7 @@ setup(
         "SQLAlchemy==2.0.28",
         "Fiona==1.8.22",
         "geopandas==0.14.3",
+        "eralchemy2==1.3.8",
     ],
     entry_points={
         "console_scripts": [
@@ -32,6 +33,7 @@ setup(
             "mirrorverse_enumerate_missing_dimensions=mirrorverse.warehouse.etls.missing_dimensions:enumerate_missing_dimensions",
             "mirrorverse_upload_dimensions=mirrorverse.warehouse.commands:upload_dimensions",
             "mirrorverse_prep_cwt_query=mirrorverse.warehouse.etls.missing_dimensions:prep_cwt_query",
+            "mirrorverse_build_erd=mirrorverse.warehouse.commands:build_erd",
         ]
     },
 )

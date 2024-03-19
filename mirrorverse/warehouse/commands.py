@@ -8,6 +8,7 @@ from time import time
 import click
 import pandas as pd
 from sqlalchemy.orm import Session
+from eralchemy2 import render_er
 
 from mirrorverse.warehouse.etls.missing_dimensions import get_primary_key
 from mirrorverse.warehouse.models import ModelBase
@@ -87,3 +88,12 @@ def upload_dimensions(table, missing_dimensions_path, file_path, output_path):
     # pylint: disable=unspecified-encoding
     with open(output_path, "w") as fh:
         json.dump(status, fh)
+
+
+@click.command()
+@click.option("--output_path", "-o", help="Path to the output data", required=True)
+def build_erd(output_path):
+    """
+    Build the ERD for the warehouse.
+    """
+    render_er(ModelBase.metadata, output_path)
