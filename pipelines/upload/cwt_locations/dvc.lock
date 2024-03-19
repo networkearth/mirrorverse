@@ -1,0 +1,75 @@
+schema: '2.0'
+stages:
+  build:
+    cmd: mirrorverse_upload_dimensions -t cwt_locations -m ../cwt_recoveries/missing_dimensions.json
+      -f data/locations.csv -o status.json
+    deps:
+    - path: ../../../mirrorverse/warehouse/commands.py
+      hash: md5
+      md5: a460cdbb2107569db6c1a94b4153a49e
+      size: 2657
+    - path: ../../../mirrorverse/warehouse/etls/dimensions/cwt.py
+      hash: md5
+      md5: bb7cbb5610146b735701433fde8f53b3
+      size: 1736
+    - path: ../../../mirrorverse/warehouse/etls/dimensions/spatial.py
+      hash: md5
+      md5: b151c495f1107cb1f8b304474d6dc927
+      size: 2408
+    - path: ../../../mirrorverse/warehouse/etls/missing_dimensions.py
+      hash: md5
+      md5: eac6c00ab1ae4da5367a809f07d7f76f
+      size: 4344
+    - path: ../../../mirrorverse/warehouse/models/dimensions.py
+      hash: md5
+      md5: 798753b105ca2972ae9cd3b47e2117c6
+      size: 1856
+    - path: ../../../mirrorverse/warehouse/utils.py
+      hash: md5
+      md5: f9578063005fd9df9f998a720cbc9339
+      size: 811
+    - path: ../cwt_recoveries/missing_dimensions.json
+      hash: md5
+      md5: 6e38febdf8050bcc9db13c7cb50efa03
+      size: 28223
+    - path: data/locations.csv
+      hash: md5
+      md5: 38eb4aef0d6bc77bfed8644946589880
+      size: 101675
+    params:
+      params.yaml:
+        data: data/locations.csv
+        missing_dimensions: ../cwt_recoveries/missing_dimensions.json
+    outs:
+    - path: status.json
+      hash: md5
+      md5: b31d7af3f5b0d634f72c35dd92071486
+      size: 54
+  enumerate_missing_dimensions:
+    cmd: mirrorverse_enumerate_missing_dimensions -t cwt_locations -o missing_dimensions.json
+    deps:
+    - path: ../../../mirrorverse/warehouse/etls/missing_dimensions.py
+      hash: md5
+      md5: eac6c00ab1ae4da5367a809f07d7f76f
+      size: 4344
+    - path: ../../../mirrorverse/warehouse/models/dimensions.py
+      hash: md5
+      md5: 798753b105ca2972ae9cd3b47e2117c6
+      size: 1856
+    - path: ../../../mirrorverse/warehouse/models/facts.py
+      hash: md5
+      md5: 2240bb51cb875ab765d6b751a2ce877c
+      size: 1138
+    - path: ../../../mirrorverse/warehouse/utils.py
+      hash: md5
+      md5: f9578063005fd9df9f998a720cbc9339
+      size: 811
+    - path: status.json
+      hash: md5
+      md5: b31d7af3f5b0d634f72c35dd92071486
+      size: 54
+    outs:
+    - path: missing_dimensions.json
+      hash: md5
+      md5: 73605c75647c472af7a7371fcd4f6cd9
+      size: 4252

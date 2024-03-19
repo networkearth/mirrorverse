@@ -20,7 +20,8 @@ RUN pip install jupyterlab==4.0.7 \
                 pyan3==1.2.0 \
                 graphviz==0.20.1
 
-RUN apt-get -y install graphviz
+RUN apt-get -y install graphviz graphviz-dev
 RUN apt-get -y install pandoc texlive-xetex texlive-fonts-recommended texlive-plain-generic
 
 RUN apt-get -y install locales-all
+RUN apt-get -y install libgdal-dev
