@@ -23,7 +23,7 @@ from mirrorverse.warehouse.etls.facts.cwt import format_cwt_recoveries_data
 class TestCWTRetrievals(unittest.TestCase):
 
     def setUp(self):
-        engine = get_engine()
+        engine = get_engine(db_url="sqlite://")
         ModelBase.metadata.create_all(engine)
         self.session = Session(engine)
 
