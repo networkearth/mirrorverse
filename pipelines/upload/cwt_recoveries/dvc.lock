@@ -32,16 +32,16 @@ stages:
       md5: 582e2be9b4417ea5b259c3da8a066e60
       size: 1822188
   format:
-    cmd: mirrorverse_format -t cwt_recoveries -f data/recoveries.csv -o cwt_recoveries.csv
+    cmd: mirrorverse_upload_facts -t cwt_recoveries -f data/recoveries.csv -o status.json
     deps:
     - path: ../../../mirrorverse/warehouse/commands.py
       hash: md5
-      md5: ced5496f3302548ce9544df90296259a
-      size: 1661
+      md5: 5d4da908b5b047dcaf2f7012eed32a45
+      size: 2657
     - path: ../../../mirrorverse/warehouse/etls/dimensions/dates.py
       hash: md5
-      md5: cc9b5c4e8a9e9f597113ca114b40ac81
-      size: 586
+      md5: 71a65b46bd7719a890cb7fbaa555ad6a
+      size: 1172
     - path: ../../../mirrorverse/warehouse/etls/facts/cwt.py
       hash: md5
       md5: a259cee542e9ea93eb12acdf5bb02fec
@@ -50,6 +50,10 @@ stages:
       hash: md5
       md5: 2240bb51cb875ab765d6b751a2ce877c
       size: 1138
+    - path: ../../../mirrorverse/warehouse/utils.py
+      hash: md5
+      md5: f9578063005fd9df9f998a720cbc9339
+      size: 811
     - path: data/recoveries.csv
       hash: md5
       md5: 2af13d58a8ac53a11e6930bef580806a
@@ -58,17 +62,17 @@ stages:
       params.yaml:
         raw_data: data/recoveries.csv
     outs:
-    - path: cwt_recoveries.csv
+    - path: status.json
       hash: md5
-      md5: 582e2be9b4417ea5b259c3da8a066e60
-      size: 1822188
+      md5: 7ffae3b6ba7b98ac6c223db86175daa7
+      size: 54
   upload:
     cmd: mirrorverse_upload -t cwt_recoveries -f cwt_recoveries.csv -o status.json
     deps:
     - path: ../../../mirrorverse/warehouse/commands.py
       hash: md5
-      md5: ced5496f3302548ce9544df90296259a
-      size: 1661
+      md5: eb56b3dd1d4a8248cbadf25ca7e16c36
+      size: 2950
     - path: ../../../mirrorverse/warehouse/models/facts.py
       hash: md5
       md5: 2240bb51cb875ab765d6b751a2ce877c
@@ -84,15 +88,15 @@ stages:
     outs:
     - path: status.json
       hash: md5
-      md5: 1f1512f3897fd71956f89c9166589f90
-      size: 54
+      md5: 0244ae4fd416441d016e82dcd55e57f3
+      size: 53
   enumerate_missing_dimensions:
     cmd: mirrorverse_enumerate_missing_dimensions -t cwt_recoveries -o missing_dimensions.json
     deps:
     - path: ../../../mirrorverse/warehouse/etls/missing_dimensions.py
       hash: md5
-      md5: 27a4de30230bc7c8b525122e20fc36e0
-      size: 3607
+      md5: 6cedaf75f35a40fa63b110a5962bb541
+      size: 3208
     - path: ../../../mirrorverse/warehouse/models/dimensions.py
       hash: md5
       md5: 83cd809dcc33b5b52c84a16d1f22420b
@@ -107,10 +111,10 @@ stages:
       size: 811
     - path: status.json
       hash: md5
-      md5: 1f1512f3897fd71956f89c9166589f90
+      md5: 7ffae3b6ba7b98ac6c223db86175daa7
       size: 54
     outs:
     - path: missing_dimensions.json
       hash: md5
-      md5: 176c7b8b2dea316ab5f4a8bec30bbe92
-      size: 42605
+      md5: 03a517da067d4a406b0dbe9a28ba7dfd
+      size: 37387

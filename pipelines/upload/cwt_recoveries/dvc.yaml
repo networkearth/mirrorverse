@@ -1,23 +1,15 @@
 stages:
   format:
-    cmd: mirrorverse_format -t cwt_recoveries -f ${raw_data} -o cwt_recoveries.csv
+    cmd: mirrorverse_upload_facts -t cwt_recoveries -f ${raw_data} -o status.json
     deps:
       - ../../../mirrorverse/warehouse/commands.py
       - ../../../mirrorverse/warehouse/etls/facts/cwt.py
       - ../../../mirrorverse/warehouse/etls/dimensions/dates.py
       - ../../../mirrorverse/warehouse/models/facts.py
+      - ../../../mirrorverse/warehouse/utils.py
       - ${raw_data}
     params: 
       - raw_data
-    outs:
-      - cwt_recoveries.csv
-  upload:
-    cmd: mirrorverse_upload -t cwt_recoveries -f cwt_recoveries.csv -o status.json
-    deps:
-      - ../../../mirrorverse/warehouse/commands.py
-      - ../../../mirrorverse/warehouse/models/facts.py
-      - ../../../mirrorverse/warehouse/utils.py
-      - cwt_recoveries.csv
     outs:
       - status.json
   enumerate_missing_dimensions:
@@ -28,5 +20,6 @@ stages:
       - ../../../mirrorverse/warehouse/models/dimensions.py
       - ../../../mirrorverse/warehouse/models/facts.py
       - status.json
+    always_changed: true
     outs:
       - missing_dimensions.json

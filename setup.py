@@ -26,9 +26,9 @@ setup(
             "chinook_states=mirrorverse.chinook.states:main",
             "mirrorverse_bundle_models=mirrorverse.utils:bundle_models",
             "mirrorverse_graph_decision_tree=mirrorverse.graph:main",
-            "mirrorverse_format=mirrorverse.warehouse.commands:format_data",
-            "mirrorverse_upload=mirrorverse.warehouse.commands:upload_data",
+            "mirrorverse_upload_facts=mirrorverse.warehouse.commands:upload_facts",
             "mirrorverse_enumerate_missing_dimensions=mirrorverse.warehouse.etls.missing_dimensions:enumerate_missing_dimensions",
+            "mirrorverse_upload_dimensions=mirrorverse.warehouse.commands:upload_dimensions",
         ]
     },
 )
