@@ -28,6 +28,7 @@ setup(
             "mirrorverse_graph_decision_tree=mirrorverse.graph:main",
             "mirrorverse_format=mirrorverse.warehouse.commands:format_data",
             "mirrorverse_upload=mirrorverse.warehouse.commands:upload_data",
+            "mirrorverse_enumerate_missing_dimensions=mirrorverse.warehouse.etls.missing_dimensions:enumerate_missing_dimensions",
         ]
     },
 )

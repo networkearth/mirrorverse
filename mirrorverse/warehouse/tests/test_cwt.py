@@ -2,7 +2,7 @@
 Tests of Integrated CWT Data
 """
 
-# pylint: disable=missing-function-docstring, missing-class-docstring
+# pylint: disable=missing-function-docstring, missing-class-docstring, duplicate-code
 
 import unittest
 
@@ -26,6 +26,10 @@ class TestCWTRetrievals(unittest.TestCase):
         engine = get_engine(db_url="sqlite://")
         ModelBase.metadata.create_all(engine)
         self.session = Session(engine)
+
+    def tearDown(self):
+        self.session.rollback()
+        self.session.close()
 
     def test_upload(self):
         formatted = format_cwt_recoveries_data(CWT_RETRIEVAL_DATA)
@@ -63,7 +67,3 @@ class TestCWTRetrievals(unittest.TestCase):
             ]
         )
         assert_frame_equal(expected, results)
-
-    def tearDown(self):
-        self.session.rollback()
-        self.session.close()

@@ -12,9 +12,21 @@ stages:
     outs:
       - cwt_recoveries.csv
   upload:
-    cmd: mirrorverse_upload -t cwt_recoveries -f cwt_recoveries.csv
+    cmd: mirrorverse_upload -t cwt_recoveries -f cwt_recoveries.csv -o status.json
     deps:
       - ../../../mirrorverse/warehouse/commands.py
       - ../../../mirrorverse/warehouse/models/facts.py
       - ../../../mirrorverse/warehouse/utils.py
       - cwt_recoveries.csv
+    outs:
+      - status.json
+  enumerate_missing_dimensions:
+    cmd: mirrorverse_enumerate_missing_dimensions -t cwt_recoveries -o missing_dimensions.json
+    deps:
+      - ../../../mirrorverse/warehouse/etls/missing_dimensions.py
+      - ../../../mirrorverse/warehouse/utils.py
+      - ../../../mirrorverse/warehouse/models/dimensions.py
+      - ../../../mirrorverse/warehouse/models/facts.py
+      - status.json
+    outs:
+      - missing_dimensions.json

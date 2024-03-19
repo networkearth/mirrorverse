@@ -2,6 +2,9 @@
 Click Commands
 """
 
+import json
+from time import time
+
 import click
 import pandas as pd
 from sqlalchemy.orm import Session
@@ -31,7 +34,8 @@ def format_data(table, file_path, output_path):
 @click.command()
 @click.option("--table", "-t", help="The table to upload to", required=True)
 @click.option("--file_path", "-f", help="Path to the formatted data", required=True)
-def upload_data(table, file_path):
+@click.option("--output_path", "-o", help="Path to the output data", required=True)
+def upload_data(table, file_path, output_path):
     """
     Upload the formatted data to the warehouse.
     """
@@ -42,3 +46,11 @@ def upload_data(table, file_path):
     session = Session(get_engine())
     upload_dataframe(session, model, dataframe)
     session.close()
+
+    status = {
+        "status": "success",
+        "timestamp": time(),
+    }
+    # pylint: disable=unspecified-encoding
+    with open(output_path, "w") as fh:
+        json.dump(status, fh)
