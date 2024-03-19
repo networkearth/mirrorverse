@@ -9,11 +9,13 @@ import click
 import pandas as pd
 from sqlalchemy.orm import Session
 
-from mirrorverse.warehouse.etls.facts.cwt import format_cwt_recoveries_data
-from mirrorverse.warehouse.etls.dimensions.dates import build_dates
 from mirrorverse.warehouse.etls.missing_dimensions import get_primary_key
-from mirrorverse.warehouse.models import CWTRecoveries, Dates
+from mirrorverse.warehouse.models import ModelBase
 from mirrorverse.warehouse.utils import upload_dataframe, get_engine
+from mirrorverse.warehouse.api import FACT_FORMATTERS, DIMENSION_FORMATTERS
+
+
+MODEL_KEY = {model.__tablename__: model for model in ModelBase.__subclasses__()}
 
 
 @click.command()
@@ -25,15 +27,9 @@ def upload_facts(table, file_path, output_path):
     Format and upload the data.
     """
     dataframe = pd.read_csv(file_path)
-    formatted = {
-        "cwt_recoveries": format_cwt_recoveries_data,
-    }[
-        table
-    ](dataframe)
+    formatted = FACT_FORMATTERS[table](dataframe)
 
-    model = {
-        "cwt_recoveries": CWTRecoveries,
-    }[table]
+    model = MODEL_KEY[table]
     session = Session(get_engine())
     upload_dataframe(session, model, formatted)
     session.close()
@@ -61,9 +57,7 @@ def upload_dimensions(table, missing_dimensions_path, file_path, output_path):
     """
     Build the missing dimensions for a given fact table.
     """
-    model = {
-        "dates": Dates,
-    }[table]
+    model = MODEL_KEY[table]
     primary_key = get_primary_key(model)
 
     # pylint: disable=unspecified-encoding
@@ -71,9 +65,7 @@ def upload_dimensions(table, missing_dimensions_path, file_path, output_path):
         missing_dimensions = json.load(fh)
 
     missing_keys = missing_dimensions[primary_key]
-    build_func = {
-        "dates": build_dates,
-    }[table]
+    build_func = DIMENSION_FORMATTERS[table]
 
     if file_path:
         dataframe = pd.read_csv(file_path)
