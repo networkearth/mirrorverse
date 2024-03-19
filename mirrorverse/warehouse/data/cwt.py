@@ -90,3 +90,28 @@ CWT_LOCATIONS_DATA = pd.DataFrame(
         },
     ]
 )
+
+CWT_TAGS_DATA = pd.DataFrame(
+    [
+        {
+            "tag_code_or_release_id": "091485",
+            "release_location_code": "ASK",
+            "run": 1,
+        },
+        {
+            "tag_code_or_release_id": "091486",
+            "release_location_code": "BON",
+            "run": 2,
+        },
+        {
+            "tag_code_or_release_id": "091487",
+            "release_location_code": "BON2",
+            "run": 3,
+        },
+        {
+            "tag_code_or_release_id": "091488",
+            "release_location_code": "BON3",
+            "run": 4,
+        },
+    ]
+)

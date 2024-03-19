@@ -1,8 +1,8 @@
 schema: '2.0'
 stages:
   build:
-    cmd: mirrorverse_upload_dimensions -t cwt_locations -m ../cwt_recoveries/missing_dimensions.json
-      -f data/locations.csv -o status.json
+    cmd: mirrorverse_upload_dimensions -t cwt_tags -m ../cwt_recoveries/missing_dimensions.json
+      -f data/tags.csv -o status.json
     deps:
     - path: ../../../mirrorverse/warehouse/commands.py
       hash: md5
@@ -30,23 +30,23 @@ stages:
       size: 811
     - path: ../cwt_recoveries/missing_dimensions.json
       hash: md5
-      md5: 470ac0878d7797deb5eae88d4d18a6fa
-      size: 24511
-    - path: data/locations.csv
+      md5: 270df502b86ebd871703ce6b4891d34f
+      size: 40855
+    - path: data/tags.csv
       hash: md5
-      md5: 38eb4aef0d6bc77bfed8644946589880
-      size: 101675
+      md5: bcdd63bea24de81e60a864cab4b5f471
+      size: 437601
     params:
       params.yaml:
-        data: data/locations.csv
+        data: data/tags.csv
         missing_dimensions: ../cwt_recoveries/missing_dimensions.json
     outs:
     - path: status.json
       hash: md5
-      md5: c0cd51baff4f0dfcd28ecceffe9700ad
+      md5: bfb7bcb13f9689f8c0f7790eb8e84df2
       size: 54
   enumerate_missing_dimensions:
-    cmd: mirrorverse_enumerate_missing_dimensions -t cwt_locations -o missing_dimensions.json
+    cmd: mirrorverse_enumerate_missing_dimensions -t cwt_tags -o missing_dimensions.json
     deps:
     - path: ../../../mirrorverse/warehouse/etls/missing_dimensions.py
       hash: md5
@@ -66,10 +66,10 @@ stages:
       size: 811
     - path: status.json
       hash: md5
-      md5: c0cd51baff4f0dfcd28ecceffe9700ad
+      md5: bfb7bcb13f9689f8c0f7790eb8e84df2
       size: 54
     outs:
     - path: missing_dimensions.json
       hash: md5
-      md5: 73605c75647c472af7a7371fcd4f6cd9
-      size: 4252
+      md5: ad7859d6f43a75ccf9b765741d1ccd55
+      size: 5710

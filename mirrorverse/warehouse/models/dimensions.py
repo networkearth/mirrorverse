@@ -4,6 +4,7 @@ Dimension Tables
 
 from datetime import date
 
+from typing import Optional
 from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -60,6 +61,11 @@ class CWTTags(ModelBase):
     __tablename__ = "cwt_tags"
 
     cwt_tag_key: Mapped[str] = mapped_column(String(10), primary_key=True)
+
+    cwt_release_location_key: Mapped[str] = mapped_column(
+        ForeignKey("cwt_locations.cwt_location_key")
+    )
+    run: Mapped[Optional[int]]
 
 
 class Species(ModelBase):

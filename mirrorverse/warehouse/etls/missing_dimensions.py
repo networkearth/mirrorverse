@@ -11,7 +11,7 @@ import pandas as pd
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from mirrorverse.warehouse.models import ModelBase, CWTRecoveries
+from mirrorverse.warehouse.models import ModelBase
 from mirrorverse.warehouse.utils import get_engine
 
 MODEL_KEY = {model.__tablename__: model for model in ModelBase.__subclasses__()}
@@ -86,16 +86,14 @@ def enumerate_missing_dimensions(table, output_path):
     """
     Enumerate the missing dimensions for a given fact table.
     """
-    fact_model = {
-        "cwt_recoveries": CWTRecoveries,
-    }[table]
+    model = MODEL_KEY[table]
 
-    keys, dimension_models = get_associated_dimensions(fact_model)
+    keys, dimension_models = get_associated_dimensions(model)
     session = Session(get_engine())
     missing_keys = {}
     for key, dimension_model in zip(keys, dimension_models):
         missing_keys.update(
-            get_missing_dimension_keys(dimension_model, fact_model, key, session)
+            get_missing_dimension_keys(dimension_model, model, key, session)
         )
 
     # pylint: disable=unspecified-encoding
@@ -127,3 +125,12 @@ def prep_cwt_query(table, missing_dimensions_path, output_path):
     if table == "cwt_locations":
         with open(output_path, "w") as fh:
             fh.writelines([f"{key}\n" for key in missing_keys])
+
+    if table == "cwt_tags":
+        real_keys = []
+        for key in missing_keys:
+            if "*" not in key and len(key) < 6:
+                key = "0" * (6 - len(key)) + key
+            real_keys.append(key)
+        with open(output_path, "w") as fh:
+            fh.writelines([f"{key}\n" for key in real_keys])

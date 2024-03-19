@@ -73,9 +73,12 @@ def upload_dimensions(table, missing_dimensions_path, file_path, output_path):
     else:
         formatted = build_func(missing_keys)
 
-    session = Session(get_engine())
-    upload_dataframe(session, model, formatted)
-    session.close()
+    if formatted.shape[0] > 0:
+        session = Session(get_engine())
+        upload_dataframe(session, model, formatted)
+        session.close()
+    else:
+        print("Nothing to upload...")
 
     status = {
         "status": "success",

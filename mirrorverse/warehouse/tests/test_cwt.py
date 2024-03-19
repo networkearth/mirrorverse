@@ -15,10 +15,17 @@ from sqlalchemy.orm import Session
 from mirrorverse.warehouse.models import ModelBase
 from mirrorverse.warehouse.utils import get_engine, upload_dataframe
 
-from mirrorverse.warehouse.data.cwt import CWT_RETRIEVAL_DATA, CWT_LOCATIONS_DATA
-from mirrorverse.warehouse.models import CWTRecoveries, CWTLocations
+from mirrorverse.warehouse.data.cwt import (
+    CWT_RETRIEVAL_DATA,
+    CWT_LOCATIONS_DATA,
+    CWT_TAGS_DATA,
+)
+from mirrorverse.warehouse.models import CWTRecoveries, CWTLocations, CWTTags
 from mirrorverse.warehouse.etls.facts.cwt import format_cwt_recoveries_data
-from mirrorverse.warehouse.etls.dimensions.cwt import build_cwt_locations
+from mirrorverse.warehouse.etls.dimensions.cwt import (
+    build_cwt_locations,
+    build_cwt_tags,
+)
 
 
 class TestCWT(unittest.TestCase):
@@ -90,6 +97,28 @@ class TestCWT(unittest.TestCase):
                     "lon": -116.32,
                     "lat": 48.69,
                     "h3_level_4_key": 594806782417698815,
+                },
+            ]
+        )
+        assert_frame_equal(expected, results)
+
+    def test_upload_tags(self):
+        missing_keys = ["091485", "091488"]
+        formatted = build_cwt_tags(missing_keys, CWT_TAGS_DATA)
+        upload_dataframe(self.session, CWTTags, formatted)
+        stmt = select(CWTTags)
+        results = pd.read_sql_query(stmt, self.session.bind)
+        expected = pd.DataFrame(
+            [
+                {
+                    "cwt_tag_key": "091485",
+                    "cwt_release_location_key": "ASK",
+                    "run": 1,
+                },
+                {
+                    "cwt_tag_key": "091488",
+                    "cwt_release_location_key": "BON3",
+                    "run": 4,
                 },
             ]
         )
