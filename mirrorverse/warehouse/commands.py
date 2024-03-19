@@ -4,8 +4,11 @@ Click Commands
 
 import click
 import pandas as pd
+from sqlalchemy.orm import Session
 
 from mirrorverse.warehouse.etls.facts.cwt import format_cwt_recoveries_data
+from mirrorverse.warehouse.models import CWTRecoveries
+from mirrorverse.warehouse.utils import upload_dataframe, get_engine
 
 
 @click.command()
@@ -23,3 +26,19 @@ def format_data(table, file_path, output_path):
         table
     ](dataframe)
     formatted.to_csv(output_path, index=False)
+
+
+@click.command()
+@click.option("--table", "-t", help="The table to upload to", required=True)
+@click.option("--file_path", "-f", help="Path to the formatted data", required=True)
+def upload_data(table, file_path):
+    """
+    Upload the formatted data to the warehouse.
+    """
+    dataframe = pd.read_csv(file_path)
+    model = {
+        "cwt_recoveries": CWTRecoveries,
+    }[table]
+    session = Session(get_engine())
+    upload_dataframe(session, model, dataframe)
+    session.close()

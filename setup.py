@@ -27,6 +27,7 @@ setup(
             "mirrorverse_bundle_models=mirrorverse.utils:bundle_models",
             "mirrorverse_graph_decision_tree=mirrorverse.graph:main",
             "mirrorverse_format=mirrorverse.warehouse.commands:format_data",
+            "mirrorverse_upload=mirrorverse.warehouse.commands:upload_data",
         ]
     },
 )
