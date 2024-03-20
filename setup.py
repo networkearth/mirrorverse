@@ -21,6 +21,7 @@ setup(
         "Fiona==1.8.22",
         "geopandas==0.14.3",
         "eralchemy2==1.3.8",
+        "netCDF4==1.6.5",
     ],
     entry_points={
         "console_scripts": [
@@ -34,6 +35,7 @@ setup(
             "mirrorverse_upload_dimensions=mirrorverse.warehouse.commands:upload_dimensions",
             "mirrorverse_prep_cwt_query=mirrorverse.warehouse.etls.missing_dimensions:prep_cwt_query",
             "mirrorverse_build_erd=mirrorverse.warehouse.commands:build_erd",
+            "mirrorverse_file_import=mirrorverse.docks.commands:file_import",
         ]
     },
 )
