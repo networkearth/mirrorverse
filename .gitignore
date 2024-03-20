@@ -12,3 +12,4 @@ mirrorverse.egg-info/
 *.db
 cwt_query.txt
 scratch.ipynb
+*.nc

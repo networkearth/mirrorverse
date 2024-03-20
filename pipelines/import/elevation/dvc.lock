@@ -1,0 +1,26 @@
+schema: '2.0'
+stages:
+  import:
+    cmd: mirrorverse_file_import -i elevation -f data/gebco_2023_n78.9532_s34.4614_w160.5624_e237.5031.nc
+      -o elevation.csv
+    deps:
+    - path: ../../../mirrorverse/docks/commands.py
+      hash: md5
+      md5: 342ca851b02786612551ad8690ccb380
+      size: 606
+    - path: ../../../mirrorverse/docks/elevation.py
+      hash: md5
+      md5: 4bdf7933c30e4064fad94930af1bacce
+      size: 2793
+    - path: data/gebco_2023_n78.9532_s34.4614_w160.5624_e237.5031.nc
+      hash: md5
+      md5: 2f59a32fdbf2f67bf14fc81141fa639f
+      size: 394597556
+    params:
+      params.yaml:
+        data: data/gebco_2023_n78.9532_s34.4614_w160.5624_e237.5031.nc
+    outs:
+    - path: elevation.csv
+      hash: md5
+      md5: a12b8a4cf259ad5918635b89dc9301d4
+      size: 780100
