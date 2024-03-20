@@ -36,8 +36,8 @@ class CWTLocations(ModelBase):
     cwt_location_key: Mapped[str] = mapped_column(String(19), primary_key=True)
 
     cwt_location_name: Mapped[str]
-    lon: Mapped[float]
-    lat: Mapped[float]
+    longitude: Mapped[float]
+    latitude: Mapped[float]
     h3_level_4_key: Mapped[int] = mapped_column(ForeignKey("h3_level_4.h3_level_4_key"))
 
 
@@ -66,3 +66,26 @@ class H3Level4(ModelBase):
     h3_level_4_key: Mapped[int] = mapped_column(primary_key=True)
 
     geometry: Mapped[str]
+
+
+class Tags(ModelBase):
+    """
+    Tags Dimension Table
+    """
+
+    __tablename__ = "tags"
+
+    tag_key: Mapped[str] = mapped_column(primary_key=True)
+    tag_model: Mapped[str]
+    time_resolution_min: Mapped[int]
+    fork_length_cm: Mapped[float]
+    deploy_latitude: Mapped[float]
+    deploy_longitude: Mapped[float]
+    deploy_h3_level_4_key: Mapped[int] = mapped_column(
+        ForeignKey("h3_level_4.h3_level_4_key")
+    )
+    end_latitude: Mapped[float]
+    end_longitude: Mapped[float]
+    end_h3_level_4_key: Mapped[int]
+    deploy_date_key: Mapped[int] = mapped_column(ForeignKey("dates.date_key"))
+    end_date_key: Mapped[int]

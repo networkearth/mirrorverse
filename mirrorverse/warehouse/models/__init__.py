@@ -13,10 +13,5 @@ class ModelBase(DeclarativeBase):
     """
 
 
-from .dimensions import (
-    Dates,
-    CWTLocations,
-    CWTTags,
-    H3Level4,
-)
-from .facts import CWTRecoveries
+from .dimensions import Dates, CWTLocations, CWTTags, H3Level4, Tags
+from .facts import CWTRecoveries, TagTracks

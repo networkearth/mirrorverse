@@ -21,8 +21,8 @@ def build_cwt_locations(missing_keys, raw_data):
         {
             "location_code": "cwt_location_key",
             "name": "cwt_location_name",
-            "rmis_latitude": "lat",
-            "rmis_longitude": "lon",
+            "rmis_latitude": "latitude",
+            "rmis_longitude": "longitude",
         },
         axis=1,
     )
@@ -31,7 +31,9 @@ def build_cwt_locations(missing_keys, raw_data):
 
     dataframe = dataframe[dataframe["cwt_location_key"].isin(missing_keys)]
 
-    dataframe = dataframe[~np.isnan(dataframe["lat"]) & ~np.isnan(dataframe["lon"])]
+    dataframe = dataframe[
+        ~np.isnan(dataframe["latitude"]) & ~np.isnan(dataframe["longitude"])
+    ]
 
     dataframe = add_spatial_keys_to_facts(dataframe)
 

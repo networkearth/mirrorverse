@@ -29,19 +29,22 @@ def spatial_key_to_index(spatial_key):
     return hex(spatial_key)[2:]
 
 
-def add_spatial_keys_to_facts(dataframe, lon_col="lon", lat_col="lat"):
+def add_spatial_keys_to_facts(
+    dataframe, lon_col="longitude", lat_col="latitude", prefix=""
+):
     """
     Input:
     - dataframe (pd.DataFrame): The dataframe to transform
-    - lon_col (str): The name of the longitude column (default: "lon")
-    - lat_col (str): The name of the latitude column (default: "lat")
+    - lon_col (str): The name of the longitude column (default: "longitude")
+    - lat_col (str): The name of the latitude column (default: "latitude")
+    - prefix (str): The prefix to add to the new columns (default: "")
 
     Returns a dataframe with the h3 keys for the given resolutions
     """
 
     # pylint: disable=cell-var-from-loop
     for resolution in [4]:
-        dataframe[f"h3_level_{resolution}_key"] = dataframe.apply(
+        dataframe[f"{prefix}h3_level_{resolution}_key"] = dataframe.apply(
             lambda row: spatial_index_to_key(
                 h3.geo_to_h3(row[lat_col], row[lon_col], resolution)
             ),
