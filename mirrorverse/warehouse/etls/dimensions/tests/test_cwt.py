@@ -24,15 +24,15 @@ def test_build_cwt_locations():
             {
                 "cwt_location_key": "ASK",
                 "cwt_location_name": "Astoria, OR",
-                "lon": -123.83,
-                "lat": 46.19,
+                "longitude": -123.83,
+                "latitude": 46.19,
                 "h3_level_4_key": 595195434008313855,
             },
             {
                 "cwt_location_key": "BON",
                 "cwt_location_name": "Bonners Ferry, ID",
-                "lon": -116.32,
-                "lat": 48.69,
+                "longitude": -116.32,
+                "latitude": 48.69,
                 "h3_level_4_key": 594806782417698815,
             },
         ]

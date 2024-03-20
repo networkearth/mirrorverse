@@ -31,3 +31,20 @@ class CWTRecoveries(ModelBase):
     cwt_recovery_location_key: Mapped[str] = mapped_column(
         ForeignKey("cwt_locations.cwt_location_key")
     )
+
+
+class TagTracks(ModelBase):
+    """
+    Tag Tracks Fact Table
+    """
+
+    __tablename__ = "tag_tracks"
+
+    tag_key: Mapped[str] = mapped_column(ForeignKey("tags.tag_key"), primary_key=True)
+    tag_date_key: Mapped[int] = mapped_column(
+        ForeignKey("dates.date_key"), primary_key=True
+    )
+
+    longitude: Mapped[float]
+    latitude: Mapped[float]
+    h3_level_4_key: Mapped[int] = mapped_column(ForeignKey("h3_level_4.h3_level_4_key"))

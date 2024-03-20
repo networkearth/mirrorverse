@@ -26,14 +26,31 @@ def test_spatial_key_funcs():
 def test_add_spatial_keys_to_facts():
     dataframe = pd.DataFrame(
         [
-            {"lon": 0, "lat": 0, "fact": "a cool fact"},
-            {"lon": 0, "lat": 25, "fact": "a less cool fact"},
-            {"lon": 25, "lat": 0, "fact": "a boring fact"},
+            {"longitude": 0, "latitude": 0, "fact": "a cool fact"},
+            {"longitude": 0, "latitude": 25, "fact": "a less cool fact"},
+            {"longitude": 25, "latitude": 0, "fact": "a boring fact"},
         ]
     )
     add_spatial_keys_to_facts(dataframe)
     assert set(dataframe.columns) == set(
-        ["lon", "lat", "fact"] + [f"h3_level_{resolution}_key" for resolution in [4]]
+        ["longitude", "latitude", "fact"]
+        + [f"h3_level_{resolution}_key" for resolution in [4]]
+    )
+    assert dataframe.shape[0] == 3
+
+
+def test_add_spatial_keys_to_facts_w_prefix():
+    dataframe = pd.DataFrame(
+        [
+            {"longitude": 0, "latitude": 0, "fact": "a cool fact"},
+            {"longitude": 0, "latitude": 25, "fact": "a less cool fact"},
+            {"longitude": 25, "latitude": 0, "fact": "a boring fact"},
+        ]
+    )
+    add_spatial_keys_to_facts(dataframe, prefix="deploy_")
+    assert set(dataframe.columns) == set(
+        ["longitude", "latitude", "fact"]
+        + [f"deploy_h3_level_{resolution}_key" for resolution in [4]]
     )
     assert dataframe.shape[0] == 3
 

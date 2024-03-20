@@ -11,11 +11,13 @@ from mirrorverse.warehouse.etls.dimensions.cwt import (
     build_cwt_locations,
     build_cwt_tags,
 )
+from mirrorverse.warehouse.etls.dimensions.tags import build_tags
 
 DIMENSION_FORMATTERS = {
     "dates": build_dates,
     "cwt_locations": build_cwt_locations,
     "cwt_tags": build_cwt_tags,
     "h3_level_4": partial(build_spatial, 4),
+    "tags": build_tags,
 }
 FACT_FORMATTERS = {"cwt_recoveries": format_cwt_recoveries_data}
