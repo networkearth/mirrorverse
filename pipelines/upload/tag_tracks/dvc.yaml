@@ -1,0 +1,25 @@
+stages:
+  format:
+    cmd: mirrorverse_upload_facts -t tag_tracks -f ${raw_data} -o status.json
+    deps:
+      - ../../../mirrorverse/warehouse/commands.py
+      - ../../../mirrorverse/warehouse/etls/facts/tags.py
+      - ../../../mirrorverse/warehouse/etls/dimensions/dates.py
+      - ../../../mirrorverse/warehouse/models/facts.py
+      - ../../../mirrorverse/warehouse/utils.py
+      - ${raw_data}
+    params: 
+      - raw_data
+    outs:
+      - status.json
+  enumerate_missing_dimensions:
+    cmd: mirrorverse_enumerate_missing_dimensions -t tag_tracks -o missing_dimensions.json
+    deps:
+      - ../../../mirrorverse/warehouse/etls/missing_dimensions.py
+      - ../../../mirrorverse/warehouse/utils.py
+      - ../../../mirrorverse/warehouse/models/dimensions.py
+      - ../../../mirrorverse/warehouse/models/facts.py
+      - status.json
+    always_changed: true
+    outs:
+      - missing_dimensions.json

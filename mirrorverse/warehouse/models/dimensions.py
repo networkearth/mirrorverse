@@ -86,8 +86,6 @@ class Tags(ModelBase):
     )
     end_latitude: Mapped[float]
     end_longitude: Mapped[float]
-    end_h3_level_4_key: Mapped[int] = mapped_column(
-        ForeignKey("h3_level_4.h3_level_4_key")
-    )
+    end_h3_level_4_key: Mapped[int]
     deploy_date_key: Mapped[int] = mapped_column(ForeignKey("dates.date_key"))
-    end_date_key: Mapped[int] = mapped_column(ForeignKey("dates.date_key"))
+    end_date_key: Mapped[int]
