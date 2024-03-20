@@ -2,8 +2,10 @@
 Tests for Elevation Importer
 """
 
+# pylint: disable=missing-function-docstring
+
 import os
-import unittest.mock as mock
+from unittest import mock
 
 import pandas as pd
 import numpy as np

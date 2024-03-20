@@ -48,3 +48,16 @@ class TagTracks(ModelBase):
     longitude: Mapped[float]
     latitude: Mapped[float]
     h3_level_4_key: Mapped[int] = mapped_column(ForeignKey("h3_level_4.h3_level_4_key"))
+
+
+class Elevation(ModelBase):
+    """
+    Elevation Facts Table
+    """
+
+    __tablename__ = "elevation"
+
+    h3_level_4_key: Mapped[int] = mapped_column(
+        ForeignKey("h3_level_4.h3_level_4_key"), primary_key=True
+    )
+    elevation: Mapped[float]
