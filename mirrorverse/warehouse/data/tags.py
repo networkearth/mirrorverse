@@ -53,3 +53,26 @@ TAGS_DATA = pd.DataFrame(
         },
     ]
 )
+
+TAG_TRACKS_DATA = pd.DataFrame(
+    [
+        {
+            "Ptt": "211761",
+            "Date": "2021-05-01",
+            "Most.Likely.Latitude": 46.6,
+            "Most.Likely.Longitude": -133.2,
+        },
+        {
+            "Ptt": "212586",
+            "Date": "2020-09-15",
+            "Most.Likely.Latitude": 58.8,
+            "Most.Likely.Longitude": -161.5,
+        },
+        {
+            "Ptt": "205564",
+            "Date": "2020-11-26",
+            "Most.Likely.Latitude": 67.9,
+            "Most.Likely.Longitude": -153.1,
+        },
+    ]
+)

@@ -41,7 +41,7 @@ class TagTracks(ModelBase):
     __tablename__ = "tag_tracks"
 
     tag_key: Mapped[str] = mapped_column(ForeignKey("tags.tag_key"), primary_key=True)
-    tag_date_key: Mapped[int] = mapped_column(
+    date_key: Mapped[int] = mapped_column(
         ForeignKey("dates.date_key"), primary_key=True
     )
 

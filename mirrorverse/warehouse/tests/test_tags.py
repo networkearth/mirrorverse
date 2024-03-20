@@ -14,13 +14,12 @@ from sqlalchemy.orm import Session
 from mirrorverse.warehouse.models import ModelBase
 from mirrorverse.warehouse.utils import get_engine, upload_dataframe
 
-from mirrorverse.warehouse.data.tags import (
-    TAGS_DATA,
-)
-from mirrorverse.warehouse.models import Tags
+from mirrorverse.warehouse.data.tags import TAGS_DATA, TAG_TRACKS_DATA
+from mirrorverse.warehouse.models import Tags, TagTracks
 from mirrorverse.warehouse.etls.dimensions.tags import (
     build_tags,
 )
+from mirrorverse.warehouse.etls.facts.tags import format_tag_tracks
 
 
 class TestTags(unittest.TestCase):
@@ -72,5 +71,39 @@ class TestTags(unittest.TestCase):
                 },
             ]
         )
+        assert set(results.columns) == set(expected.columns)
+        assert_frame_equal(expected, results[expected.columns])
+
+    def test_upload_tag_tracks(self):
+        formatted = format_tag_tracks(TAG_TRACKS_DATA)
+        upload_dataframe(self.session, TagTracks, formatted)
+        stmt = select(TagTracks)
+        results = pd.read_sql_query(stmt, self.session.bind)
+        expected = pd.DataFrame(
+            [
+                {
+                    "tag_key": "211761",
+                    "date_key": 1619827200,
+                    "latitude": 46.6,
+                    "longitude": -133.2,
+                    "h3_level_4_key": 594992694372073471,
+                },
+                {
+                    "tag_key": "212586",
+                    "date_key": 1600128000,
+                    "latitude": 58.8,
+                    "longitude": -161.5,
+                    "h3_level_4_key": 594702827029266431,
+                },
+                {
+                    "tag_key": "205564",
+                    "date_key": 1606348800,
+                    "latitude": 67.9,
+                    "longitude": -153.1,
+                    "h3_level_4_key": 594688842615750655,
+                },
+            ]
+        )
+
         assert set(results.columns) == set(expected.columns)
         assert_frame_equal(expected, results[expected.columns])
