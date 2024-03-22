@@ -1,5 +1,5 @@
 """
-Tests of Integrated CWT Data
+Tests of Integrated Tag Data
 """
 
 # pylint: disable=missing-function-docstring, missing-class-docstring, duplicate-code

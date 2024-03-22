@@ -61,3 +61,19 @@ class Elevation(ModelBase):
         ForeignKey("h3_level_4.h3_level_4_key"), primary_key=True
     )
     elevation: Mapped[float]
+
+
+class SurfaceTemperature(ModelBase):
+    """
+    Surface Temperature Facts Table
+    """
+
+    __tablename__ = "surface_temperature"
+
+    h3_level_4_key: Mapped[int] = mapped_column(
+        ForeignKey("h3_level_4.h3_level_4_key"), primary_key=True
+    )
+    date_key: Mapped[int] = mapped_column(
+        ForeignKey("dates.date_key"), primary_key=True
+    )
+    temperature_c: Mapped[float]

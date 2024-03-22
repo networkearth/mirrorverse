@@ -1,0 +1,25 @@
+schema: '2.0'
+stages:
+  import:
+    cmd: mirrorverse_file_import -i surface_temperature -f params.json -o surface_temperature.csv
+    deps:
+    - path: ../../../mirrorverse/docks/commands.py
+      hash: md5
+      md5: 342ca851b02786612551ad8690ccb380
+      size: 606
+    - path: ../../../mirrorverse/docks/surface_temperature.py
+      hash: md5
+      md5: b643b63808e002926036f54d3ee1c78d
+      size: 2188
+    - path: params.json
+      hash: md5
+      md5: a3fef73cb25afdab0303d22d56918d8e
+      size: 87
+    params:
+      params.yaml:
+        params: params.json
+    outs:
+    - path: surface_temperature.csv
+      hash: md5
+      md5: 6deb79c3735417f16ace02d99891c6c7
+      size: 9419855
