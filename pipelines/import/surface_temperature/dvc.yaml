@@ -1,0 +1,11 @@
+stages:
+  import:
+    cmd: mirrorverse_file_import -i surface_temperature -f ${params} -o surface_temperature.csv
+    deps:
+      - ../../../mirrorverse/docks/commands.py
+      - ../../../mirrorverse/docks/surface_temperature.py
+      - ${params}
+    params:
+      - params
+    outs:
+      - surface_temperature.csv

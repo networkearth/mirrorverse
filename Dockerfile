@@ -25,3 +25,8 @@ RUN apt-get -y install pandoc texlive-xetex texlive-fonts-recommended texlive-pl
 
 RUN apt-get -y install locales-all
 RUN apt-get -y install libgdal-dev
+
+RUN apt-get -y install apt-transport-https ca-certificates gnupg curl
+RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+RUN apt-get update && apt-get -y install google-cloud-cli
