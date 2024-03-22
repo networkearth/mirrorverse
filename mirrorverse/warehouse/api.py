@@ -14,6 +14,9 @@ from mirrorverse.warehouse.etls.dimensions.cwt import (
 from mirrorverse.warehouse.etls.dimensions.tags import build_tags
 from mirrorverse.warehouse.etls.facts.tags import format_tag_tracks
 from mirrorverse.warehouse.etls.facts.elevation import format_elevation
+from mirrorverse.warehouse.etls.facts.surface_temperature import (
+    format_surface_temperature,
+)
 
 DIMENSION_FORMATTERS = {
     "dates": build_dates,
@@ -26,4 +29,5 @@ FACT_FORMATTERS = {
     "cwt_recoveries": format_cwt_recoveries_data,
     "tag_tracks": format_tag_tracks,
     "elevation": format_elevation,
+    "surface_temperature": format_surface_temperature,
 }

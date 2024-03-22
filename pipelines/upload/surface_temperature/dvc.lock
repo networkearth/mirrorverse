@@ -1,0 +1,66 @@
+schema: '2.0'
+stages:
+  format:
+    cmd: mirrorverse_upload_facts -t surface_temperature -f ../../import/surface_temperature/surface_temperature.csv
+      -o status.json
+    deps:
+    - path: ../../../mirrorverse/warehouse/commands.py
+      hash: md5
+      md5: 23af4d1ca228185b4d3bf51c8cecee46
+      size: 2921
+    - path: ../../../mirrorverse/warehouse/etls/dimensions/spatial.py
+      hash: md5
+      md5: 7a45fc171b186899fbdd9262a436b0fe
+      size: 2506
+    - path: ../../../mirrorverse/warehouse/etls/facts/surface_temperature.py
+      hash: md5
+      md5: 6f01577273e190f6eb8279b722cdf638
+      size: 939
+    - path: ../../../mirrorverse/warehouse/models/facts.py
+      hash: md5
+      md5: 7aeb671807b8a37bd9677bb82e2e0284
+      size: 2070
+    - path: ../../../mirrorverse/warehouse/utils.py
+      hash: md5
+      md5: f9578063005fd9df9f998a720cbc9339
+      size: 811
+    - path: ../../import/surface_temperature/surface_temperature.csv
+      hash: md5
+      md5: 6deb79c3735417f16ace02d99891c6c7
+      size: 9419855
+    params:
+      params.yaml:
+        raw_data: ../../import/surface_temperature/surface_temperature.csv
+    outs:
+    - path: status.json
+      hash: md5
+      md5: fcf55240c343e81f06d9bacf2cdc393a
+      size: 54
+  enumerate_missing_dimensions:
+    cmd: mirrorverse_enumerate_missing_dimensions -t surface_temperature -o missing_dimensions.json
+    deps:
+    - path: ../../../mirrorverse/warehouse/etls/missing_dimensions.py
+      hash: md5
+      md5: eac6c00ab1ae4da5367a809f07d7f76f
+      size: 4344
+    - path: ../../../mirrorverse/warehouse/models/dimensions.py
+      hash: md5
+      md5: be45b815c87e3430b95dd03e3e1f7766
+      size: 2033
+    - path: ../../../mirrorverse/warehouse/models/facts.py
+      hash: md5
+      md5: 7aeb671807b8a37bd9677bb82e2e0284
+      size: 2070
+    - path: ../../../mirrorverse/warehouse/utils.py
+      hash: md5
+      md5: f9578063005fd9df9f998a720cbc9339
+      size: 811
+    - path: status.json
+      hash: md5
+      md5: fcf55240c343e81f06d9bacf2cdc393a
+      size: 54
+    outs:
+    - path: missing_dimensions.json
+      hash: md5
+      md5: ecc7d030235817776fdcef02b30d9da0
+      size: 201480

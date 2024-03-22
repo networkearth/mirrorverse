@@ -1,5 +1,5 @@
 """
-Tests of Integrated Elevation Data
+Tests of Integrated Surface Temperature Data
 """
 
 # pylint: disable=missing-function-docstring, missing-class-docstring, duplicate-code
@@ -14,12 +14,14 @@ from sqlalchemy.orm import Session
 from mirrorverse.warehouse.models import ModelBase
 from mirrorverse.warehouse.utils import get_engine, upload_dataframe
 
-from mirrorverse.warehouse.data.elevation import ELEVATION_DATA
-from mirrorverse.warehouse.models import Elevation
-from mirrorverse.warehouse.etls.facts.elevation import format_elevation
+from mirrorverse.warehouse.data.surface_temperature import SURFACE_TEMPERATURE_DATA
+from mirrorverse.warehouse.models import SurfaceTemperature
+from mirrorverse.warehouse.etls.facts.surface_temperature import (
+    format_surface_temperature,
+)
 
 
-class TestElevation(unittest.TestCase):
+class TestSurfaceTemperature(unittest.TestCase):
 
     def setUp(self):
         engine = get_engine(db_url="sqlite://")
@@ -31,19 +33,26 @@ class TestElevation(unittest.TestCase):
         self.session.close()
 
     def test_upload_elevation(self):
-        formatted = format_elevation(ELEVATION_DATA)
-        upload_dataframe(self.session, Elevation, formatted)
-        stmt = select(Elevation)
+        formatted = format_surface_temperature(SURFACE_TEMPERATURE_DATA)
+        upload_dataframe(self.session, SurfaceTemperature, formatted)
+        stmt = select(SurfaceTemperature)
         results = pd.read_sql_query(stmt, self.session.bind)
         expected = pd.DataFrame(
             [
                 {
                     "h3_level_4_key": 594804239797059583,
-                    "elevation": 100.0,
+                    "temperature_c": 5.0,
+                    "date_key": 1609459200,
+                },
+                {
+                    "h3_level_4_key": 594804239797059583,
+                    "temperature_c": 10.0,
+                    "date_key": 1612137600,
                 },
                 {
                     "h3_level_4_key": 594992694372073471,
-                    "elevation": 150.0,
+                    "temperature_c": 7.5,
+                    "date_key": 1609459200,
                 },
             ]
         )
