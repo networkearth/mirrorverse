@@ -3,6 +3,7 @@ Fake Tag Data for Testing
 """
 
 import pandas as pd
+import numpy as np
 
 TAGS_DATA = pd.DataFrame(
     [
@@ -74,5 +75,13 @@ TAG_TRACKS_DATA = pd.DataFrame(
             "Most.Likely.Latitude": 67.9,
             "Most.Likely.Longitude": -153.1,
         },
+    ]
+)
+
+HOME_REGIONS_DATA = pd.DataFrame(
+    [
+        {"tag_key": "205415", "MBC_Broadscaleregion": "Gulf of Alaska"},
+        {"tag_key": "142100", "MBC_Broadscaleregion": "Aleutian Islands"},
+        {"tag_key": "239204", "MBC_Broadscaleregion": np.nan},
     ]
 )

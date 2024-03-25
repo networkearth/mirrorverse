@@ -77,3 +77,14 @@ class SurfaceTemperature(ModelBase):
         ForeignKey("dates.date_key"), primary_key=True
     )
     temperature_c: Mapped[float]
+
+
+class HomeRegions(ModelBase):
+    """
+    Home Region Facts Table
+    """
+
+    __tablename__ = "home_regions"
+
+    tag_key: Mapped[str] = mapped_column(ForeignKey("tags.tag_key"), primary_key=True)
+    home_region: Mapped[str] = mapped_column(primary_key=True)
