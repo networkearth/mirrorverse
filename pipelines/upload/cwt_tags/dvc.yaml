@@ -10,6 +10,7 @@ stages:
       - ../../../mirrorverse/warehouse/utils.py
       - ${missing_dimensions}
       - ${data}
+    always_changed: true
     params:
       - missing_dimensions
       - data

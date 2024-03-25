@@ -1,7 +1,7 @@
 schema: '2.0'
 stages:
   build:
-    cmd: mirrorverse_upload_dimensions -t h3_level_4 -m ../tags/missing_dimensions.json
+    cmd: mirrorverse_upload_dimensions -t h3_level_4 -m ../elevation/missing_dimensions.json
       -o status.json
     deps:
     - path: ../../../mirrorverse/warehouse/commands.py
@@ -24,15 +24,15 @@ stages:
       hash: md5
       md5: f9578063005fd9df9f998a720cbc9339
       size: 811
-    - path: ../tags/missing_dimensions.json
+    - path: ../elevation/missing_dimensions.json
       hash: md5
-      md5: cde8d06e8423d24601be4bd785b34dc6
-      size: 70
+      md5: bd0dc1755a7b87dd16c6d407951d6499
+      size: 330652
     params:
       params.yaml:
-        missing_dimensions: ../tags/missing_dimensions.json
+        missing_dimensions: ../elevation/missing_dimensions.json
     outs:
     - path: status.json
       hash: md5
-      md5: d766abd1ba285b0b0568f065f324ea67
-      size: 54
+      md5: ec326d0ec2e0603e6b9fe3116160aad7
+      size: 53

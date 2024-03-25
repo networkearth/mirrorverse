@@ -19,13 +19,9 @@ def load_tag_tracks(file_path):
     """
     data = pd.read_csv(file_path).rename(
         {
-            "Ptt": "ptt",
-            "Latitude": "lat",
-            "Longitude": "lon",
-            "Dates - Date Key → Date": "date",
-            "Dates - Date Key → Year": "year",
-            "Dates - Date Key → Month": "month",
-            "Dates - Date Key → Day": "day",
+            "tag_key": "ptt",
+            "latitude": "lat",
+            "longitude": "lon",
         },
         axis=1,
     )
@@ -230,9 +226,7 @@ def get_surface_temps(file_path):
     """
     df = pd.read_csv(file_path).rename(
         {
-            "H3 Key 4": "h3_index",
-            "Dates - Date Key → Month": "month",
-            "Temperature C": "temp",
+            "temperature_c": "temp",
         },
         axis=1,
     )[["h3_index", "month", "temp"]]

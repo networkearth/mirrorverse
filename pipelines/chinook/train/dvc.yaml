@@ -1,4 +1,16 @@
 stages:
+  data:
+    cmd: chinook_db -e ${elevation} -s ${temps} -t ${data}
+    deps:
+      - ../../../mirrorverse/chinook/db.py
+    params:
+      - elevation
+      - temps
+      - data
+    outs:
+      - ${data}
+      - ${elevation}
+      - ${temps}
   states:
     cmd: chinook_states -d ${data} -o .  -r ${resolution} -mae ${max_allowable_error} -mad ${min_allowable_distance} -ts ${training_size}
     deps:
