@@ -2,11 +2,11 @@ digraph RunOrDriftBranch {
 	RunOrDriftBranch [label=<
         <FONT>RunOrDriftBranch</FONT>
         <BR/>
-        <FONT POINT-SIZE="10">States: ['drifting', 'steps_in_state']</FONT>
+        <FONT POINT-SIZE="10">States: ['drifting', 'month', 'steps_in_state']</FONT>
         <BR/>
         <FONT POINT-SIZE="10">Choice States: []</FONT>
         <BR/>
-        <FONT POINT-SIZE="10">Features: ['drift', 'steps_in_state', 'was_drifting']</FONT>
+        <FONT POINT-SIZE="10">Features: ['drift', 'month', 'steps_in_state', 'was_drifting']</FONT>
         <BR/>
         <FONT POINT-SIZE="10"><B>Outcomes:</B> ['drifting']</FONT>
         > shape=box]
@@ -17,7 +17,7 @@ digraph RunOrDriftBranch {
         <BR/>
         <FONT POINT-SIZE="10">Choice States: []</FONT>
         <BR/>
-        <FONT POINT-SIZE="10">Features: ['elevation', 'last_mean_heading', 'mean_heading', 'temp', 'was_drifting']</FONT>
+        <FONT POINT-SIZE="10">Features: ['diff_elevation', 'elevation', 'last_mean_heading', 'mean_heading', 'month', 'temp', 'was_drifting']</FONT>
         <BR/>
         <FONT POINT-SIZE="10"><B>Outcomes:</B> ['mean_heading']</FONT>
         > shape=box]

@@ -20,9 +20,9 @@ class RunOrDriftBuilder:
     Run or Drift choice builder for Chinook salmon.
     """
 
-    STATE = ["drifting", "steps_in_state"]
+    STATE = ["drifting", "steps_in_state", "month"]
     CHOICE_STATE = []
-    COLUMNS = ["was_drifting", "steps_in_state", "drift"]
+    COLUMNS = ["was_drifting", "steps_in_state", "drift", "month"]
 
     def __init__(self, enrichment):
         pass
@@ -33,11 +33,13 @@ class RunOrDriftBuilder:
                 {
                     "was_drifting": state["drifting"],
                     "steps_in_state": state["steps_in_state"],
+                    "month": state["month"],
                     "drift": True,
                 },
                 {
                     "was_drifting": state["drifting"],
                     "steps_in_state": state["steps_in_state"],
+                    "month": state["month"],
                     "drift": False,
                 },
             ]
@@ -50,7 +52,7 @@ class RunOrDriftBranch(DecisionTree):
     """
 
     BUILDERS = [RunOrDriftBuilder]
-    FEATURE_COLUMNS = ["was_drifting", "steps_in_state", "drift"]
+    FEATURE_COLUMNS = ["was_drifting", "steps_in_state", "drift", "month"]
     OUTCOMES = ["drifting"]
     BRANCHES = {
         "run": RunHeadingBranch,
@@ -120,6 +122,7 @@ def train_run_or_drift_model(training_data, testing_data, enrichment):
             state = {
                 "drifting": start["drifting"],
                 "steps_in_state": start["steps_in_state"],
+                "month": start["month"],
             }
             choice_state = {}
             selection = "drift" if end["drifting"] else "run"
@@ -133,10 +136,17 @@ def train_run_or_drift_model(training_data, testing_data, enrichment):
                 run_or_drift_selections_test.append(selection)
 
     decision_tree = RunOrDriftBranch(enrichment)
+    model_data = decision_tree._build_model_data(
+        run_or_drift_states_train,
+        run_or_drift_choice_states_train,
+        run_or_drift_selections_train,
+    )
+    model_data.to_csv("RunOrDriftBranch.csv", index=False)
     decision_tree.train_model(
         run_or_drift_states_train,
         run_or_drift_choice_states_train,
         run_or_drift_selections_train,
+        N=10,
     )
     print(
         "Train:",

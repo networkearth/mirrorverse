@@ -147,8 +147,12 @@ def train_run_movement_model(training_data, testing_data, enrichment):
                 run_selections_test.append(selection)
 
     decision_tree = RunMovementLeaf(enrichment)
-    decision_tree.train_model(
+    model_data = decision_tree._build_model_data(
         run_states_train, run_choice_states_train, run_selections_train
+    )
+    model_data.to_csv("RunMovementLeaf.csv")
+    decision_tree.train_model(
+        run_states_train, run_choice_states_train, run_selections_train, N=10
     )
     print(
         "Train:",
