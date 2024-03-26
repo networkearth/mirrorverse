@@ -116,6 +116,7 @@ def test_build_model_data():
     expected_data_1["selected"] = (expected_data_1["x"] == 0) & (
         expected_data_1["y"] == 1
     )
+    expected_data_1["_decision"] = 0
     expected_data_2 = pd.concat(
         [
             pd.DataFrame({"x": np.arange(0, 1, 0.1), "y": 1}),
@@ -125,6 +126,7 @@ def test_build_model_data():
     expected_data_2["selected"] = (expected_data_2["x"] == 0) & (
         expected_data_2["y"] == 2
     )
+    expected_data_2["_decision"] = 1
     expected_data = pd.concat([expected_data_1, expected_data_2])
     assert_frame_equal(
         data.reset_index(drop=True), expected_data.reset_index(drop=True)
@@ -142,8 +144,12 @@ def test_train_model():
     X = decision_tree.get_choices({"min": 0, "max": 1}, {"step_size": 0.1})
     y = decision_tree.model.predict(X[decision_tree.FEATURE_COLUMNS])
     X["utility"] = y
+    # all others should've changed by 0 - 0.05 (1 -> 0.95)
+    # except for the selection which should've increased
+    # by 1 - 0.05 (1 -> 1.95)
     X["expected_utility"] = (X["x"] == 0) & (X["y"] == 2)
-    assert (X["utility"] == X["expected_utility"]).all()
+    X["expected_utility"] = X["expected_utility"].astype(int) + 0.95
+    assert abs((X["expected_utility"] - X["utility"]).sum()) < 10**-10
 
 
 def test_test_model():
@@ -153,9 +159,14 @@ def test_test_model():
     selections = [{"x": 0, "y": 2}] * N
     enrichment = 0
     decision_tree = LinearGridDecisionTree(enrichment)
-    decision_tree.train_model(states, choice_states, selections)
-    explained_variance = decision_tree.test_model(states, choice_states, selections)
-    assert explained_variance["explained_variance"] == 1.0
+    decision_tree.train_model(states, choice_states, selections, N=1)
+    explained_variance_1 = decision_tree.test_model(states, choice_states, selections)
+    decision_tree.train_model(states, choice_states, selections, N=2)
+    explained_variance_2 = decision_tree.test_model(states, choice_states, selections)
+    assert (
+        explained_variance_1["explained_variance"]
+        < explained_variance_2["explained_variance"]
+    )
 
 
 class MockModel:
