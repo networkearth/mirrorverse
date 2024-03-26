@@ -7,6 +7,7 @@ Tests for utility functions.
 import pandas as pd
 from pandas.testing import assert_frame_equal
 from sklearn.metrics import mean_absolute_error
+from sklearn.ensemble import RandomForestRegressor
 
 from mirrorverse.utility import get_proposed_utility, train_utility_model
 
@@ -124,3 +125,28 @@ def test_train_utility_model_100_w_diagnostics():
     )
     results = list(trained_model.predict(dataframe[["feature"]]))
     assert abs(results[0] / results[1] - 2) < 0.05
+
+
+def test_train_utility_model_1_random_forest():
+    dataframe = pd.DataFrame(
+        {
+            "_decision": [0, 0, 1, 2, 2, 3, 3, 4],
+            "selected": [0, 1, 1, 1, 0, 1, 0, 1],
+            "utility": [3, 1, 3, 3, 1, 3, 1, 1],
+            "feature": [
+                1,
+                0,
+                1,
+                1,
+                0,
+                1,
+                0,
+                0,
+            ],
+        }
+    )
+    model = RandomForestRegressor(bootstrap=False)
+    trained_model, _ = train_utility_model(model, dataframe, ["feature"], N=1)
+    results = trained_model.predict(dataframe[["feature"]])
+    expected = pd.Series([1.125, 0.875, 1.125, 1.125, 0.875, 1.125, 0.875, 0.875])
+    assert (results == expected).all()
