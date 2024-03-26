@@ -33,3 +33,22 @@ def format_tag_tracks(raw_data):
 
     columns = [column.key for column in TagTracks.__table__.columns]
     return dataframe[columns]
+
+
+def format_home_regions(raw_data):
+    """
+    Input:
+    - raw_data (pd.DataFrame): Raw mappings to home regions
+
+    Returns a pd.DataFrame
+    """
+    dataframe = raw_data.rename(
+        {
+            "Ptt": "tag_key",
+            "MBC_Broadscaleregion": "home_region",
+        },
+        axis=1,
+    )
+    dataframe["tag_key"] = dataframe["tag_key"].astype(str)
+    dataframe = dataframe[~dataframe["home_region"].isnull()]
+    return dataframe

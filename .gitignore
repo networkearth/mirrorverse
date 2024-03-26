@@ -13,3 +13,4 @@ mirrorverse.egg-info/
 cwt_query.txt
 scratch.ipynb
 *.nc
+notebooks/

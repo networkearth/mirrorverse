@@ -29,6 +29,7 @@ setup(
             "chinook_train=mirrorverse.chinook.train:main",
             "chinook_simulate=mirrorverse.chinook.simulate:main",
             "chinook_states=mirrorverse.chinook.states:main",
+            "chinook_db=mirrorverse.chinook.db:main",
             "mirrorverse_bundle_models=mirrorverse.utils:bundle_models",
             "mirrorverse_graph_decision_tree=mirrorverse.graph:main",
             "mirrorverse_upload_facts=mirrorverse.warehouse.commands:upload_facts",

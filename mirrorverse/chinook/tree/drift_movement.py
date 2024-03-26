@@ -2,7 +2,7 @@
 Drift Movement Model for Chinook salmon
 """
 
-# pylint: disable=duplicate-code
+# pylint: disable=duplicate-code, protected-access
 
 from time import time
 
@@ -135,8 +135,12 @@ def train_drift_movement_model(training_data, testing_data, enrichment):
                 drift_selections_test.append(selection)
 
     decision_tree = DriftMovementLeaf(enrichment)
-    decision_tree.train_model(
+    model_data = decision_tree._build_model_data(
         drift_states_train, drift_choice_states_train, drift_selections_train
+    )
+    model_data.to_csv("DriftMovementLeaf.csv")
+    decision_tree.train_model(
+        drift_states_train, drift_choice_states_train, drift_selections_train, N=20
     )
     print(
         "Train",

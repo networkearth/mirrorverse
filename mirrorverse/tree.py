@@ -2,12 +2,17 @@
 The Base Tree Class
 """
 
+import os
+import json
+
 import pandas as pd
 import numpy as np
 
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import explained_variance_score
+
+from mirrorverse.utility import train_utility_model, get_proposed_utility
 
 
 # pylint: disable=no-member, invalid-name, attribute-defined-outside-init
@@ -104,9 +109,12 @@ class DecisionTree:
         the model data
         """
         dataframes = []
-        for state, choice_state, selection in zip(states, choice_states, selections):
+        for i, (state, choice_state, selection) in enumerate(
+            zip(states, choice_states, selections)
+        ):
             choices = self.get_choices(state, choice_state)
             dataframe = self._stitch_selection(choices, selection)
+            dataframe["_decision"] = i
             dataframes.append(dataframe)
         return pd.concat(dataframes)
 
@@ -123,29 +131,56 @@ class DecisionTree:
         data = self._build_model_data(states, choice_states, selections)
         X = data[self.FEATURE_COLUMNS]
         y = data["selected"]
-        y_pred = self.model.predict(X)
-        return {"explained_variance": round(explained_variance_score(y, y_pred), 3)}
+        data["utility"] = self.model.predict(X)
+        data = get_proposed_utility(data)
+        return {
+            "explained_variance": round(
+                explained_variance_score(y, data["probability"]), 3
+            )
+        }
 
-    def train_model(self, states, choice_states, selections):
+    def train_model(
+        self,
+        states,
+        choice_states,
+        selections,
+        N=1,
+        diagnostics=None,
+        learning_rate=31 / 32,
+    ):
         """
         Input:
         - states (list): list of dictionaries of state variables
         - choice_states (list): list of dictionaries of choice state variables
         - selections (list): list of selection designations
+        - N (int): the number of iterations to train the model
+        - diagnostics (list): a list of diagnostic functions to run
+        - learning_rate (float): maximum abs score
 
-        Train a model on the given states, choice_states,
+        Train a utility model on the given states, choice_states,
         and selections.
         """
         data = self._build_model_data(states, choice_states, selections)
-        X = data[self.FEATURE_COLUMNS]
-        y = data["selected"]
         grid_search = GridSearchCV(
-            estimator=RandomForestRegressor(random_state=42, n_jobs=3),
+            estimator=RandomForestRegressor(
+                bootstrap=False, n_jobs=(os.cpu_count() - 2)
+            ),
             param_grid=self.PARAM_GRID,
             return_train_score=True,
             cv=self.CV,
             refit=True,
-        ).fit(X, y)
+        )
+        grid_search, diagnostics_results = train_utility_model(
+            grid_search,
+            data,
+            self.FEATURE_COLUMNS,
+            N,
+            diagnostics,
+            learning_rate=learning_rate,
+        )
+        if diagnostics is not None:
+            with open(f"{self.__class__.__name___}.json", "w") as fh:
+                json.dump(diagnostics_results, fh, indent=4, sort_keys=True)
         self.model = grid_search.best_estimator_
 
     def what_state(self):

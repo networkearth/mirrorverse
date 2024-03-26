@@ -14,12 +14,16 @@ from sqlalchemy.orm import Session
 from mirrorverse.warehouse.models import ModelBase
 from mirrorverse.warehouse.utils import get_engine, upload_dataframe
 
-from mirrorverse.warehouse.data.tags import TAGS_DATA, TAG_TRACKS_DATA
-from mirrorverse.warehouse.models import Tags, TagTracks
+from mirrorverse.warehouse.data.tags import (
+    TAGS_DATA,
+    TAG_TRACKS_DATA,
+    HOME_REGIONS_DATA,
+)
+from mirrorverse.warehouse.models import Tags, TagTracks, HomeRegions
 from mirrorverse.warehouse.etls.dimensions.tags import (
     build_tags,
 )
-from mirrorverse.warehouse.etls.facts.tags import format_tag_tracks
+from mirrorverse.warehouse.etls.facts.tags import format_tag_tracks, format_home_regions
 
 
 class TestTags(unittest.TestCase):
@@ -102,6 +106,21 @@ class TestTags(unittest.TestCase):
                     "longitude": -153.1,
                     "h3_level_4_key": 594688842615750655,
                 },
+            ]
+        )
+
+        assert set(results.columns) == set(expected.columns)
+        assert_frame_equal(expected, results[expected.columns])
+
+    def test_upload_home_regions(self):
+        formatted = format_home_regions(HOME_REGIONS_DATA)
+        upload_dataframe(self.session, HomeRegions, formatted)
+        stmt = select(HomeRegions)
+        results = pd.read_sql_query(stmt, self.session.bind)
+        expected = pd.DataFrame(
+            [
+                {"tag_key": "205415", "home_region": "Gulf of Alaska"},
+                {"tag_key": "142100", "home_region": "Aleutian Islands"},
             ]
         )
 

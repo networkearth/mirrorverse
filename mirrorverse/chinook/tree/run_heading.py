@@ -2,7 +2,7 @@
 Run Heading Model for Chinook salmon
 """
 
-# pylint: disable=duplicate-code
+# pylint: disable=duplicate-code, protected-access
 
 from time import time
 
@@ -24,7 +24,18 @@ class RunHeadingChoiceBuilder:
 
     STATE = ["h3_index", "month", "mean_heading", "drifting"]
     CHOICE_STATE = []
-    COLUMNS = ["mean_heading", "elevation", "temp", "last_mean_heading", "was_drifting"]
+    COLUMNS = [
+        "mean_heading",
+        "elevation",
+        "diff_elevation",
+        "temp",
+        "last_mean_heading",
+        "was_drifting",
+        "month",
+        # REMOVE
+        "start_lat",
+        "start_lon",
+    ]
 
     def __init__(self, enrichment):
         self.surface_temps = enrichment["surface_temps"]
@@ -32,28 +43,45 @@ class RunHeadingChoiceBuilder:
 
     def __call__(self, state, choice_state):
         slices = 24
-        step_size = 1
 
         choices = pd.DataFrame(
             {"mean_heading": np.linspace(2 * np.pi / slices, 2 * np.pi, slices)}
         )
-        start_lat, start_lon = h3.h3_to_geo(state["h3_index"])
-        choices["end_lat"] = start_lat + step_size * np.sin(choices["mean_heading"])
-        choices["end_lon"] = start_lon + step_size * np.cos(choices["mean_heading"])
 
-        choices["h3_index"] = choices.apply(
-            lambda row: h3.geo_to_h3(row["end_lat"], row["end_lon"], utils.RESOLUTION),
+        # we only want immediate neighbors in this case
+        neighbors = pd.DataFrame({"h3_index": list(h3.k_ring(state["h3_index"], 1))})
+        start_lat, start_lon = h3.h3_to_geo(state["h3_index"])
+        neighbors["h3_heading"] = neighbors.apply(
+            lambda row: utils.get_heading(
+                start_lat, start_lon, *h3.h3_to_geo(row["h3_index"])
+            ),
             axis=1,
         )
-        del choices["end_lat"]
-        del choices["end_lon"]
+        choices = choices.merge(neighbors, how="cross")
+        choices["diff_heading"] = choices.apply(
+            lambda row: utils.diff_heading(row["mean_heading"], row["h3_heading"]),
+            axis=1,
+        )
+        choices = choices.sort_values("diff_heading", ascending=True).drop_duplicates(
+            "mean_heading", keep="first"
+        )
+        del choices["h3_heading"]
+        del choices["diff_heading"]
+
+        # REMOVE
+        choices["start_lat"] = start_lat
+        choices["start_lon"] = start_lon
 
         choices["month"] = state["month"]
         choices = choices.merge(
             self.surface_temps, on=["h3_index", "month"], how="inner"
         )
         choices = choices.merge(self.elevation, on="h3_index", how="inner")
-        del choices["month"]
+
+        original_elevation = self.elevation[
+            self.elevation["h3_index"] == state["h3_index"]
+        ]["elevation"].values[0]
+        choices["diff_elevation"] = choices["elevation"] - original_elevation
 
         choices["last_mean_heading"] = (
             state["mean_heading"] if state["mean_heading"] is not np.nan else 0.0
@@ -75,6 +103,8 @@ class RunHeadingBranch(DecisionTree):
         "temp",
         "last_mean_heading",
         "was_drifting",
+        "diff_elevation",
+        "month",
     ]
     OUTCOMES = ["mean_heading"]
     BRANCHES = {"run_movement": RunMovementLeaf}
@@ -169,8 +199,15 @@ def train_run_heading_model(training_data, testing_data, enrichment):
                 heading_selections_test.append(selection)
 
     decision_tree = RunHeadingBranch(enrichment)
-    decision_tree.train_model(
+    model_data = decision_tree._build_model_data(
         heading_states_train, heading_choice_states_train, heading_selections_train
+    )
+    model_data.to_csv("RunHeadingBranch.csv")
+    decision_tree.train_model(
+        heading_states_train,
+        heading_choice_states_train,
+        heading_selections_train,
+        N=20,
     )
     print(
         "Train:",

@@ -1,21 +1,17 @@
 schema: '2.0'
 stages:
   format:
-    cmd: mirrorverse_upload_facts -t surface_temperature -f ../../import/surface_temperature/surface_temperature.csv
+    cmd: mirrorverse_upload_facts -t home_regions -f data/ALL_GSI_Broadscale_GSI_3.19.2024.csv
       -o status.json
     deps:
     - path: ../../../mirrorverse/warehouse/commands.py
       hash: md5
       md5: 23af4d1ca228185b4d3bf51c8cecee46
       size: 2921
-    - path: ../../../mirrorverse/warehouse/etls/dimensions/spatial.py
+    - path: ../../../mirrorverse/warehouse/etls/facts/tags.py
       hash: md5
-      md5: 7a45fc171b186899fbdd9262a436b0fe
-      size: 2506
-    - path: ../../../mirrorverse/warehouse/etls/facts/surface_temperature.py
-      hash: md5
-      md5: 6f01577273e190f6eb8279b722cdf638
-      size: 939
+      md5: 693b070cf7e98e46820bffe926314eb0
+      size: 1429
     - path: ../../../mirrorverse/warehouse/models/facts.py
       hash: md5
       md5: 51079819524cebe2ee84af14cd591cd3
@@ -24,20 +20,20 @@ stages:
       hash: md5
       md5: f9578063005fd9df9f998a720cbc9339
       size: 811
-    - path: ../../import/surface_temperature/surface_temperature.csv
+    - path: data/ALL_GSI_Broadscale_GSI_3.19.2024.csv
       hash: md5
-      md5: 6deb79c3735417f16ace02d99891c6c7
-      size: 9419855
+      md5: 2f8de940c884f2e3a4363f1473657913
+      size: 4759
     params:
       params.yaml:
-        raw_data: ../../import/surface_temperature/surface_temperature.csv
+        raw_data: data/ALL_GSI_Broadscale_GSI_3.19.2024.csv
     outs:
     - path: status.json
       hash: md5
-      md5: 2034de50155b970f949dc8fc8c164002
+      md5: 10a43a309bf67db80987e6437b47200c
       size: 54
   enumerate_missing_dimensions:
-    cmd: mirrorverse_enumerate_missing_dimensions -t surface_temperature -o missing_dimensions.json
+    cmd: mirrorverse_enumerate_missing_dimensions -t home_regions -o missing_dimensions.json
     deps:
     - path: ../../../mirrorverse/warehouse/etls/missing_dimensions.py
       hash: md5
@@ -57,10 +53,10 @@ stages:
       size: 811
     - path: status.json
       hash: md5
-      md5: 2034de50155b970f949dc8fc8c164002
+      md5: 10a43a309bf67db80987e6437b47200c
       size: 54
     outs:
     - path: missing_dimensions.json
       hash: md5
-      md5: c54f1e77f0d79a9e55e879737d209c1a
-      size: 6864
+      md5: 01d504ffadd62eab479a7a431b01943e
+      size: 657
