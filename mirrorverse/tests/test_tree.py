@@ -140,7 +140,7 @@ def test_train_model():
     selections = [{"x": 0, "y": 2}] * N
     enrichment = 0
     decision_tree = LinearGridDecisionTree(enrichment)
-    decision_tree.train_model(states, choice_states, selections)
+    decision_tree.train_model(states, choice_states, selections, learning_rate=None)
     X = decision_tree.get_choices({"min": 0, "max": 1}, {"step_size": 0.1})
     y = decision_tree.model.predict(X[decision_tree.FEATURE_COLUMNS])
     X["utility"] = y

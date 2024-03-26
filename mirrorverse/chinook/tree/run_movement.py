@@ -2,7 +2,7 @@
 Run Movement Model for Chinook salmon
 """
 
-# pylint: disable=duplicate-code
+# pylint: disable=duplicate-code, protected-access
 
 from time import time
 
@@ -152,7 +152,7 @@ def train_run_movement_model(training_data, testing_data, enrichment):
     )
     model_data.to_csv("RunMovementLeaf.csv")
     decision_tree.train_model(
-        run_states_train, run_choice_states_train, run_selections_train, N=10
+        run_states_train, run_choice_states_train, run_selections_train, N=20
     )
     print(
         "Train:",

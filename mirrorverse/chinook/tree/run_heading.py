@@ -2,7 +2,7 @@
 Run Heading Model for Chinook salmon
 """
 
-# pylint: disable=duplicate-code
+# pylint: disable=duplicate-code, protected-access
 
 from time import time
 
@@ -207,7 +207,7 @@ def train_run_heading_model(training_data, testing_data, enrichment):
         heading_states_train,
         heading_choice_states_train,
         heading_selections_train,
-        N=10,
+        N=20,
     )
     print(
         "Train:",

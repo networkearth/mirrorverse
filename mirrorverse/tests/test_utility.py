@@ -150,3 +150,33 @@ def test_train_utility_model_1_random_forest():
     results = trained_model.predict(dataframe[["feature"]])
     expected = pd.Series([1.125, 0.875, 1.125, 1.125, 0.875, 1.125, 0.875, 0.875])
     assert (results == expected).all()
+
+
+def test_train_utility_model_learning_rate():
+    dataframe = pd.DataFrame(
+        {
+            "_decision": [0, 0, 1, 2, 2, 3, 3, 4],
+            "selected": [0, 1, 1, 1, 0, 1, 0, 1],
+            "utility": [3, 1, 3, 3, 1, 3, 1, 1],
+            "feature": [
+                "pizza",
+                "sandwich",
+                "pizza",
+                "pizza",
+                "sandwich",
+                "pizza",
+                "sandwich",
+                "sandwich",
+            ],
+        }
+    )
+    model = FakeModel()
+    trained_model, _ = train_utility_model(model, dataframe, ["feature"], N=5)
+    results = trained_model.predict(dataframe[["feature"]])
+    diff_1 = abs(results[0] / results[1] - 2)
+    trained_model, _ = train_utility_model(
+        model, dataframe, ["feature"], N=5, learning_rate=31 / 32
+    )
+    results = trained_model.predict(dataframe[["feature"]])
+    diff_2 = abs(results[0] / results[1] - 2)
+    assert diff_1 > diff_2

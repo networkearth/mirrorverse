@@ -10,11 +10,12 @@ import numpy as np
 from tqdm import tqdm
 
 
-def get_proposed_utility(dataframe):
+def get_proposed_utility(dataframe, learning_rate=None):
     """
     Inputs:
     - dataframe (pd.DataFrame): a dataframe with columns "utility",
         "selected", and "_decision"
+    - learning_rate (float): maximum abs score
 
     Returns a pd.DataFrame with proposed utility values
     """
@@ -23,11 +24,16 @@ def get_proposed_utility(dataframe):
     )
     dataframe["probability"] = dataframe["utility"] / dataframe["sum_utility"]
     dataframe["score"] = dataframe["selected"] - dataframe["probability"]
+    if learning_rate:
+        factor = learning_rate / dataframe["score"].abs().max()
+        dataframe["score"] = dataframe["score"] * factor
     dataframe["proposed"] = dataframe["utility"] * (1 + dataframe["score"])
     return dataframe
 
 
-def train_utility_model(model, dataframe, feature_columns, N=1, diagnostics=None):
+def train_utility_model(
+    model, dataframe, feature_columns, N=1, diagnostics=None, learning_rate=None
+):
     """
     Inputs:
     - model: a model object with a "fit" method and a "predict" method
@@ -36,6 +42,7 @@ def train_utility_model(model, dataframe, feature_columns, N=1, diagnostics=None
     - feature_columns (list): a list of column names to use as features
     - N (int): the number of iterations to train the model
     - diagnostics: a list to store diagnostics
+    - learning_rate (float): maximum abs score
 
     Returns a trained model
     """
@@ -51,7 +58,7 @@ def train_utility_model(model, dataframe, feature_columns, N=1, diagnostics=None
     diagnostics_results = defaultdict(list)
 
     for _ in tqdm(range(N)):
-        dataframe = get_proposed_utility(dataframe)
+        dataframe = get_proposed_utility(dataframe, learning_rate=learning_rate)
 
         if diagnostics is not None:
             for diagnostic in diagnostics:
@@ -63,7 +70,7 @@ def train_utility_model(model, dataframe, feature_columns, N=1, diagnostics=None
         model.fit(X, y)
         dataframe["utility"] = model.predict(X)
 
-    dataframe = get_proposed_utility(dataframe)
+    dataframe = get_proposed_utility(dataframe, learning_rate=learning_rate)
 
     if diagnostics is not None:
         for diagnostic in diagnostics:

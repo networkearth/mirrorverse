@@ -2,6 +2,7 @@
 The Base Tree Class
 """
 
+import os
 import json
 
 import pandas as pd
@@ -138,7 +139,15 @@ class DecisionTree:
             )
         }
 
-    def train_model(self, states, choice_states, selections, N=1, diagnostics=None):
+    def train_model(
+        self,
+        states,
+        choice_states,
+        selections,
+        N=1,
+        diagnostics=None,
+        learning_rate=31 / 32,
+    ):
         """
         Input:
         - states (list): list of dictionaries of state variables
@@ -146,20 +155,28 @@ class DecisionTree:
         - selections (list): list of selection designations
         - N (int): the number of iterations to train the model
         - diagnostics (list): a list of diagnostic functions to run
+        - learning_rate (float): maximum abs score
 
         Train a utility model on the given states, choice_states,
         and selections.
         """
         data = self._build_model_data(states, choice_states, selections)
         grid_search = GridSearchCV(
-            estimator=RandomForestRegressor(bootstrap=False, n_jobs=3),
+            estimator=RandomForestRegressor(
+                bootstrap=False, n_jobs=(os.cpu_count() - 2)
+            ),
             param_grid=self.PARAM_GRID,
             return_train_score=True,
             cv=self.CV,
             refit=True,
         )
         grid_search, diagnostics_results = train_utility_model(
-            grid_search, data, self.FEATURE_COLUMNS, N, diagnostics
+            grid_search,
+            data,
+            self.FEATURE_COLUMNS,
+            N,
+            diagnostics,
+            learning_rate=learning_rate,
         )
         if diagnostics is not None:
             with open(f"{self.__class__.__name___}.json", "w") as fh:
