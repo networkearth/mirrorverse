@@ -42,12 +42,12 @@ stages:
       size: 2048
     - path: ../../../mirrorverse/chinook/tree/drift_movement.py
       hash: md5
-      md5: b7a20496d77ecf87fdc41f4f14c5a717
-      size: 4885
+      md5: 813d34d6f679f8c253c0aa88455d7436
+      size: 5065
     - path: ../../../mirrorverse/tree.py
       hash: md5
-      md5: fc7f69d1d681232abe1a820999730d23
-      size: 8189
+      md5: 6ec1e51cf6a6c627c919bf1cb853bd7a
+      size: 8966
     - path: ../data/bathymetry.csv
       hash: md5
       md5: 009f0c0129454d53218b4358abba345c
@@ -71,8 +71,8 @@ stages:
     outs:
     - path: DriftMovementLeaf.pkl
       hash: md5
-      md5: e66d161005e9df2045512891685d60f8
-      size: 8472073
+      md5: 1cb1ef6d0506818477cd6b087e09343b
+      size: 701563
   train_run_movement:
     cmd: chinook_train -n RunMovementLeaf -tr training_states.csv -te testing_states.csv
       -t ../data/surface_temps.csv -e ../data/bathymetry.csv -m .
@@ -83,12 +83,12 @@ stages:
       size: 2048
     - path: ../../../mirrorverse/chinook/tree/run_movement.py
       hash: md5
-      md5: d00749ba7ee07cc777498ee6b38cd796
-      size: 5318
+      md5: dc6b99ba64b6022a1b6d23a5b958db8b
+      size: 5787
     - path: ../../../mirrorverse/tree.py
       hash: md5
-      md5: fc7f69d1d681232abe1a820999730d23
-      size: 8189
+      md5: 6ec1e51cf6a6c627c919bf1cb853bd7a
+      size: 8966
     - path: ../data/bathymetry.csv
       hash: md5
       md5: 009f0c0129454d53218b4358abba345c
@@ -112,8 +112,8 @@ stages:
     outs:
     - path: RunMovementLeaf.pkl
       hash: md5
-      md5: 51fcfaa2653da7a445e224c57a7c48c5
-      size: 544581
+      md5: 94c3a3942e6d395290c2f8ca263eb8cb
+      size: 414971
   train_run_heading:
     cmd: chinook_train -n RunHeadingBranch -tr training_states.csv -te testing_states.csv
       -t ../data/surface_temps.csv -e ../data/bathymetry.csv -m .
@@ -128,8 +128,8 @@ stages:
       size: 7004
     - path: ../../../mirrorverse/tree.py
       hash: md5
-      md5: fc7f69d1d681232abe1a820999730d23
-      size: 8189
+      md5: 6ec1e51cf6a6c627c919bf1cb853bd7a
+      size: 8966
     - path: ../data/bathymetry.csv
       hash: md5
       md5: 009f0c0129454d53218b4358abba345c
@@ -153,8 +153,8 @@ stages:
     outs:
     - path: RunHeadingBranch.pkl
       hash: md5
-      md5: f8cd87594e540e854c8f29bbb967efb1
-      size: 1292315
+      md5: fb42d5082b4bd40055c28ddc8f61fc31
+      size: 644001
   train_run_or_drift:
     cmd: chinook_train -n RunOrDriftBranch -tr training_states.csv -te testing_states.csv
       -t ../data/surface_temps.csv -e ../data/bathymetry.csv -m .
@@ -169,8 +169,8 @@ stages:
       size: 5195
     - path: ../../../mirrorverse/tree.py
       hash: md5
-      md5: fc7f69d1d681232abe1a820999730d23
-      size: 8189
+      md5: 6ec1e51cf6a6c627c919bf1cb853bd7a
+      size: 8966
     - path: ../data/bathymetry.csv
       hash: md5
       md5: 009f0c0129454d53218b4358abba345c
@@ -194,32 +194,32 @@ stages:
     outs:
     - path: RunOrDriftBranch.pkl
       hash: md5
-      md5: ce1532ab39c4fcbb983ad2c55d1c9124
-      size: 192614
+      md5: 8e681fb96aa1129c5c16cb796380c059
+      size: 196070
   bundle_models:
     cmd: mirrorverse_bundle_models -m .
     deps:
     - path: DriftMovementLeaf.pkl
       hash: md5
-      md5: e66d161005e9df2045512891685d60f8
-      size: 8472073
+      md5: 1cb1ef6d0506818477cd6b087e09343b
+      size: 701563
     - path: RunHeadingBranch.pkl
       hash: md5
-      md5: f8cd87594e540e854c8f29bbb967efb1
-      size: 1292315
+      md5: fb42d5082b4bd40055c28ddc8f61fc31
+      size: 644001
     - path: RunMovementLeaf.pkl
       hash: md5
-      md5: 51fcfaa2653da7a445e224c57a7c48c5
-      size: 544581
+      md5: 94c3a3942e6d395290c2f8ca263eb8cb
+      size: 414971
     - path: RunOrDriftBranch.pkl
       hash: md5
-      md5: ce1532ab39c4fcbb983ad2c55d1c9124
-      size: 192614
+      md5: 8e681fb96aa1129c5c16cb796380c059
+      size: 196070
     outs:
     - path: models.pkl
       hash: md5
-      md5: 2b0841363a037c7207f5c0cc3c031148
-      size: 10502092
+      md5: 504e1eb7d10b6418ef288d09becaa68e
+      size: 1956565
   data:
     cmd: chinook_db -e ../data/bathymetry.csv -s ../data/surface_temps.csv -t ../data/tag_tracks.csv
     deps:

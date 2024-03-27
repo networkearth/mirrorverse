@@ -136,22 +136,35 @@ def train_drift_movement_model(training_data, testing_data, enrichment):
 
     decision_tree = DriftMovementLeaf(enrichment)
     model_data = decision_tree._build_model_data(
-        drift_states_train, drift_choice_states_train, drift_selections_train
+        drift_states_train,
+        drift_choice_states_train,
+        drift_selections_train,
+        quiet=True,
     )
     model_data.to_csv("DriftMovementLeaf.csv")
     decision_tree.train_model(
-        drift_states_train, drift_choice_states_train, drift_selections_train, N=20
+        drift_states_train,
+        drift_choice_states_train,
+        drift_selections_train,
+        N=20,
+        quiet=True,
     )
     print(
         "Train",
         decision_tree.test_model(
-            drift_states_train, drift_choice_states_train, drift_selections_train
+            drift_states_train,
+            drift_choice_states_train,
+            drift_selections_train,
+            quiet=True,
         ),
     )
     print(
         "Test:",
         decision_tree.test_model(
-            drift_states_test, drift_choice_states_test, drift_selections_test
+            drift_states_test,
+            drift_choice_states_test,
+            drift_selections_test,
+            quiet=True,
         ),
     )
 

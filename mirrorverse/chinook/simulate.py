@@ -4,12 +4,13 @@ Code for simulating using the Chinook decision tree.
 
 # pylint: disable=duplicate-code
 
+import os
 import pickle
+from multiprocessing import Pool
 
 import click
 import pandas as pd
 import h3
-from tqdm import tqdm
 
 
 from mirrorverse.chinook.tree.run_or_drift import RunOrDriftBranch
@@ -19,7 +20,7 @@ from mirrorverse.chinook.states import (
 )
 
 
-def simulate(ptt, h3_index, date, steps, decision_tree):
+def simulate(args):
     """
     Input:
     - ptt: ptt
@@ -30,6 +31,7 @@ def simulate(ptt, h3_index, date, steps, decision_tree):
 
     Returns a DataFrame with the simulated data.
     """
+    ptt, h3_index, date, steps, decision_tree = args
     state = {
         "drifting": True,
         "steps_in_state": 1,
@@ -56,6 +58,7 @@ def simulate(ptt, h3_index, date, steps, decision_tree):
             "steps_in_state": steps_in_state,
             "h3_index": choice_state["h3_index"],
             "month": date.month,
+            "heading": 0 if choice_state["drifting"] else choice_state["heading"],
             "mean_heading": (
                 0 if choice_state["drifting"] else choice_state["mean_heading"]
             ),
@@ -101,14 +104,15 @@ def main(data_path, temps_path, elevation_path, model_path, simulation_path):
     decision_tree.import_models(models)
 
     print("Simulating...")
-    dfs = []
-    ptts = list(data["ptt"].unique())
-    for ptt in tqdm(ptts):
+    jobs = []
+    for ptt in data["ptt"].unique():
         df = data[data["ptt"] == ptt].sort_values("date", ascending=True).iloc[0]
         steps = data[data["ptt"] == ptt].shape[0]
         date = pd.to_datetime(df["date"])
-        df = simulate(df["ptt"], df["h3_index"], date, steps, decision_tree)
-        dfs.append(df)
+        jobs.append((df["ptt"], df["h3_index"], date, steps, decision_tree))
+
+    with Pool(os.cpu_count() - 2) as p:
+        dfs = p.map(simulate, jobs)
 
     df = pd.concat(dfs)
 

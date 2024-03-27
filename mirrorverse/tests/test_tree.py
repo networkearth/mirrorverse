@@ -4,6 +4,7 @@ Tree Tests
 
 # pylint: disable=missing-function-docstring, missing-class-docstring, attribute-defined-outside-init, invalid-name
 
+import unittest
 from functools import partial
 
 import pandas as pd
@@ -272,3 +273,37 @@ def test_what_state():
     state, choice_state = decision_tree.what_state()
     assert state == {"min_step_size", "max_step_size", "min", "max"}
     assert choice_state == {"step_size"}
+
+
+# pylint: disable=protected-access
+class TestNoSelection(unittest.TestCase):
+
+    def test_no_selection(self):
+        states = [{"min": 0, "max": 1}, {"min": 0, "max": 1}]
+        choice_states = [{"step_size": 0.1}, {"step_size": 0.1}]
+        selections = [{"x": 0, "y": -1}, {"x": 0, "y": 2}]
+        enrichment = 0
+        self.assertRaises(
+            AssertionError,
+            LinearGridDecisionTree(enrichment)._build_model_data,
+            states,
+            choice_states,
+            selections,
+        )
+        data = LinearGridDecisionTree(enrichment)._build_model_data(
+            states, choice_states, selections, quiet=True
+        )
+        expected_data_2 = pd.concat(
+            [
+                pd.DataFrame({"x": np.arange(0, 1, 0.1), "y": 1}),
+                pd.DataFrame({"x": np.arange(0, 1, 0.1), "y": 2}),
+            ]
+        )
+        expected_data_2["selected"] = (expected_data_2["x"] == 0) & (
+            expected_data_2["y"] == 2
+        )
+        expected_data_2["_decision"] = 1
+        expected_data = expected_data_2
+        assert_frame_equal(
+            data.reset_index(drop=True), expected_data.reset_index(drop=True)
+        )
