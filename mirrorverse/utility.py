@@ -25,7 +25,7 @@ def get_proposed_utility(dataframe, learning_rate=None):
     dataframe["probability"] = dataframe["utility"] / dataframe["sum_utility"]
     dataframe["score"] = dataframe["selected"] - dataframe["probability"]
     if learning_rate:
-        factor = learning_rate / dataframe["score"].abs().max()
+        factor = np.abs(learning_rate / dataframe["score"].min())
         dataframe["score"] = dataframe["score"] * factor
     dataframe["proposed"] = dataframe["utility"] * (1 + dataframe["score"])
     return dataframe
