@@ -173,9 +173,11 @@ def train_run_heading_model(training_data, testing_data, enrichment):
     heading_states_train = []
     heading_choice_states_train = []
     heading_selections_train = []
+    identifiers_train = []
     heading_states_test = []
     heading_choice_states_test = []
     heading_selections_test = []
+    identifiers_test = []
 
     data = pd.concat([training_data, testing_data])
     training_ptt = set(training_data["ptt"].unique())
@@ -199,32 +201,44 @@ def train_run_heading_model(training_data, testing_data, enrichment):
                 heading_states_train.append(state)
                 heading_choice_states_train.append(choice_state)
                 heading_selections_train.append(selection)
+                identifiers_train.append(ptt)
             else:
                 heading_states_test.append(state)
                 heading_choice_states_test.append(choice_state)
                 heading_selections_test.append(selection)
+                identifiers_test.append(ptt)
 
     decision_tree = RunHeadingBranch(enrichment)
     model_data = decision_tree._build_model_data(
-        heading_states_train, heading_choice_states_train, heading_selections_train
+        heading_states_train,
+        heading_choice_states_train,
+        heading_selections_train,
+        identifiers_train,
     )
     model_data.to_csv("RunHeadingBranch.csv")
     decision_tree.train_model(
         heading_states_train,
         heading_choice_states_train,
         heading_selections_train,
+        identifiers_train,
         N=20,
     )
     print(
         "Train:",
         decision_tree.test_model(
-            heading_states_train, heading_choice_states_train, heading_selections_train
+            heading_states_train,
+            heading_choice_states_train,
+            heading_selections_train,
+            identifiers_train,
         ),
     )
     print(
         "Test:",
         decision_tree.test_model(
-            heading_states_test, heading_choice_states_test, heading_selections_test
+            heading_states_test,
+            heading_choice_states_test,
+            heading_selections_test,
+            identifiers_test,
         ),
     )
 

@@ -106,9 +106,11 @@ def train_drift_movement_model(training_data, testing_data, enrichment):
     drift_states_train = []
     drift_choice_states_train = []
     drift_selections_train = []
+    identifiers_train = []
     drift_states_test = []
     drift_choice_states_test = []
     drift_selections_test = []
+    identifiers_test = []
 
     data = pd.concat([training_data, testing_data])
     training_ptt = set(training_data["ptt"].unique())
@@ -129,16 +131,19 @@ def train_drift_movement_model(training_data, testing_data, enrichment):
                 drift_states_train.append(state)
                 drift_choice_states_train.append(choice_state)
                 drift_selections_train.append(selection)
+                identifiers_train.append(ptt)
             else:
                 drift_states_test.append(state)
                 drift_choice_states_test.append(choice_state)
                 drift_selections_test.append(selection)
+                identifiers_test.append(ptt)
 
     decision_tree = DriftMovementLeaf(enrichment)
     model_data = decision_tree._build_model_data(
         drift_states_train,
         drift_choice_states_train,
         drift_selections_train,
+        identifiers_train,
         quiet=True,
     )
     model_data.to_csv("DriftMovementLeaf.csv")
@@ -146,6 +151,7 @@ def train_drift_movement_model(training_data, testing_data, enrichment):
         drift_states_train,
         drift_choice_states_train,
         drift_selections_train,
+        identifiers_train,
         N=20,
         quiet=True,
     )
@@ -155,6 +161,7 @@ def train_drift_movement_model(training_data, testing_data, enrichment):
             drift_states_train,
             drift_choice_states_train,
             drift_selections_train,
+            identifiers_train,
             quiet=True,
         ),
     )
@@ -164,6 +171,7 @@ def train_drift_movement_model(training_data, testing_data, enrichment):
             drift_states_test,
             drift_choice_states_test,
             drift_selections_test,
+            identifiers_test,
             quiet=True,
         ),
     )

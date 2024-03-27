@@ -49,8 +49,8 @@ stages:
       size: 3847027
     - path: ../train/models.pkl
       hash: md5
-      md5: 530a618ef714370f32afc30c17129f73
-      size: 3721441
+      md5: 5eb03904b22c6a1f9c737163a932ec01
+      size: 3193285
     - path: training_states.csv
       hash: md5
       md5: 30cf798cb80767c26bf04cd4cb24799e
@@ -63,5 +63,5 @@ stages:
     outs:
     - path: simulation.csv
       hash: md5
-      md5: c4ff3ed9c0afa49831b4d8d0a8ed2507
-      size: 741444
+      md5: d633d50b30842c6d539c84333849d033
+      size: 735462

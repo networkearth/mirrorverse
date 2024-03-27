@@ -97,12 +97,16 @@ class DecisionTree:
         if self.branches.get(identifier) is not None:
             self.branches[identifier].choose(state, choice_state)
 
-    def _build_model_data(self, states, choice_states, selections, quiet=False):
+    def _build_model_data(
+        self, states, choice_states, selections, identifiers, quiet=False
+    ):
         """
         Input:
         - states (list): list of dictionaries of state variables
         - choice_states (list): list of dictionaries of choice state variables
         - selections (list): list of selection designations
+        - identifiers (list): list of identifiers used to group decisions
+            together
         - quiet (boolean): defaults to False - if True, suppresses
             warnings of no selection and instead just doesn't pass
             that data to the model
@@ -112,8 +116,8 @@ class DecisionTree:
         the model data
         """
         dataframes = []
-        for i, (state, choice_state, selection) in enumerate(
-            zip(states, choice_states, selections)
+        for i, (state, choice_state, selection, identifier) in enumerate(
+            zip(states, choice_states, selections, identifiers)
         ):
             choices = self.get_choices(state, choice_state)
             dataframe = self._stitch_selection(choices, selection)
@@ -126,15 +130,18 @@ class DecisionTree:
                     continue
 
             dataframe["_decision"] = i
+            dataframe["_identifier"] = identifier
             dataframes.append(dataframe)
         return pd.concat(dataframes)
 
-    def test_model(self, states, choice_states, selections, quiet=False):
+    def test_model(self, states, choice_states, selections, identifiers, quiet=False):
         """
         Input:
         - states (list): list of dictionaries of state variables
         - choice_states (list): list of dictionaries of choice state variables
         - selections (list): list of selection designations
+        - identifiers (list): list of identifiers used to group decisions
+            together
         - quiet (boolean): defaults to False - if True, suppresses
             warnings of no selection and instead just doesn't pass
             that data to the model
@@ -142,7 +149,9 @@ class DecisionTree:
         Evaluate the model on the given states, choice_states,
         and selections. Returns a dictionary of metrics.
         """
-        data = self._build_model_data(states, choice_states, selections, quiet)
+        data = self._build_model_data(
+            states, choice_states, selections, identifiers, quiet
+        )
         X = data[self.FEATURE_COLUMNS]
         y = data["selected"]
         data["utility"] = self.model.predict(X)
@@ -158,6 +167,7 @@ class DecisionTree:
         states,
         choice_states,
         selections,
+        identifiers,
         N=1,
         diagnostics=None,
         learning_rate=31 / 32,
@@ -168,6 +178,8 @@ class DecisionTree:
         - states (list): list of dictionaries of state variables
         - choice_states (list): list of dictionaries of choice state variables
         - selections (list): list of selection designations
+        - identifiers (list): list of identifiers used to group decisions
+            together
         - N (int): the number of iterations to train the model
         - diagnostics (list): a list of diagnostic functions to run
         - learning_rate (float): maximum abs score
@@ -178,7 +190,9 @@ class DecisionTree:
         Train a utility model on the given states, choice_states,
         and selections.
         """
-        data = self._build_model_data(states, choice_states, selections, quiet)
+        data = self._build_model_data(
+            states, choice_states, selections, identifiers, quiet
+        )
         grid_search = GridSearchCV(
             estimator=RandomForestRegressor(
                 bootstrap=False, n_jobs=(os.cpu_count() - 2)

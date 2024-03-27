@@ -135,9 +135,11 @@ def train_run_movement_model(training_data, testing_data, enrichment):
     run_states_train = []
     run_choice_states_train = []
     run_selections_train = []
+    identifiers_train = []
     run_states_test = []
     run_choice_states_test = []
     run_selections_test = []
+    identifiers_test = []
 
     data = pd.concat([training_data, testing_data])
     training_ptt = set(training_data["ptt"].unique())
@@ -160,33 +162,48 @@ def train_run_movement_model(training_data, testing_data, enrichment):
                 run_states_train.append(state)
                 run_choice_states_train.append(choice_state)
                 run_selections_train.append(selection)
+                identifiers_train.append(ptt)
             else:
                 run_states_test.append(state)
                 run_choice_states_test.append(choice_state)
                 run_selections_test.append(selection)
+                identifiers_test.append(ptt)
 
     decision_tree = RunMovementLeaf(enrichment)
     model_data = decision_tree._build_model_data(
-        run_states_train, run_choice_states_train, run_selections_train, quiet=True
+        run_states_train,
+        run_choice_states_train,
+        run_selections_train,
+        identifiers_train,
+        quiet=True,
     )
     model_data.to_csv("RunMovementLeaf.csv")
     decision_tree.train_model(
         run_states_train,
         run_choice_states_train,
         run_selections_train,
+        identifiers_train,
         N=20,
         quiet=True,
     )
     print(
         "Train:",
         decision_tree.test_model(
-            run_states_train, run_choice_states_train, run_selections_train, quiet=True
+            run_states_train,
+            run_choice_states_train,
+            run_selections_train,
+            identifiers_train,
+            quiet=True,
         ),
     )
     print(
         "Test:",
         decision_tree.test_model(
-            run_states_test, run_choice_states_test, run_selections_test, quiet=True
+            run_states_test,
+            run_choice_states_test,
+            run_selections_test,
+            identifiers_test,
+            quiet=True,
         ),
     )
 
