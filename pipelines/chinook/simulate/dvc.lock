@@ -33,8 +33,8 @@ stages:
     deps:
     - path: ../../../mirrorverse/chinook/simulate.py
       hash: md5
-      md5: 376560eb404dfbe3ccfe4f5e3bfd0174
-      size: 3587
+      md5: 1d1b3cd897341d1693a64e08221568f6
+      size: 3797
     - path: ../../../mirrorverse/chinook/states.py
       hash: md5
       md5: 612a4e938a6a02df9f5d87467fd5420e
@@ -49,8 +49,8 @@ stages:
       size: 3847027
     - path: ../train/models.pkl
       hash: md5
-      md5: 93ef72d0763bff8ec908883908550912
-      size: 8227710
+      md5: 530a618ef714370f32afc30c17129f73
+      size: 3721441
     - path: training_states.csv
       hash: md5
       md5: 30cf798cb80767c26bf04cd4cb24799e
@@ -63,5 +63,5 @@ stages:
     outs:
     - path: simulation.csv
       hash: md5
-      md5: 4a280f7302e079206baed0d896620d80
-      size: 720374
+      md5: c4ff3ed9c0afa49831b4d8d0a8ed2507
+      size: 741444

@@ -51,6 +51,10 @@ def simulate(args):
         steps_in_state = (
             state["steps_in_state"] + 1
             if state["drifting"] == choice_state["drifting"]
+            and (
+                not choice_state["drifting"]
+                and state["mean_heading"] == choice_state["mean_heading"]
+            )
             else 1
         )
         new_state = {
@@ -101,6 +105,8 @@ def main(data_path, temps_path, elevation_path, model_path, simulation_path):
     print("Loading Models...")
     with open(model_path, "rb") as fh:
         models = pickle.load(fh)
+    for model in models.values():
+        model.n_jobs = 1
     decision_tree.import_models(models)
 
     print("Simulating...")
