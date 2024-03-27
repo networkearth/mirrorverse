@@ -43,13 +43,10 @@ class RunMovementChoiceBuilder:
         if h3_index not in self.neighbors:
             utils.find_neighbors(h3_index, self.neighbors)
         neighbors = list(self.neighbors.get(h3_index))
-        if h3_index not in neighbors:
-            neighbors.append(h3_index)
 
         choices = pd.DataFrame(neighbors, columns=["h3_index"])
 
         # might be good to put some assertions around here
-        assert h3_index in choices["h3_index"].values
         choices["month"] = state["month"]
         choices = choices.merge(
             self.surface_temps, on=["h3_index", "month"], how="inner"
