@@ -58,7 +58,7 @@ class DriftMovementLeaf(DecisionTree):
     FEATURE_COLUMNS = ["temp", "elevation", "remain"]
     OUTCOMES = ["h3_index"]
     BRANCHES = {}
-    PARAM_GRID = {"n_estimators": [10, 20, 50, 100], "min_samples_leaf": [50, 100, 200]}
+    PARAM_GRID = {"n_estimators": [10, 20], "min_samples_leaf": [50, 100]}
     CV = KFold(n_splits=5, shuffle=True, random_state=42)
 
     # pylint: disable=unused-argument
@@ -106,9 +106,11 @@ def train_drift_movement_model(training_data, testing_data, enrichment):
     drift_states_train = []
     drift_choice_states_train = []
     drift_selections_train = []
+    identifiers_train = []
     drift_states_test = []
     drift_choice_states_test = []
     drift_selections_test = []
+    identifiers_test = []
 
     data = pd.concat([training_data, testing_data])
     training_ptt = set(training_data["ptt"].unique())
@@ -129,29 +131,48 @@ def train_drift_movement_model(training_data, testing_data, enrichment):
                 drift_states_train.append(state)
                 drift_choice_states_train.append(choice_state)
                 drift_selections_train.append(selection)
+                identifiers_train.append(ptt)
             else:
                 drift_states_test.append(state)
                 drift_choice_states_test.append(choice_state)
                 drift_selections_test.append(selection)
+                identifiers_test.append(ptt)
 
     decision_tree = DriftMovementLeaf(enrichment)
     model_data = decision_tree._build_model_data(
-        drift_states_train, drift_choice_states_train, drift_selections_train
+        drift_states_train,
+        drift_choice_states_train,
+        drift_selections_train,
+        identifiers_train,
+        quiet=True,
     )
     model_data.to_csv("DriftMovementLeaf.csv")
     decision_tree.train_model(
-        drift_states_train, drift_choice_states_train, drift_selections_train, N=20
+        drift_states_train,
+        drift_choice_states_train,
+        drift_selections_train,
+        identifiers_train,
+        N=20,
+        quiet=True,
     )
     print(
         "Train",
         decision_tree.test_model(
-            drift_states_train, drift_choice_states_train, drift_selections_train
+            drift_states_train,
+            drift_choice_states_train,
+            drift_selections_train,
+            identifiers_train,
+            quiet=True,
         ),
     )
     print(
         "Test:",
         decision_tree.test_model(
-            drift_states_test, drift_choice_states_test, drift_selections_test
+            drift_states_test,
+            drift_choice_states_test,
+            drift_selections_test,
+            identifiers_test,
+            quiet=True,
         ),
     )
 

@@ -4,6 +4,7 @@ Tree Tests
 
 # pylint: disable=missing-function-docstring, missing-class-docstring, attribute-defined-outside-init, invalid-name
 
+import unittest
 from functools import partial
 
 import pandas as pd
@@ -103,9 +104,10 @@ def test_build_model_data():
     states = [{"min": 0, "max": 1}, {"min": 0, "max": 1}]
     choice_states = [{"step_size": 0.1}, {"step_size": 0.1}]
     selections = [{"x": 0, "y": 1}, {"x": 0, "y": 2}]
+    identifiers = [1, 0]
     enrichment = 0
     data = LinearGridDecisionTree(enrichment)._build_model_data(
-        states, choice_states, selections
+        states, choice_states, selections, identifiers
     )
     expected_data_1 = pd.concat(
         [
@@ -117,6 +119,7 @@ def test_build_model_data():
         expected_data_1["y"] == 1
     )
     expected_data_1["_decision"] = 0
+    expected_data_1["_identifier"] = 1
     expected_data_2 = pd.concat(
         [
             pd.DataFrame({"x": np.arange(0, 1, 0.1), "y": 1}),
@@ -127,6 +130,7 @@ def test_build_model_data():
         expected_data_2["y"] == 2
     )
     expected_data_2["_decision"] = 1
+    expected_data_2["_identifier"] = 0
     expected_data = pd.concat([expected_data_1, expected_data_2])
     assert_frame_equal(
         data.reset_index(drop=True), expected_data.reset_index(drop=True)
@@ -138,9 +142,12 @@ def test_train_model():
     states = [{"min": 0, "max": 1}] * N
     choice_states = [{"step_size": 0.1}] * N
     selections = [{"x": 0, "y": 2}] * N
+    identifiers = [1] * N
     enrichment = 0
     decision_tree = LinearGridDecisionTree(enrichment)
-    decision_tree.train_model(states, choice_states, selections, learning_rate=None)
+    decision_tree.train_model(
+        states, choice_states, selections, identifiers, learning_rate=None
+    )
     X = decision_tree.get_choices({"min": 0, "max": 1}, {"step_size": 0.1})
     y = decision_tree.model.predict(X[decision_tree.FEATURE_COLUMNS])
     X["utility"] = y
@@ -157,12 +164,17 @@ def test_test_model():
     states = [{"min": 0, "max": 1}] * N
     choice_states = [{"step_size": 0.1}] * N
     selections = [{"x": 0, "y": 2}] * N
+    identifiers = [1] * N
     enrichment = 0
     decision_tree = LinearGridDecisionTree(enrichment)
-    decision_tree.train_model(states, choice_states, selections, N=1)
-    explained_variance_1 = decision_tree.test_model(states, choice_states, selections)
-    decision_tree.train_model(states, choice_states, selections, N=2)
-    explained_variance_2 = decision_tree.test_model(states, choice_states, selections)
+    decision_tree.train_model(states, choice_states, selections, identifiers, N=1)
+    explained_variance_1 = decision_tree.test_model(
+        states, choice_states, selections, identifiers
+    )
+    decision_tree.train_model(states, choice_states, selections, identifiers, N=2)
+    explained_variance_2 = decision_tree.test_model(
+        states, choice_states, selections, identifiers
+    )
     assert (
         explained_variance_1["explained_variance"]
         < explained_variance_2["explained_variance"]
@@ -272,3 +284,40 @@ def test_what_state():
     state, choice_state = decision_tree.what_state()
     assert state == {"min_step_size", "max_step_size", "min", "max"}
     assert choice_state == {"step_size"}
+
+
+# pylint: disable=protected-access
+class TestNoSelection(unittest.TestCase):
+
+    def test_no_selection(self):
+        states = [{"min": 0, "max": 1}, {"min": 0, "max": 1}]
+        choice_states = [{"step_size": 0.1}, {"step_size": 0.1}]
+        selections = [{"x": 0, "y": -1}, {"x": 0, "y": 2}]
+        identifiers = [1, 0]
+        enrichment = 0
+        self.assertRaises(
+            AssertionError,
+            LinearGridDecisionTree(enrichment)._build_model_data,
+            states,
+            choice_states,
+            selections,
+            identifiers,
+        )
+        data = LinearGridDecisionTree(enrichment)._build_model_data(
+            states, choice_states, selections, identifiers, quiet=True
+        )
+        expected_data_2 = pd.concat(
+            [
+                pd.DataFrame({"x": np.arange(0, 1, 0.1), "y": 1}),
+                pd.DataFrame({"x": np.arange(0, 1, 0.1), "y": 2}),
+            ]
+        )
+        expected_data_2["selected"] = (expected_data_2["x"] == 0) & (
+            expected_data_2["y"] == 2
+        )
+        expected_data_2["_decision"] = 1
+        expected_data_2["_identifier"] = 0
+        expected_data = expected_data_2
+        assert_frame_equal(
+            data.reset_index(drop=True), expected_data.reset_index(drop=True)
+        )

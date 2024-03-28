@@ -58,7 +58,7 @@ class RunOrDriftBranch(DecisionTree):
         "run": RunHeadingBranch,
         "drift": DriftMovementLeaf,
     }
-    PARAM_GRID = {"n_estimators": [10, 20, 50, 100], "min_samples_leaf": [50, 100, 200]}
+    PARAM_GRID = {"n_estimators": [10, 20], "min_samples_leaf": [50, 100]}
     CV = KFold(n_splits=5, shuffle=True, random_state=42)
 
     @staticmethod
@@ -108,9 +108,11 @@ def train_run_or_drift_model(training_data, testing_data, enrichment):
     run_or_drift_states_train = []
     run_or_drift_choice_states_train = []
     run_or_drift_selections_train = []
+    identifiers_train = []
     run_or_drift_states_test = []
     run_or_drift_choice_states_test = []
     run_or_drift_selections_test = []
+    identifiers_test = []
 
     data = pd.concat([training_data, testing_data])
     training_ptt = set(training_data["ptt"].unique())
@@ -130,22 +132,26 @@ def train_run_or_drift_model(training_data, testing_data, enrichment):
                 run_or_drift_states_train.append(state)
                 run_or_drift_choice_states_train.append(choice_state)
                 run_or_drift_selections_train.append(selection)
+                identifiers_train.append(ptt)
             else:
                 run_or_drift_states_test.append(state)
                 run_or_drift_choice_states_test.append(choice_state)
                 run_or_drift_selections_test.append(selection)
+                identifiers_test.append(ptt)
 
     decision_tree = RunOrDriftBranch(enrichment)
     model_data = decision_tree._build_model_data(
         run_or_drift_states_train,
         run_or_drift_choice_states_train,
         run_or_drift_selections_train,
+        identifiers_train,
     )
     model_data.to_csv("RunOrDriftBranch.csv", index=False)
     decision_tree.train_model(
         run_or_drift_states_train,
         run_or_drift_choice_states_train,
         run_or_drift_selections_train,
+        identifiers_train,
         N=20,
     )
     print(
@@ -154,6 +160,7 @@ def train_run_or_drift_model(training_data, testing_data, enrichment):
             run_or_drift_states_train,
             run_or_drift_choice_states_train,
             run_or_drift_selections_train,
+            identifiers_train,
         ),
     )
     print(
@@ -162,6 +169,7 @@ def train_run_or_drift_model(training_data, testing_data, enrichment):
             run_or_drift_states_test,
             run_or_drift_choice_states_test,
             run_or_drift_selections_test,
+            identifiers_test,
         ),
     )
 

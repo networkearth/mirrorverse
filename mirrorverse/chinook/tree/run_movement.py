@@ -22,7 +22,15 @@ class RunMovementChoiceBuilder:
 
     STATE = ["h3_index", "month"]
     CHOICE_STATE = ["mean_heading"]
-    COLUMNS = ["h3_index", "temp", "elevation", "heading", "mean_heading", "remain"]
+    COLUMNS = [
+        "h3_index",
+        "temp",
+        "elevation",
+        "remain",
+        "diff_heading",
+        "heading",
+        "mean_heading",
+    ]
 
     def __init__(self, enrichment):
         self.neighbors = enrichment["neighbors"]
@@ -34,7 +42,7 @@ class RunMovementChoiceBuilder:
 
         if h3_index not in self.neighbors:
             utils.find_neighbors(h3_index, self.neighbors)
-        neighbors = self.neighbors.get(h3_index)
+        neighbors = list(self.neighbors.get(h3_index))
 
         choices = pd.DataFrame(neighbors, columns=["h3_index"])
 
@@ -44,6 +52,7 @@ class RunMovementChoiceBuilder:
             self.surface_temps, on=["h3_index", "month"], how="inner"
         )
         choices = choices.merge(self.elevation, on="h3_index", how="inner")
+
         del choices["month"]
 
         choices["mean_heading"] = choice_state["mean_heading"]
@@ -54,6 +63,11 @@ class RunMovementChoiceBuilder:
             ),
             axis=1,
         ).fillna(0)
+
+        choices["diff_heading"] = choices.apply(
+            lambda r: utils.diff_heading(r["heading"], r["mean_heading"]), axis=1
+        )
+
         return choices
 
 
@@ -63,10 +77,15 @@ class RunMovementLeaf(DecisionTree):
     """
 
     BUILDERS = [RunMovementChoiceBuilder]
-    FEATURE_COLUMNS = ["temp", "elevation", "heading", "mean_heading", "remain"]
+    FEATURE_COLUMNS = [
+        "temp",
+        "elevation",
+        "remain",
+        "diff_heading",
+    ]
     OUTCOMES = ["h3_index", "heading"]
     BRANCHES = {}
-    PARAM_GRID = {"n_estimators": [10, 20, 50, 100], "min_samples_leaf": [50, 100, 200]}
+    PARAM_GRID = {"n_estimators": [10, 20], "min_samples_leaf": [50, 100]}
     CV = KFold(n_splits=5, shuffle=True, random_state=42)
 
     # pylint: disable=unused-argument
@@ -116,9 +135,11 @@ def train_run_movement_model(training_data, testing_data, enrichment):
     run_states_train = []
     run_choice_states_train = []
     run_selections_train = []
+    identifiers_train = []
     run_states_test = []
     run_choice_states_test = []
     run_selections_test = []
+    identifiers_test = []
 
     data = pd.concat([training_data, testing_data])
     training_ptt = set(training_data["ptt"].unique())
@@ -141,29 +162,48 @@ def train_run_movement_model(training_data, testing_data, enrichment):
                 run_states_train.append(state)
                 run_choice_states_train.append(choice_state)
                 run_selections_train.append(selection)
+                identifiers_train.append(ptt)
             else:
                 run_states_test.append(state)
                 run_choice_states_test.append(choice_state)
                 run_selections_test.append(selection)
+                identifiers_test.append(ptt)
 
     decision_tree = RunMovementLeaf(enrichment)
     model_data = decision_tree._build_model_data(
-        run_states_train, run_choice_states_train, run_selections_train
+        run_states_train,
+        run_choice_states_train,
+        run_selections_train,
+        identifiers_train,
+        quiet=True,
     )
     model_data.to_csv("RunMovementLeaf.csv")
     decision_tree.train_model(
-        run_states_train, run_choice_states_train, run_selections_train, N=20
+        run_states_train,
+        run_choice_states_train,
+        run_selections_train,
+        identifiers_train,
+        N=20,
+        quiet=True,
     )
     print(
         "Train:",
         decision_tree.test_model(
-            run_states_train, run_choice_states_train, run_selections_train
+            run_states_train,
+            run_choice_states_train,
+            run_selections_train,
+            identifiers_train,
+            quiet=True,
         ),
     )
     print(
         "Test:",
         decision_tree.test_model(
-            run_states_test, run_choice_states_test, run_selections_test
+            run_states_test,
+            run_choice_states_test,
+            run_selections_test,
+            identifiers_test,
+            quiet=True,
         ),
     )
 

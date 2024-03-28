@@ -68,7 +68,7 @@ class RunHeadingChoiceBuilder:
         del choices["h3_heading"]
         del choices["diff_heading"]
 
-        # REMOVE
+        # REMOVE ME
         choices["start_lat"] = start_lat
         choices["start_lon"] = start_lon
 
@@ -88,6 +88,14 @@ class RunHeadingChoiceBuilder:
         )
         choices["was_drifting"] = state["drifting"]
 
+        choices["diff_heading"] = choices.apply(
+            lambda r: utils.diff_heading(r["last_mean_heading"], r["mean_heading"]),
+            axis=1,
+        )
+        choices["steps_in_state"] = (
+            state["steps_in_state"] if not state["drifting"] else 0
+        )
+
         return choices
 
 
@@ -99,16 +107,13 @@ class RunHeadingBranch(DecisionTree):
     BUILDERS = [RunHeadingChoiceBuilder]
     FEATURE_COLUMNS = [
         "mean_heading",
-        "elevation",
-        "temp",
-        "last_mean_heading",
+        "diff_heading",
         "was_drifting",
-        "diff_elevation",
         "month",
     ]
     OUTCOMES = ["mean_heading"]
     BRANCHES = {"run_movement": RunMovementLeaf}
-    PARAM_GRID = {"n_estimators": [10, 20, 50, 100], "min_samples_leaf": [50, 100, 200]}
+    PARAM_GRID = {"n_estimators": [10, 20], "min_samples_leaf": [25, 50]}
     CV = KFold(n_splits=5, shuffle=True, random_state=42)
 
     # pylint: disable=unused-argument
@@ -168,9 +173,11 @@ def train_run_heading_model(training_data, testing_data, enrichment):
     heading_states_train = []
     heading_choice_states_train = []
     heading_selections_train = []
+    identifiers_train = []
     heading_states_test = []
     heading_choice_states_test = []
     heading_selections_test = []
+    identifiers_test = []
 
     data = pd.concat([training_data, testing_data])
     training_ptt = set(training_data["ptt"].unique())
@@ -186,6 +193,7 @@ def train_run_heading_model(training_data, testing_data, enrichment):
                 "month": start["month"],
                 "mean_heading": start["mean_heading"],
                 "drifting": start["drifting"],
+                "steps_in_state": start["steps_in_state"],
             }
             choice_state = {}
             selection = end["mean_heading"]
@@ -193,32 +201,44 @@ def train_run_heading_model(training_data, testing_data, enrichment):
                 heading_states_train.append(state)
                 heading_choice_states_train.append(choice_state)
                 heading_selections_train.append(selection)
+                identifiers_train.append(ptt)
             else:
                 heading_states_test.append(state)
                 heading_choice_states_test.append(choice_state)
                 heading_selections_test.append(selection)
+                identifiers_test.append(ptt)
 
     decision_tree = RunHeadingBranch(enrichment)
     model_data = decision_tree._build_model_data(
-        heading_states_train, heading_choice_states_train, heading_selections_train
+        heading_states_train,
+        heading_choice_states_train,
+        heading_selections_train,
+        identifiers_train,
     )
     model_data.to_csv("RunHeadingBranch.csv")
     decision_tree.train_model(
         heading_states_train,
         heading_choice_states_train,
         heading_selections_train,
+        identifiers_train,
         N=20,
     )
     print(
         "Train:",
         decision_tree.test_model(
-            heading_states_train, heading_choice_states_train, heading_selections_train
+            heading_states_train,
+            heading_choice_states_train,
+            heading_selections_train,
+            identifiers_train,
         ),
     )
     print(
         "Test:",
         decision_tree.test_model(
-            heading_states_test, heading_choice_states_test, heading_selections_test
+            heading_states_test,
+            heading_choice_states_test,
+            heading_selections_test,
+            identifiers_test,
         ),
     )
 
