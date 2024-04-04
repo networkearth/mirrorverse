@@ -23,7 +23,7 @@ class RunHeadingChoiceBuilder:
     Run Heading choice builder for Chinook salmon.
     """
 
-    STATE = ["h3_index", "month", "mean_heading", "drifting"]
+    STATE = ["h3_index", "month", "mean_heading", "drifting", "home_region"]
     CHOICE_STATE = []
     COLUMNS = [
         "mean_heading",
@@ -33,9 +33,10 @@ class RunHeadingChoiceBuilder:
         "last_mean_heading",
         "was_drifting",
         "month",
-        # REMOVE
-        "start_lat",
-        "start_lon",
+        "unknown",
+        "seak",
+        "wa/or",
+        "bc",
     ]
 
     def __init__(self, enrichment):
@@ -69,10 +70,6 @@ class RunHeadingChoiceBuilder:
         del choices["h3_heading"]
         del choices["diff_heading"]
 
-        # REMOVE ME
-        choices["start_lat"] = start_lat
-        choices["start_lon"] = start_lon
-
         choices["month"] = state["month"]
         choices = choices.merge(
             self.surface_temps, on=["h3_index", "month"], how="inner"
@@ -97,6 +94,12 @@ class RunHeadingChoiceBuilder:
             state["steps_in_state"] if not state["drifting"] else 0
         )
 
+        one_is_true = False
+        for option in ["SEAK", "Unknown", "WA/OR", "BC"]:
+            choices[option.lower()] = state["home_region"] == option
+            one_is_true |= state["home_region"] == option
+        assert one_is_true
+
         return choices
 
 
@@ -108,9 +111,13 @@ class RunHeadingBranch(DecisionTree):
     BUILDERS = [RunHeadingChoiceBuilder]
     FEATURE_COLUMNS = [
         "mean_heading",
-        "diff_heading",
+        "elevation",
         "was_drifting",
         "month",
+        "unknown",
+        "seak",
+        "wa/or",
+        "bc",
     ]
     OUTCOMES = ["mean_heading"]
     BRANCHES = {"run_movement": RunStayOrGoBranch}
@@ -195,6 +202,7 @@ def train_run_heading_model(training_data, testing_data, enrichment):
                 "mean_heading": start["mean_heading"],
                 "drifting": start["drifting"],
                 "steps_in_state": start["steps_in_state"],
+                "home_region": start["home_region"],
             }
             choice_state = {}
             selection = end["mean_heading"]
