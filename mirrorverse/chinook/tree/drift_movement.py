@@ -11,6 +11,7 @@ from tqdm import tqdm
 from sklearn.model_selection import KFold
 
 from mirrorverse.tree import DecisionTree
+from mirrorverse.utility import get_proposed_utility
 from mirrorverse.chinook import utils
 
 
@@ -146,7 +147,6 @@ def train_drift_movement_model(training_data, testing_data, enrichment):
         identifiers_train,
         quiet=True,
     )
-    model_data.to_csv("DriftMovementLeaf.csv")
     decision_tree.train_model(
         drift_states_train,
         drift_choice_states_train,
@@ -155,6 +155,11 @@ def train_drift_movement_model(training_data, testing_data, enrichment):
         N=20,
         quiet=True,
     )
+    model_data["utility"] = decision_tree.model.predict(
+        model_data[decision_tree.FEATURE_COLUMNS]
+    )
+    model_data = get_proposed_utility(model_data)
+    model_data.to_csv("DriftMovementLeaf.csv")
     print(
         "Train",
         decision_tree.test_model(

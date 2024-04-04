@@ -26,18 +26,22 @@ def simulate(args):
     - ptt: ptt
     - h3_index (str): starting h3 index
     - date (pd.Timestamp): starting date
+    - home_region (str): the home region of the fish
+    - fork_length_cm (float): fork length of the fish
     - steps (int): number of steps to simulate
     - decision_tree (DecisionTree): decision tree to use
 
     Returns a DataFrame with the simulated data.
     """
-    ptt, h3_index, date, steps, decision_tree = args
+    ptt, h3_index, date, home_region, fork_length_cm, steps, decision_tree = args
     state = {
         "drifting": True,
         "steps_in_state": 1,
         "h3_index": h3_index,
         "month": date.month,
         "mean_heading": 0,
+        "home_region": home_region,
+        "fork_length_cm": fork_length_cm,
     }
     row = dict(state)
     row["ptt"] = ptt
@@ -66,6 +70,8 @@ def simulate(args):
             "mean_heading": (
                 0 if choice_state["drifting"] else choice_state["mean_heading"]
             ),
+            "home_region": home_region,
+            "fork_length_cm": fork_length_cm,
         }
 
         row = dict(new_state)
@@ -115,7 +121,17 @@ def main(data_path, temps_path, elevation_path, model_path, simulation_path):
         df = data[data["ptt"] == ptt].sort_values("date", ascending=True).iloc[0]
         steps = data[data["ptt"] == ptt].shape[0]
         date = pd.to_datetime(df["date"])
-        jobs.append((df["ptt"], df["h3_index"], date, steps, decision_tree))
+        jobs.append(
+            (
+                df["ptt"],
+                df["h3_index"],
+                date,
+                df["home_region"],
+                df["fork_length_cm"],
+                steps,
+                decision_tree,
+            )
+        )
 
     with Pool(os.cpu_count() - 2) as p:
         dfs = p.map(simulate, jobs)

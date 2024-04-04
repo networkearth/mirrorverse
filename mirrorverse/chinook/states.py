@@ -251,6 +251,7 @@ def get_elevation(file_path):
 
 @click.command()
 @click.option("--data_path", "-d", help="path to data file", required=True)
+@click.option("--context_path", "-c", help="path to context file", required=True)
 @click.option("--output_dir", "-o", help="directory to store outputs", required=True)
 @click.option("--resolution", "-r", help="resolution", type=int, required=True)
 @click.option("--max_allowable_error", "-mae", help="max allowable error", type=float)
@@ -260,6 +261,7 @@ def get_elevation(file_path):
 @click.option("--training_size", "-ts", help="training size", type=float)
 def main(
     data_path,
+    context_path,
     output_dir,
     resolution,
     max_allowable_error,
@@ -274,6 +276,7 @@ def main(
 
     print("Loading Data...")
     data = load_tag_tracks(data_path)
+
     context = {
         "resolution": resolution,
         "max_allowable_error": max_allowable_error,
@@ -314,6 +317,10 @@ def main(
             "date",
         ]
     ]
+
+    tag_context = pd.read_csv(context_path)
+    tag_context.rename({"tag_key": "ptt"}, axis=1, inplace=True)
+    data = data.merge(tag_context, on="ptt", how="inner")
 
     print("Splitting into Train and Test...")
     training_ptt = set(

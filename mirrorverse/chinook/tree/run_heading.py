@@ -13,8 +13,9 @@ from tqdm import tqdm
 from sklearn.model_selection import KFold
 
 from mirrorverse.tree import DecisionTree
+from mirrorverse.utility import get_proposed_utility
 from mirrorverse.chinook import utils
-from mirrorverse.chinook.tree.run_movement import RunMovementLeaf
+from mirrorverse.chinook.tree.run_stay_or_go import RunStayOrGoBranch
 
 
 class RunHeadingChoiceBuilder:
@@ -112,7 +113,7 @@ class RunHeadingBranch(DecisionTree):
         "month",
     ]
     OUTCOMES = ["mean_heading"]
-    BRANCHES = {"run_movement": RunMovementLeaf}
+    BRANCHES = {"run_movement": RunStayOrGoBranch}
     PARAM_GRID = {"n_estimators": [10, 20], "min_samples_leaf": [25, 50]}
     CV = KFold(n_splits=5, shuffle=True, random_state=42)
 
@@ -215,7 +216,6 @@ def train_run_heading_model(training_data, testing_data, enrichment):
         heading_selections_train,
         identifiers_train,
     )
-    model_data.to_csv("RunHeadingBranch.csv")
     decision_tree.train_model(
         heading_states_train,
         heading_choice_states_train,
@@ -223,6 +223,11 @@ def train_run_heading_model(training_data, testing_data, enrichment):
         identifiers_train,
         N=20,
     )
+    model_data["utility"] = decision_tree.model.predict(
+        model_data[decision_tree.FEATURE_COLUMNS]
+    )
+    model_data = get_proposed_utility(model_data)
+    model_data.to_csv("RunHeadingBranch.csv")
     print(
         "Train:",
         decision_tree.test_model(

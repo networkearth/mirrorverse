@@ -13,6 +13,7 @@ from mirrorverse.chinook.tree.drift_movement import train_drift_movement_model
 from mirrorverse.chinook.tree.run_movement import train_run_movement_model
 from mirrorverse.chinook.tree.run_heading import train_run_heading_model
 from mirrorverse.chinook.tree.run_or_drift import train_run_or_drift_model
+from mirrorverse.chinook.tree.run_stay_or_go import train_run_stay_or_go_model
 from mirrorverse.chinook.states import get_elevation, get_surface_temps
 
 
@@ -45,6 +46,7 @@ def main(node, train_data_path, test_data_path, temps_path, elevation_path, mode
         "RunMovementLeaf": train_run_movement_model,
         "RunHeadingBranch": train_run_heading_model,
         "RunOrDriftBranch": train_run_or_drift_model,
+        "RunStayOrGoBranch": train_run_stay_or_go_model,
     }[node](training_data, testing_data, enrichment)
 
     print("Exporting Models...")

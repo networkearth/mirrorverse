@@ -11,6 +11,7 @@ import pandas as pd
 from sklearn.model_selection import KFold
 
 from mirrorverse.tree import DecisionTree
+from mirrorverse.utility import get_proposed_utility
 from mirrorverse.chinook.tree.run_heading import RunHeadingBranch
 from mirrorverse.chinook.tree.drift_movement import DriftMovementLeaf
 
@@ -146,7 +147,6 @@ def train_run_or_drift_model(training_data, testing_data, enrichment):
         run_or_drift_selections_train,
         identifiers_train,
     )
-    model_data.to_csv("RunOrDriftBranch.csv", index=False)
     decision_tree.train_model(
         run_or_drift_states_train,
         run_or_drift_choice_states_train,
@@ -154,6 +154,11 @@ def train_run_or_drift_model(training_data, testing_data, enrichment):
         identifiers_train,
         N=20,
     )
+    model_data["utility"] = decision_tree.model.predict(
+        model_data[decision_tree.FEATURE_COLUMNS]
+    )
+    model_data = get_proposed_utility(model_data)
+    model_data.to_csv("RunOrDriftBranch.csv", index=False)
     print(
         "Train:",
         decision_tree.test_model(
