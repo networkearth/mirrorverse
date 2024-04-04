@@ -1,5 +1,5 @@
 """
-Run Movement Model for Chinook salmon
+RunStayOrGo model for Chinook Salmon
 """
 
 # pylint: disable=duplicate-code, protected-access
@@ -7,29 +7,24 @@ Run Movement Model for Chinook salmon
 from time import time
 
 import pandas as pd
-import h3
 from tqdm import tqdm
 from sklearn.model_selection import KFold
 
 from mirrorverse.tree import DecisionTree
 from mirrorverse.utility import get_proposed_utility
-from mirrorverse.chinook import utils
+from mirrorverse.chinook.tree.run_movement import RunMovementLeaf
 
 
-class RunMovementChoiceBuilder:
+class RunStayOrGoBuilder:
     """
-    Run Movement choice builder for Chinook salmon.
+    Run Stay or Go choice builder for Chinook salmon.
     """
 
     STATE = ["h3_index", "month", "home_region"]
-    CHOICE_STATE = ["mean_heading"]
+    CHOICE_STATE = ["remain"]
     COLUMNS = [
         "h3_index",
-        "temp",
-        "elevation",
-        "diff_heading",
-        "heading",
-        "mean_heading",
+        "remain",
         "unknown",
         "seak",
         "wa/or",
@@ -37,41 +32,17 @@ class RunMovementChoiceBuilder:
     ]
 
     def __init__(self, enrichment):
-        self.neighbors = enrichment["neighbors"]
-        self.surface_temps = enrichment["surface_temps"]
-        self.elevation = enrichment["elevation"]
+        pass
 
     def __call__(self, state, choice_state):
         h3_index = state["h3_index"]
+        month = state["month"]
 
-        if h3_index not in self.neighbors:
-            utils.find_neighbors(h3_index, self.neighbors)
-        neighbors = list(self.neighbors.get(h3_index))
-
-        # we are going at this point
         choices = pd.DataFrame(
-            [n for n in neighbors if n != h3_index], columns=["h3_index"]
-        )
-
-        # might be good to put some assertions around here
-        choices["month"] = state["month"]
-        choices = choices.merge(
-            self.surface_temps, on=["h3_index", "month"], how="inner"
-        )
-        choices = choices.merge(self.elevation, on="h3_index", how="inner")
-
-        del choices["month"]
-
-        choices["mean_heading"] = choice_state["mean_heading"]
-        choices["heading"] = choices.apply(
-            lambda row: utils.get_heading(
-                *h3.h3_to_geo(h3_index), *h3.h3_to_geo(row["h3_index"])
-            ),
-            axis=1,
-        ).fillna(0)
-
-        choices["diff_heading"] = choices.apply(
-            lambda r: utils.diff_heading(r["heading"], r["mean_heading"]), axis=1
+            [
+                {"h3_index": h3_index, "month": month, "remain": True},
+                {"h3_index": h3_index, "month": month, "remain": False},
+            ]
         )
 
         one_is_true = False
@@ -83,23 +54,22 @@ class RunMovementChoiceBuilder:
         return choices
 
 
-class RunMovementLeaf(DecisionTree):
+class RunStayOrGoBranch(DecisionTree):
     """
     Run Movement model for Chinook salmon.
     """
 
-    BUILDERS = [RunMovementChoiceBuilder]
+    BUILDERS = [RunStayOrGoBuilder]
     FEATURE_COLUMNS = [
-        "temp",
-        "elevation",
-        "diff_heading",
+        "month",
+        "remain",
         "unknown",
         "seak",
         "wa/or",
         "bc",
     ]
-    OUTCOMES = ["h3_index", "heading"]
-    BRANCHES = {}
+    OUTCOMES = ["h3_index", "heading"]  # heading is just here to keep things consistent
+    BRANCHES = {"go": RunMovementLeaf}
     PARAM_GRID = {"n_estimators": [10, 20], "min_samples_leaf": [10, 100]}
     CV = KFold(n_splits=5, shuffle=True, random_state=42)
 
@@ -110,8 +80,9 @@ class RunMovementLeaf(DecisionTree):
         Input:
         - choice (dict): the choice made
 
-        Does nothing
+        Let's us know if we decided to go
         """
+        return None if choice["remain"] else "go"
 
     @staticmethod
     def update_branch(choice, choice_state):
@@ -121,11 +92,12 @@ class RunMovementLeaf(DecisionTree):
         - choice_state (dict): the state of the choice
             thus far
 
-        Updates the choice with a "heading" and
-        "h3_index" key.
+        Sets h3_index to the current h3_index
+        and heading to the mean heading.
+        If we go rather than stay, this will get overriden.
         """
-        choice_state["heading"] = choice["heading"]
         choice_state["h3_index"] = choice["h3_index"]
+        choice_state["heading"] = choice_state["mean_heading"]
 
     @staticmethod
     def _stitch_selection(choices, selection):
@@ -135,17 +107,17 @@ class RunMovementLeaf(DecisionTree):
         - selection (dict): the selection made
 
         Returns the choices with a "selected" column.
-        Selection is based on the h3_index.
+        Selection should be a boolean indicating if we stayed.
         """
-        choices["selected"] = choices["h3_index"] == selection
+        choices["selected"] = choices["remain"] == selection
         return choices
 
 
-def train_run_movement_model(training_data, testing_data, enrichment):
+def train_run_stay_or_go_model(training_data, testing_data, enrichment):
     """
-    Trains a Run Movement model.
+    Trains a Run Stay or Go model.
     """
-    print("Training Run Movement Model...")
+    print("Training Run Stay or Go Model...")
     start_time = time()
     run_states_train = []
     run_choice_states_train = []
@@ -170,10 +142,8 @@ def train_run_movement_model(training_data, testing_data, enrichment):
                 "month": start["month"],
                 "home_region": start["home_region"],
             }
-            choice_state = {
-                "mean_heading": end["mean_heading"],
-            }
-            selection = end["h3_index"]
+            choice_state = {}
+            selection = end["h3_index"] == start["h3_index"]
             if ptt in training_ptt:
                 run_states_train.append(state)
                 run_choice_states_train.append(choice_state)
@@ -185,7 +155,7 @@ def train_run_movement_model(training_data, testing_data, enrichment):
                 run_selections_test.append(selection)
                 identifiers_test.append(ptt)
 
-    decision_tree = RunMovementLeaf(enrichment)
+    decision_tree = RunStayOrGoBranch(enrichment)
     model_data = decision_tree._build_model_data(
         run_states_train,
         run_choice_states_train,
@@ -205,7 +175,7 @@ def train_run_movement_model(training_data, testing_data, enrichment):
         model_data[decision_tree.FEATURE_COLUMNS]
     )
     model_data = get_proposed_utility(model_data)
-    model_data.to_csv("RunMovementLeaf.csv")
+    model_data.to_csv("RunStayOrGoBranch.csv")
     print(
         "Train:",
         decision_tree.test_model(

@@ -1,24 +1,28 @@
 stages:
   data:
-    cmd: chinook_db -e ${elevation} -s ${temps} -t ${data}
+    cmd: chinook_db -e ${elevation} -s ${temps} -t ${data} -c ${context}
     deps:
       - ../../../mirrorverse/chinook/db.py
     params:
       - elevation
       - temps
       - data
+      - context
     outs:
       - ${data}
       - ${elevation}
       - ${temps}
+      - ${context}
   states:
-    cmd: chinook_states -d ${data} -o .  -r ${resolution} -mae ${max_allowable_error} -mad ${min_allowable_distance} -ts ${training_size}
+    cmd: chinook_states -d ${data} -c ${context} -o .  -r ${resolution} -mae ${max_allowable_error} -mad ${min_allowable_distance} -ts ${training_size}
     deps:
       - ../../../mirrorverse/chinook/states.py
       - ../../../mirrorverse/chinook/utils.py
       - ${data}
+      - ${context}
     params: 
       - data
+      - context
       - resolution
       - max_allowable_error
       - min_allowable_distance
@@ -41,6 +45,7 @@ stages:
       - elevation
     outs:
       - DriftMovementLeaf.pkl
+      - DriftMovementLeaf.csv
   train_run_movement:
     cmd: chinook_train -n RunMovementLeaf -tr training_states.csv -te testing_states.csv -t ${temps} -e ${elevation} -m .
     deps:
@@ -56,6 +61,7 @@ stages:
       - elevation
     outs:
       - RunMovementLeaf.pkl
+      - RunMovementLeaf.csv
   train_run_heading:
     cmd: chinook_train -n RunHeadingBranch -tr training_states.csv -te testing_states.csv -t ${temps} -e ${elevation} -m .
     deps:
@@ -71,6 +77,7 @@ stages:
       - elevation
     outs:
       - RunHeadingBranch.pkl
+      - RunHeadingBranch.csv
   train_run_or_drift:
     cmd: chinook_train -n RunOrDriftBranch -tr training_states.csv -te testing_states.csv -t ${temps} -e ${elevation} -m .
     deps:
@@ -86,6 +93,23 @@ stages:
       - elevation
     outs:
       - RunOrDriftBranch.pkl
+      - RunOrDriftBranch.csv
+  train_run_stay_or_go:
+    cmd: chinook_train -n RunStayOrGoBranch -tr training_states.csv -te testing_states.csv -t ${temps} -e ${elevation} -m .
+    deps:
+      - ../../../mirrorverse/tree.py
+      - ../../../mirrorverse/chinook/tree/run_stay_or_go.py
+      - ../../../mirrorverse/chinook/train.py
+      - training_states.csv
+      - testing_states.csv
+      - ${temps}
+      - ${elevation}
+    params:
+      - temps
+      - elevation
+    outs:
+      - RunStayOrGoBranch.pkl
+      - RunStayOrGoBranch.csv 
   bundle_models:
     cmd: mirrorverse_bundle_models -m .
     deps:
@@ -93,5 +117,46 @@ stages:
       - RunMovementLeaf.pkl
       - RunHeadingBranch.pkl
       - RunOrDriftBranch.pkl
+      - RunStayOrGoBranch.pkl
     outs:
       - models.pkl
+  group_run_stay_or_go:
+    cmd: mirrorverse_group -n RunStayOrGoBranch.csv -g 10
+    deps:
+      - ../../../mirrorverse/grouper.py
+      - RunStayOrGoBranch.csv 
+    outs:
+      - RunStayOrGoBranch_groupings.csv
+      - RunStayOrGoBranch_statistics.csv
+  group_run_or_drift:
+    cmd: mirrorverse_group -n RunOrDriftBranch.csv -g 10
+    deps:
+      - ../../../mirrorverse/grouper.py
+      - RunOrDriftBranch.csv 
+    outs:
+      - RunOrDriftBranch_groupings.csv
+      - RunOrDriftBranch_statistics.csv
+  group_run_heading:
+    cmd: mirrorverse_group -n RunHeadingBranch.csv -g 10
+    deps:
+      - ../../../mirrorverse/grouper.py
+      - RunHeadingBranch.csv 
+    outs:
+      - RunHeadingBranch_groupings.csv
+      - RunHeadingBranch_statistics.csv
+  group_run_movement:
+    cmd: mirrorverse_group -n RunMovementLeaf.csv -g 10
+    deps:
+      - ../../../mirrorverse/grouper.py
+      - RunMovementLeaf.csv 
+    outs:
+      - RunMovementLeaf_groupings.csv
+      - RunMovementLeaf_statistics.csv
+  group_drift_movement:
+    cmd: mirrorverse_group -n DriftMovementLeaf.csv -g 10
+    deps:
+      - ../../../mirrorverse/grouper.py
+      - DriftMovementLeaf.csv 
+    outs:
+      - DriftMovementLeaf_groupings.csv
+      - DriftMovementLeaf_statistics.csv

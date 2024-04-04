@@ -7,6 +7,7 @@ import os
 import random
 from multiprocessing import Pool
 
+import click
 import pandas as pd
 import numpy as np
 from sklearn.metrics import explained_variance_score
@@ -253,7 +254,7 @@ def group_data(
             population = elites + new_population
             invalid_ind = [ind for ind in population if ind.fitness is None]
             fitnesses = p.map(
-                eval,
+                run,
                 [
                     (individual, identifiers, data, explained_variance)
                     for individual in invalid_ind
@@ -277,3 +278,14 @@ def group_data(
         ]
     )
     return groupings, pd.DataFrame(statistics)
+
+
+@click.command()
+@click.option("-n", "--name", required=True, help="name of the data file")
+@click.option("-g", "--groups", required=True, type=int, help="number of groups")
+def main(name, groups):
+    name = ".".join(name.split(".")[:-1])
+    data = pd.read_csv(f"{name}.csv")
+    groupings, statistics = group_data(data, int(groups))
+    groupings.to_csv(f"{name}_groupings.csv", index=False)
+    statistics.to_csv(f"{name}_statistics.csv", index=False)

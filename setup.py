@@ -38,6 +38,7 @@ setup(
             "mirrorverse_prep_cwt_query=mirrorverse.warehouse.etls.missing_dimensions:prep_cwt_query",
             "mirrorverse_build_erd=mirrorverse.warehouse.commands:build_erd",
             "mirrorverse_file_import=mirrorverse.docks.commands:file_import",
+            "mirrorverse_group=mirrorverse.grouper:main",
         ]
     },
 )

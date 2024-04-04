@@ -1,23 +1,28 @@
 schema: '2.0'
 stages:
   states:
-    cmd: chinook_states -d ../data/tag_tracks.csv -o .  -r 4 -mae 0.79 -mad 150 -ts
-      1
+    cmd: chinook_states -d ../data/tag_tracks.csv -c ../data/context.csv -o .  -r
+      4 -mae 0.79 -mad 150 -ts 1
     deps:
     - path: ../../../mirrorverse/chinook/states.py
       hash: md5
-      md5: 612a4e938a6a02df9f5d87467fd5420e
-      size: 9935
+      md5: 80f0de851828e4691b3613d7555b646b
+      size: 10204
     - path: ../../../mirrorverse/chinook/utils.py
       hash: md5
       md5: 98b3c577b04810412ae1287fefaff2a5
       size: 1906
+    - path: ../data/context.csv
+      hash: md5
+      md5: 02489ea16c9d726e85f406b34c4a9ddb
+      size: 2042
     - path: ../data/tag_tracks.csv
       hash: md5
       md5: a2c11e27477300708f3feaf1be5a5543
       size: 325093
     params:
       params.yaml:
+        context: ../data/context.csv
         data: ../data/tag_tracks.csv
         max_allowable_error: 0.79
         min_allowable_distance: 150
@@ -25,20 +30,20 @@ stages:
     outs:
     - path: training_states.csv
       hash: md5
-      md5: 30cf798cb80767c26bf04cd4cb24799e
-      size: 407726
+      md5: acb27c0c54a862695d6f46ad43dce1c0
+      size: 490778
   simulate:
     cmd: chinook_simulate -d training_states.csv -t ../data/surface_temps.csv -e ../data/bathymetry.csv
       -m ../train/models.pkl -si simulation.csv
     deps:
     - path: ../../../mirrorverse/chinook/simulate.py
       hash: md5
-      md5: 1d1b3cd897341d1693a64e08221568f6
-      size: 3797
+      md5: c04a753ccc62fe4c840acd35c3cbf4f8
+      size: 4287
     - path: ../../../mirrorverse/chinook/states.py
       hash: md5
-      md5: 612a4e938a6a02df9f5d87467fd5420e
-      size: 9935
+      md5: 80f0de851828e4691b3613d7555b646b
+      size: 10204
     - path: ../data/bathymetry.csv
       hash: md5
       md5: 009f0c0129454d53218b4358abba345c
@@ -49,12 +54,12 @@ stages:
       size: 3847027
     - path: ../train/models.pkl
       hash: md5
-      md5: 5eb03904b22c6a1f9c737163a932ec01
-      size: 3193285
+      md5: 3cdacab737f20c53a3d2066625f8c275
+      size: 4095024
     - path: training_states.csv
       hash: md5
-      md5: 30cf798cb80767c26bf04cd4cb24799e
-      size: 407726
+      md5: acb27c0c54a862695d6f46ad43dce1c0
+      size: 490778
     params:
       params.yaml:
         elevation: ../data/bathymetry.csv
@@ -63,5 +68,5 @@ stages:
     outs:
     - path: simulation.csv
       hash: md5
-      md5: d633d50b30842c6d539c84333849d033
-      size: 735462
+      md5: 6780b2574f553c13439e44e236612687
+      size: 840079

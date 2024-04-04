@@ -66,6 +66,25 @@ def get_tag_tracks():
     return pd.read_sql_query(sql, get_engine())
 
 
+def get_context():
+    """
+    Retrieve context information from the warehouse
+
+    Returns pd.DataFrame
+    """
+    sql = """
+    select
+        t.tag_key,
+        t.fork_length_cm,
+        coalesce(hr.home_region, 'Unknown') as home_region
+    from 
+        tags t
+        left join home_regions hr
+            on hr.tag_key = t.tag_key
+    """
+    return pd.read_sql_query(sql, get_engine())
+
+
 @click.command()
 @click.option("--elevation", "-e", required=True, help="file to save elevation data")
 @click.option(
@@ -75,7 +94,8 @@ def get_tag_tracks():
     help="file to save surface temperature data",
 )
 @click.option("--tag_tracks", "-t", required=True, help="file to save tag tracks data")
-def main(elevation, surface_temperature, tag_tracks):
+@click.option("--context", "-c", required=True, help="file to save context data")
+def main(elevation, surface_temperature, tag_tracks, context):
     """
     Retrieve data from the warehouse and save it to files
     """
@@ -87,3 +107,6 @@ def main(elevation, surface_temperature, tag_tracks):
 
     tag_tracks_df = get_tag_tracks()
     tag_tracks_df.to_csv(tag_tracks, index=False)
+
+    context_df = get_context()
+    context_df.to_csv(context, index=False)

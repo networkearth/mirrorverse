@@ -1,12 +1,14 @@
 stages:
   states:
-    cmd: chinook_states -d ${data} -o .  -r ${resolution} -mae ${max_allowable_error} -mad ${min_allowable_distance} -ts 1
+    cmd: chinook_states -d ${data} -c ${context} -o .  -r ${resolution} -mae ${max_allowable_error} -mad ${min_allowable_distance} -ts 1
     deps:
       - ../../../mirrorverse/chinook/states.py
       - ../../../mirrorverse/chinook/utils.py
       - ${data}
+      - ${context}
     params: 
       - data
+      - context
       - resolution
       - max_allowable_error
       - min_allowable_distance
