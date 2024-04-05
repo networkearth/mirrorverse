@@ -21,15 +21,24 @@ class RunOrDriftBuilder:
     Run or Drift choice builder for Chinook salmon.
     """
 
-    STATE = ["drifting", "steps_in_state", "month"]
+    STATE = ["drifting", "steps_in_state", "month", "home_region"]
     CHOICE_STATE = []
-    COLUMNS = ["was_drifting", "steps_in_state", "drift", "month"]
+    COLUMNS = [
+        "was_drifting",
+        "steps_in_state",
+        "drift",
+        "month",
+        "unknown",
+        "seak",
+        "wa/or",
+        "bc",
+    ]
 
     def __init__(self, enrichment):
         pass
 
     def __call__(self, state, choice_state):
-        return pd.DataFrame(
+        choices = pd.DataFrame(
             [
                 {
                     "was_drifting": state["drifting"],
@@ -46,6 +55,14 @@ class RunOrDriftBuilder:
             ]
         )
 
+        one_is_true = False
+        for option in ["SEAK", "Unknown", "WA/OR", "BC"]:
+            choices[option.lower()] = state["home_region"] == option
+            one_is_true |= state["home_region"] == option
+        assert one_is_true
+
+        return choices
+
 
 class RunOrDriftBranch(DecisionTree):
     """
@@ -53,7 +70,16 @@ class RunOrDriftBranch(DecisionTree):
     """
 
     BUILDERS = [RunOrDriftBuilder]
-    FEATURE_COLUMNS = ["was_drifting", "steps_in_state", "drift", "month"]
+    FEATURE_COLUMNS = [
+        "was_drifting",
+        "steps_in_state",
+        "drift",
+        "month",
+        "unknown",
+        "seak",
+        "wa/or",
+        "bc",
+    ]
     OUTCOMES = ["drifting"]
     BRANCHES = {
         "run": RunHeadingBranch,
@@ -126,6 +152,7 @@ def train_run_or_drift_model(training_data, testing_data, enrichment):
                 "drifting": start["drifting"],
                 "steps_in_state": start["steps_in_state"],
                 "month": start["month"],
+                "home_region": start["home_region"],
             }
             choice_state = {}
             selection = "drift" if end["drifting"] else "run"

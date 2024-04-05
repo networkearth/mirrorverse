@@ -30,6 +30,7 @@ class RunMovementChoiceBuilder:
         "diff_heading",
         "heading",
         "mean_heading",
+        "month",
         "unknown",
         "seak",
         "wa/or",
@@ -59,8 +60,6 @@ class RunMovementChoiceBuilder:
             self.surface_temps, on=["h3_index", "month"], how="inner"
         )
         choices = choices.merge(self.elevation, on="h3_index", how="inner")
-
-        del choices["month"]
 
         choices["mean_heading"] = choice_state["mean_heading"]
         choices["heading"] = choices.apply(
@@ -93,6 +92,7 @@ class RunMovementLeaf(DecisionTree):
         "temp",
         "elevation",
         "diff_heading",
+        "month",
         "unknown",
         "seak",
         "wa/or",

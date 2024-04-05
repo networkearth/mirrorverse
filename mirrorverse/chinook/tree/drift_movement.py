@@ -20,9 +20,19 @@ class DriftMovementChoiceBuilder:
     Drift Movement choice builder for Chinook salmon.
     """
 
-    STATE = ["h3_index", "month"]
+    STATE = ["h3_index", "month", "home_region"]
     CHOICE_STATE = []
-    COLUMNS = ["h3_index", "temp", "elevation", "remain"]
+    COLUMNS = [
+        "h3_index",
+        "temp",
+        "elevation",
+        "remain",
+        "month",
+        "unknown",
+        "seak",
+        "wa/or",
+        "bc",
+    ]
 
     def __init__(self, enrichment):
         self.neighbors = enrichment["neighbors"]
@@ -44,9 +54,15 @@ class DriftMovementChoiceBuilder:
             self.surface_temps, on=["h3_index", "month"], how="inner"
         )
         choices = choices.merge(self.elevation, on="h3_index", how="inner")
-        del choices["month"]
 
         choices["remain"] = choices["h3_index"] == h3_index
+
+        one_is_true = False
+        for option in ["SEAK", "Unknown", "WA/OR", "BC"]:
+            choices[option.lower()] = state["home_region"] == option
+            one_is_true |= state["home_region"] == option
+        assert one_is_true
+
         return choices
 
 
@@ -56,7 +72,16 @@ class DriftMovementLeaf(DecisionTree):
     """
 
     BUILDERS = [DriftMovementChoiceBuilder]
-    FEATURE_COLUMNS = ["temp", "elevation", "remain"]
+    FEATURE_COLUMNS = [
+        "temp",
+        "elevation",
+        "remain",
+        "month",
+        "unknown",
+        "seak",
+        "wa/or",
+        "bc",
+    ]
     OUTCOMES = ["h3_index"]
     BRANCHES = {}
     PARAM_GRID = {"n_estimators": [10, 20], "min_samples_leaf": [50, 100]}
@@ -125,6 +150,7 @@ def train_drift_movement_model(training_data, testing_data, enrichment):
             state = {
                 "h3_index": start["h3_index"],
                 "month": start["month"],
+                "home_region": start["home_region"],
             }
             choice_state = {}
             selection = end["h3_index"]
