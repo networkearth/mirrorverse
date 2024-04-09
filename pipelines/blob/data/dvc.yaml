@@ -1,0 +1,21 @@
+stages:
+  first_heading:
+    cmd: mirrorverse_build_blob -f ${first_heading} -s ${steps} -n ${individuals} -o first_heading.csv
+    deps:
+      - ../../../mirrorverse/blob/tree/blob_root.py
+    params:
+      - first_heading
+      - steps
+      - individuals
+    outs:
+      - first_heading.csv
+  second_heading:
+    cmd: mirrorverse_build_blob -f ${second_heading} -s ${steps} -n ${individuals} -o second_heading.csv
+    deps:
+      - ../../../mirrorverse/blob/tree/blob_root.py
+    params:
+      - second_heading
+      - steps
+      - individuals
+    outs:
+      - second_heading.csv

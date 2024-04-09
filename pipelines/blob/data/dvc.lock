@@ -1,0 +1,36 @@
+schema: '2.0'
+stages:
+  second_heading:
+    cmd: mirrorverse_build_blob -f 1.57 -s 25 -n 100 -o second_heading.csv
+    deps:
+    - path: ../../../mirrorverse/blob/tree/blob_root.py
+      hash: md5
+      md5: 6bbd525fff0d0866e757647f2e7c36c1
+      size: 2519
+    params:
+      params.yaml:
+        individuals: 100
+        second_heading: 1.57
+        steps: 25
+    outs:
+    - path: second_heading.csv
+      hash: md5
+      md5: 37a0f89552fdeb955f175a7619f5e233
+      size: 156759
+  first_heading:
+    cmd: mirrorverse_build_blob -f 0 -s 25 -n 100 -o first_heading.csv
+    deps:
+    - path: ../../../mirrorverse/blob/tree/blob_root.py
+      hash: md5
+      md5: 6bbd525fff0d0866e757647f2e7c36c1
+      size: 2519
+    params:
+      params.yaml:
+        first_heading: 0
+        individuals: 100
+        steps: 25
+    outs:
+    - path: first_heading.csv
+      hash: md5
+      md5: 5d9a4abd497f6c98ca54388e8ffac891
+      size: 155347
