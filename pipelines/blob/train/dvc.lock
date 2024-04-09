@@ -1,0 +1,79 @@
+schema: '2.0'
+stages:
+  states:
+    cmd: blob_states -d ../data/first_heading.csv -o . -ts 0.7
+    deps:
+    - path: ../../../mirrorverse/blob/states.py
+      hash: md5
+      md5: 533739c75cac14ef8dc7860a9f924092
+      size: 1229
+    - path: ../data/first_heading.csv
+      hash: md5
+      md5: fabd7a4b088abbf78a7abe8e1998f37b
+      size: 155590
+    params:
+      params.yaml:
+        data: ../data/first_heading.csv
+        training_size: 0.7
+    outs:
+    - path: testing_states.csv
+      hash: md5
+      md5: 82fc0bf3d6edd3267e4d5598a1ec35e7
+      size: 46407
+    - path: training_states.csv
+      hash: md5
+      md5: b392c2e0dcbadb57398f0a8e0e174942
+      size: 108090
+  train_blob:
+    cmd: blob_train -n BlobRoot -tr training_states.csv -te testing_states.csv -m
+      .
+    deps:
+    - path: ../../../mirrorverse/blob/train.py
+      hash: md5
+      md5: 4fc23c252c7c2fe2ec241c2e84cfc103
+      size: 1226
+    - path: ../../../mirrorverse/blob/tree/blob_root.py
+      hash: md5
+      md5: dbe39fc11216a9448d24ac5c436fa87b
+      size: 6899
+    - path: ../../../mirrorverse/tree.py
+      hash: md5
+      md5: c2478124c0aec761f032feabc10efb9e
+      size: 9457
+    - path: testing_states.csv
+      hash: md5
+      md5: 82fc0bf3d6edd3267e4d5598a1ec35e7
+      size: 46407
+    - path: training_states.csv
+      hash: md5
+      md5: b392c2e0dcbadb57398f0a8e0e174942
+      size: 108090
+    outs:
+    - path: BlobRoot.csv
+      hash: md5
+      md5: 34504445c5ef64cced529fef45369ef6
+      size: 5479662
+    - path: BlobRoot.pkl
+      hash: md5
+      md5: 8f9909517e6cb64af3ca35fac8d75495
+      size: 37575
+  group_blob:
+    cmd: mirrorverse_group -n BlobRoot.csv -g 10
+    deps:
+    - path: ../../../mirrorverse/grouper.py
+      hash: md5
+      md5: f3ee68733d7fc871f2f36ab342f93a32
+      size: 9070
+    - path: BlobRoot.csv
+      hash: md5
+      md5: 34504445c5ef64cced529fef45369ef6
+      size: 5479662
+    outs:
+    - path: BlobRoot_groupings.csv
+      hash: md5
+      md5: d72eaa9e8ceddeea2532f140cf450697
+      size: 1827
+    - path: BlobRoot_statistics.csv
+      hash: md5
+      md5: 65541b1c7b3158831004a35e87ada784
+      size: 26637
