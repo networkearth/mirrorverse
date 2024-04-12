@@ -2,11 +2,12 @@
 The Blob
 """
 
+from time import time
+
 import click
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import KFold
-from time import time
 from tqdm import tqdm
 
 from mirrorverse.tree import DecisionTree
@@ -19,9 +20,9 @@ class BlobBuilder:
     Blob choice builder.
     """
 
-    STATE = []
+    STATE = ["type"]
     CHOICE_STATE = []
-    COLUMNS = ["heading"]
+    COLUMNS = ["heading", "type"]
 
     def __init__(self, enrichment):
         pass
@@ -32,6 +33,8 @@ class BlobBuilder:
         choices = pd.DataFrame(
             {"heading": np.linspace(2 * np.pi / slices, 2 * np.pi, slices)}
         )
+
+        choices["type"] = state["type"]
 
         return choices
 
@@ -44,7 +47,7 @@ class BlobGround:
     def __init__(self, favored_heading):
         self.favored_heading = favored_heading
         self.choice_builder = BlobBuilder({})
-        self.choices = self.choice_builder({}, {})
+        self.choices = self.choice_builder({"type": 0}, {})
         self.choices["diff_heading"] = self.choices["heading"].apply(
             lambda x: diff_heading(self.favored_heading, x)
         )
@@ -59,13 +62,18 @@ class BlobGround:
         """
         Builds a new state for the Blob.
 
-        State should have x, y
+        State should have x, y, type
         """
         heading = np.random.choice(
             self.choices["heading"], p=self.choices["probability"]
         )
         x, y = state["x"], state["y"]
-        return {"x": x + np.cos(heading), "y": y + np.sin(heading), "heading": heading}
+        return {
+            "x": x + np.cos(heading),
+            "y": y + np.sin(heading),
+            "heading": heading,
+            "type": state["type"],
+        }
 
 
 class BlobRoot(DecisionTree):
@@ -74,9 +82,7 @@ class BlobRoot(DecisionTree):
     """
 
     BUILDERS = [BlobBuilder]
-    FEATURE_COLUMNS = [
-        "heading",
-    ]
+    FEATURE_COLUMNS = ["heading", "type"]
     OUTCOMES = ["heading"]
     BRANCHES = {}
     PARAM_GRID = {"n_estimators": [10, 20], "min_samples_leaf": [25, 50]}
@@ -91,7 +97,6 @@ class BlobRoot(DecisionTree):
 
         Pass
         """
-        pass
 
     @staticmethod
     def update_branch(choice, choice_state):
@@ -128,6 +133,7 @@ class BlobRoot(DecisionTree):
         return choices
 
 
+# pylint: disable=protected-access
 def train_blob_model(training_data, testing_data, enrichment):
     """
     Trains a Blob model.
@@ -151,8 +157,8 @@ def train_blob_model(training_data, testing_data, enrichment):
             "_time", ascending=True
         )
         rows = [row for _, row in ptt_data.iterrows()]
-        for start, end in zip(rows[:-1], rows[1:]):
-            state = {}
+        for _, end in zip(rows[:-1], rows[1:]):
+            state = {"type": 0}
             choice_state = {}
             selection = end["heading"]
             if _identifier in training_ptt:
@@ -231,6 +237,7 @@ def build_blob(favored_heading, individuals, steps, output):
             "heading": favored_heading,
             "_identifier": i,
             "_time": 0,
+            "type": 0,
         }
         states.append(state)
         for j in range(steps):
