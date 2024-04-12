@@ -39,6 +39,9 @@ setup(
             "mirrorverse_build_erd=mirrorverse.warehouse.commands:build_erd",
             "mirrorverse_file_import=mirrorverse.docks.commands:file_import",
             "mirrorverse_group=mirrorverse.grouper:main",
+            "mirrorverse_build_blob=mirrorverse.blob.tree.blob_root:build_blob",
+            "blob_train=mirrorverse.blob.train:main",
+            "blob_states=mirrorverse.blob.states:main",
         ]
     },
 )
