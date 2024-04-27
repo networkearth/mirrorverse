@@ -29,7 +29,7 @@ stages:
       - training_states.csv
       - testing_states.csv
   train_drift_movement:
-    cmd: chinook_monthly_train -n DriftMovementLeaf -tr training_states.csv -te testing_states.csv -t ${temps} -e ${elevation} -m .
+    cmd: chinook_monthly_train -n DriftMovementLeaf -tr training_states.csv -te testing_states.csv -t ${temps} -e ${elevation} -m . -r ${resolution}
     deps:
       - ../../../mirrorverse/tree.py
       - ../../../mirrorverse/chinook_monthly/tree/drift_movement.py
@@ -41,6 +41,7 @@ stages:
     params:
       - temps
       - elevation
+      - resolution
     outs:
       - DriftMovementLeaf.pkl
       - DriftMovementLeaf.csv

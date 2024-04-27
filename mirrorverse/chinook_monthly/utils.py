@@ -5,8 +5,8 @@ Utility functions for the Chinook salmon model.
 import h3
 import geopy.distance
 
-MAX_KM = 1500
-RESOLUTION = 4
+MAX_KM = 800
+RESOLUTION = 3
 
 
 def find_neighbors(h3_index, neighbors_index):

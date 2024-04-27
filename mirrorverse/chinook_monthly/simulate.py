@@ -18,6 +18,7 @@ from mirrorverse.chinook.states import (
     get_elevation,
     get_surface_temps,
 )
+from mirrorverse.chinook_monthly.train import regroup
 
 
 def simulate(args):
@@ -76,7 +77,10 @@ def simulate(args):
 @click.option("--elevation_path", "-e", help="path to elevation file", required=True)
 @click.option("--model_path", "-m", help="path to model file", required=True)
 @click.option("--simulation_path", "-si", help="path to simulation file", required=True)
-def main(data_path, temps_path, elevation_path, model_path, simulation_path):
+@click.option("--resolution", "-r", help="resolution", type=int, required=True)
+def main(
+    data_path, temps_path, elevation_path, model_path, simulation_path, resolution
+):
     """
     Main function for simulating using the Chinook decision tree.
     """
@@ -84,8 +88,10 @@ def main(data_path, temps_path, elevation_path, model_path, simulation_path):
 
     print("Pulling Enrichment...")
     enrichment = {
-        "elevation": get_elevation(elevation_path),
-        "surface_temps": get_surface_temps(temps_path),
+        "elevation": regroup(get_elevation(elevation_path), resolution),
+        "surface_temps": regroup(
+            get_surface_temps(temps_path), resolution, extra_keys=["month"]
+        ),
         "neighbors": {},
     }
 

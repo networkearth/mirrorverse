@@ -8,4 +8,4 @@ context: ../data/context.csv
 model: ../train/models.pkl
 
 # CONTEXT
-resolution: 4
+resolution: 3

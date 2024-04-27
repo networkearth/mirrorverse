@@ -13,7 +13,7 @@ stages:
     outs:
       - training_states.csv
   simulate:
-    cmd: chinook_monthly_simulate -d training_states.csv -t ${temps} -e ${elevation} -m ${model} -si simulation.csv
+    cmd: chinook_monthly_simulate -d training_states.csv -t ${temps} -e ${elevation} -m ${model} -si simulation.csv -r ${resolution}
     deps:
       - ../../../mirrorverse/chinook_monthly/simulate.py
       - ../../../mirrorverse/chinook_monthly/states.py
@@ -25,5 +25,6 @@ stages:
       - temps
       - elevation
       - model
+      - resolution
     outs:
       - simulation.csv

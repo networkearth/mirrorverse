@@ -8,9 +8,24 @@ import pickle
 
 import click
 import pandas as pd
+import h3
 
 from mirrorverse.chinook_monthly.tree.drift_movement import train_drift_movement_model
 from mirrorverse.chinook.states import get_elevation, get_surface_temps
+
+
+def regroup(data, resolution, extra_keys=[]):
+    """
+    Regroup data into a resolution.
+    """
+    data["lat"] = data.apply(lambda r: h3.h3_to_geo(r["h3_index"])[0], axis=1)
+    data["lon"] = data.apply(lambda r: h3.h3_to_geo(r["h3_index"])[1], axis=1)
+    data["h3_index"] = data.apply(
+        lambda r: h3.geo_to_h3(r["lat"], r["lon"], resolution), axis=1
+    )
+    data.drop(["lat", "lon"], axis=1, inplace=True)
+    data = data.groupby(extra_keys + ["h3_index"]).mean().reset_index()
+    return data
 
 
 @click.command()
@@ -20,7 +35,16 @@ from mirrorverse.chinook.states import get_elevation, get_surface_temps
 @click.option("--temps_path", "-t", help="path to surface temps file", required=True)
 @click.option("--elevation_path", "-e", help="path to elevation file", required=True)
 @click.option("--model_dir", "-m", help="directory to save models in", required=True)
-def main(node, train_data_path, test_data_path, temps_path, elevation_path, model_dir):
+@click.option("--resolution", "-r", help="resolution", type=int, required=True)
+def main(
+    node,
+    train_data_path,
+    test_data_path,
+    temps_path,
+    elevation_path,
+    model_dir,
+    resolution,
+):
     """
     Main function for training the models for the Chinook decision tree.
     """
@@ -28,10 +52,14 @@ def main(node, train_data_path, test_data_path, temps_path, elevation_path, mode
 
     print("Pulling Enrichment...")
     enrichment = {
-        "elevation": get_elevation(elevation_path),
-        "surface_temps": get_surface_temps(temps_path),
+        "elevation": regroup(get_elevation(elevation_path), resolution),
+        "surface_temps": regroup(
+            get_surface_temps(temps_path), resolution, extra_keys=["month"]
+        ),
         "neighbors": {},
     }
+
+    print(enrichment)
 
     print("Loading Data...")
     training_data = pd.read_csv(train_data_path)

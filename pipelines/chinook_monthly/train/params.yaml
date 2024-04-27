@@ -6,5 +6,5 @@ context: ../data/context.csv
 
 
 # CONTEXT
-resolution: 4
+resolution: 3
 training_size: 0.7
