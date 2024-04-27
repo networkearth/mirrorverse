@@ -1,0 +1,70 @@
+schema: '2.0'
+stages:
+  states:
+    cmd: chinook_monthly_states -d ../data/tag_tracks.csv -c ../data/context.csv -o
+      .  -r 4 -ts 1
+    deps:
+    - path: ../../../mirrorverse/chinook/utils.py
+      hash: md5
+      md5: 98b3c577b04810412ae1287fefaff2a5
+      size: 1906
+    - path: ../../../mirrorverse/chinook_monthly/states.py
+      hash: md5
+      md5: 03147a7132e2f070fb4afe511a2f891c
+      size: 2125
+    - path: ../data/context.csv
+      hash: md5
+      md5: 02489ea16c9d726e85f406b34c4a9ddb
+      size: 2042
+    - path: ../data/tag_tracks.csv
+      hash: md5
+      md5: a2c11e27477300708f3feaf1be5a5543
+      size: 325093
+    params:
+      params.yaml:
+        context: ../data/context.csv
+        data: ../data/tag_tracks.csv
+        resolution: 4
+    outs:
+    - path: training_states.csv
+      hash: md5
+      md5: 2b43638dfe34754132f2f9703646779f
+      size: 9130
+  simulate:
+    cmd: chinook_monthly_simulate -d training_states.csv -t ../data/surface_temps.csv
+      -e ../data/bathymetry.csv -m ../train/models.pkl -si simulation.csv
+    deps:
+    - path: ../../../mirrorverse/chinook_monthly/simulate.py
+      hash: md5
+      md5: 73c9053d097d268136b5f222367d5432
+      size: 3780
+    - path: ../../../mirrorverse/chinook_monthly/states.py
+      hash: md5
+      md5: 03147a7132e2f070fb4afe511a2f891c
+      size: 2125
+    - path: ../data/bathymetry.csv
+      hash: md5
+      md5: 009f0c0129454d53218b4358abba345c
+      size: 522273
+    - path: ../data/surface_temps.csv
+      hash: md5
+      md5: e6fd742a220be751db011ba75dc26227
+      size: 3847027
+    - path: ../train/models.pkl
+      hash: md5
+      md5: 9c8d43c5a0d2f60696d26970ba57bf1e
+      size: 4148313
+    - path: training_states.csv
+      hash: md5
+      md5: 2b43638dfe34754132f2f9703646779f
+      size: 9130
+    params:
+      params.yaml:
+        elevation: ../data/bathymetry.csv
+        model: ../train/models.pkl
+        temps: ../data/surface_temps.csv
+    outs:
+    - path: simulation.csv
+      hash: md5
+      md5: 5857fa331cbe621a5168264e136f6ae1
+      size: 15467

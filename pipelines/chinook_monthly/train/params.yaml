@@ -1,0 +1,10 @@
+# DATA
+data: ../data/tag_tracks.csv
+temps: ../data/surface_temps.csv
+elevation: ../data/bathymetry.csv
+context: ../data/context.csv
+
+
+# CONTEXT
+resolution: 4
+training_size: 0.7

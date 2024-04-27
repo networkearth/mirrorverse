@@ -1,0 +1,29 @@
+stages:
+  states:
+    cmd: chinook_monthly_states -d ${data} -c ${context} -o .  -r ${resolution} -ts 1
+    deps:
+      - ../../../mirrorverse/chinook_monthly/states.py
+      - ../../../mirrorverse/chinook/utils.py
+      - ${data}
+      - ${context}
+    params: 
+      - data
+      - context
+      - resolution
+    outs:
+      - training_states.csv
+  simulate:
+    cmd: chinook_monthly_simulate -d training_states.csv -t ${temps} -e ${elevation} -m ${model} -si simulation.csv
+    deps:
+      - ../../../mirrorverse/chinook_monthly/simulate.py
+      - ../../../mirrorverse/chinook_monthly/states.py
+      - training_states.csv
+      - ${temps}
+      - ${elevation}
+      - ${model}
+    params:
+      - temps
+      - elevation
+      - model
+    outs:
+      - simulation.csv
