@@ -10,8 +10,8 @@ stages:
       size: 1906
     - path: ../../../mirrorverse/chinook_monthly/states.py
       hash: md5
-      md5: 03147a7132e2f070fb4afe511a2f891c
-      size: 2125
+      md5: 92eabe7113bf7f579c00c13e1780ba88
+      size: 2315
     - path: ../data/context.csv
       hash: md5
       md5: 02489ea16c9d726e85f406b34c4a9ddb
@@ -28,20 +28,20 @@ stages:
     outs:
     - path: training_states.csv
       hash: md5
-      md5: 51a9cae5db341c0b2dfdb31ae5a1e44f
-      size: 9130
+      md5: 440d4f48bc192c513e20e5d53f91bc04
+      size: 9944
   simulate:
     cmd: chinook_monthly_simulate -d training_states.csv -t ../data/surface_temps.csv
       -e ../data/bathymetry.csv -m ../train/models.pkl -si simulation.csv -r 3
     deps:
     - path: ../../../mirrorverse/chinook_monthly/simulate.py
       hash: md5
-      md5: 70efca2448653f281e63e48e421b1b40
-      size: 4018
+      md5: b0f36799f91b3870cfe8a18abbc591e1
+      size: 4010
     - path: ../../../mirrorverse/chinook_monthly/states.py
       hash: md5
-      md5: 03147a7132e2f070fb4afe511a2f891c
-      size: 2125
+      md5: 92eabe7113bf7f579c00c13e1780ba88
+      size: 2315
     - path: ../data/bathymetry.csv
       hash: md5
       md5: 009f0c0129454d53218b4358abba345c
@@ -52,12 +52,12 @@ stages:
       size: 3847027
     - path: ../train/models.pkl
       hash: md5
-      md5: bb517b027d60a07627231d1e43107cc5
-      size: 320245
+      md5: 769d5ba2cd3b1d976aa6d0b1a36d4432
+      size: 338663
     - path: training_states.csv
       hash: md5
-      md5: 51a9cae5db341c0b2dfdb31ae5a1e44f
-      size: 9130
+      md5: 440d4f48bc192c513e20e5d53f91bc04
+      size: 9944
     params:
       params.yaml:
         elevation: ../data/bathymetry.csv
@@ -67,5 +67,5 @@ stages:
     outs:
     - path: simulation.csv
       hash: md5
-      md5: a5d224ddf651b7422c0ba2708b5077cf
-      size: 15483
+      md5: 751da4ff359ed15b2219f35bb643dd97
+      size: 15196

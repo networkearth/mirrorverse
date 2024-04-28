@@ -41,8 +41,8 @@ stages:
       size: 1906
     - path: ../../../mirrorverse/chinook_monthly/states.py
       hash: md5
-      md5: 03147a7132e2f070fb4afe511a2f891c
-      size: 2125
+      md5: 92eabe7113bf7f579c00c13e1780ba88
+      size: 2315
     - path: ../data/context.csv
       hash: md5
       md5: 02489ea16c9d726e85f406b34c4a9ddb
@@ -60,24 +60,24 @@ stages:
     outs:
     - path: testing_states.csv
       hash: md5
-      md5: 0018789686a2e82ff5d14bdd3a95612f
-      size: 2941
+      md5: c283d0c8df08fa51085f4f4c141d8edb
+      size: 3210
     - path: training_states.csv
       hash: md5
-      md5: a655601922248e28d7e6e8e7abeef090
-      size: 6248
+      md5: a87ca77628e0ff602d9804e0580c0770
+      size: 6807
   train_drift_movement:
     cmd: chinook_monthly_train -n DriftMovementLeaf -tr training_states.csv -te testing_states.csv
       -t ../data/surface_temps.csv -e ../data/bathymetry.csv -m . -r 3
     deps:
     - path: ../../../mirrorverse/chinook_monthly/train.py
       hash: md5
-      md5: 39850ff5a1c47e88eede256e14b35bce
-      size: 2439
+      md5: 2518a65d40223f6caf8584c439bfc1cf
+      size: 2416
     - path: ../../../mirrorverse/chinook_monthly/tree/drift_movement.py
       hash: md5
-      md5: 0f992d653e0750dac733f777942106de
-      size: 6023
+      md5: 2d2713f9d362d5d1188bd25962ca4c12
+      size: 5622
     - path: ../../../mirrorverse/tree.py
       hash: md5
       md5: c2478124c0aec761f032feabc10efb9e
@@ -92,12 +92,12 @@ stages:
       size: 3847027
     - path: testing_states.csv
       hash: md5
-      md5: 0018789686a2e82ff5d14bdd3a95612f
-      size: 2941
+      md5: c283d0c8df08fa51085f4f4c141d8edb
+      size: 3210
     - path: training_states.csv
       hash: md5
-      md5: a655601922248e28d7e6e8e7abeef090
-      size: 6248
+      md5: a87ca77628e0ff602d9804e0580c0770
+      size: 6807
     params:
       params.yaml:
         elevation: ../data/bathymetry.csv
@@ -106,21 +106,21 @@ stages:
     outs:
     - path: DriftMovementLeaf.csv
       hash: md5
-      md5: 14b2d15afcf408d166d669f8795eb5cb
-      size: 3071357
+      md5: f2f83aad455d831a1d2b5ecba2bd4aa1
+      size: 2709168
     - path: DriftMovementLeaf.pkl
       hash: md5
-      md5: 68552967a4c5d511ee9f6e3d031f8999
-      size: 320235
+      md5: a80b827381295003f0402d2b0971a56b
+      size: 338653
   bundle_models:
     cmd: mirrorverse_bundle_models -m .
     deps:
     - path: DriftMovementLeaf.pkl
       hash: md5
-      md5: 68552967a4c5d511ee9f6e3d031f8999
-      size: 320235
+      md5: a80b827381295003f0402d2b0971a56b
+      size: 338653
     outs:
     - path: models.pkl
       hash: md5
-      md5: bb517b027d60a07627231d1e43107cc5
-      size: 320245
+      md5: 769d5ba2cd3b1d976aa6d0b1a36d4432
+      size: 338663

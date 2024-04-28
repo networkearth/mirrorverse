@@ -28,18 +28,20 @@ def simulate(args):
     - h3_index (str): starting h3 index
     - year (int): starting year
     - month (int): starting month
-    - home_region (str): the home region of the fish
+    - home_latitude (float): the home latitude of the fish
     - fork_length_cm (float): fork length of the fish
     - steps (int): number of steps to simulate
     - decision_tree (DecisionTree): decision tree to use
 
     Returns a DataFrame with the simulated data.
     """
-    ptt, h3_index, year, month, home_region, fork_length_cm, steps, decision_tree = args
+    ptt, h3_index, year, month, home_latitude, fork_length_cm, steps, decision_tree = (
+        args
+    )
     state = {
         "h3_index": h3_index,
         "month": month,
-        "home_region": home_region,
+        "home_latitude": home_latitude,
         "fork_length_cm": fork_length_cm,
     }
     row = dict(state)
@@ -57,7 +59,7 @@ def simulate(args):
         new_state = {
             "h3_index": choice_state["h3_index"],
             "month": month,
-            "home_region": home_region,
+            "home_latitude": home_latitude,
             "fork_length_cm": fork_length_cm,
         }
 
@@ -116,15 +118,13 @@ def main(
             .iloc[0]
         )
         steps = data[data["ptt"] == ptt].shape[0]
-        year = df["year"]
-        month = df["month"]
         jobs.append(
             (
                 df["ptt"],
                 df["h3_index"],
-                year,
-                month,
-                df["home_region"],
+                df["year"],
+                df["month"],
+                df["home_latitude"],
                 df["fork_length_cm"],
                 steps,
                 decision_tree,

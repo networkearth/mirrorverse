@@ -51,6 +51,12 @@ def main(
 
     tag_context = pd.read_csv(context_path)
     tag_context.rename({"tag_key": "ptt"}, axis=1, inplace=True)
+
+    # TODO: make this more general
+    tag_context["home_latitude"] = tag_context["home_region"].apply(
+        lambda x: {"BC": 53.5, "SEAK": 60.0, "Unknown": -1, "WA/OR": 45.0}[x]
+    )
+
     data = data.merge(tag_context, on="ptt", how="inner")
 
     print("Splitting into Train and Test...")

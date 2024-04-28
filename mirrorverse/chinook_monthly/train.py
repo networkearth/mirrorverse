@@ -59,8 +59,6 @@ def main(
         "neighbors": {},
     }
 
-    print(enrichment)
-
     print("Loading Data...")
     training_data = pd.read_csv(train_data_path)
     testing_data = pd.read_csv(test_data_path)
