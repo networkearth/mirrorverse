@@ -18,12 +18,17 @@ from mirrorverse.warehouse.data.tags import (
     TAGS_DATA,
     TAG_TRACKS_DATA,
     HOME_REGIONS_DATA,
+    TAG_DEPTHS_DATA,
 )
-from mirrorverse.warehouse.models import Tags, TagTracks, HomeRegions
+from mirrorverse.warehouse.models import Tags, TagTracks, HomeRegions, TagDepths
 from mirrorverse.warehouse.etls.dimensions.tags import (
     build_tags,
 )
-from mirrorverse.warehouse.etls.facts.tags import format_tag_tracks, format_home_regions
+from mirrorverse.warehouse.etls.facts.tags import (
+    format_tag_tracks,
+    format_home_regions,
+    format_tag_depths,
+)
 
 
 class TestTags(unittest.TestCase):
@@ -121,6 +126,47 @@ class TestTags(unittest.TestCase):
             [
                 {"tag_key": "205415", "home_region": "Gulf of Alaska"},
                 {"tag_key": "142100", "home_region": "Aleutian Islands"},
+            ]
+        )
+
+        assert set(results.columns) == set(expected.columns)
+        assert_frame_equal(expected, results[expected.columns])
+
+    def test_upload_tag_depths(self):
+        formatted = format_tag_depths(TAG_DEPTHS_DATA)
+        upload_dataframe(self.session, TagDepths, formatted)
+        stmt = select(TagDepths)
+        results = pd.read_sql_query(stmt, self.session.bind)
+        expected = pd.DataFrame(
+            [
+                {
+                    "tag_key": "211761",
+                    "date_key": 1619827200,
+                    "depth": 100.0,
+                    "epoch": 1619870400,
+                    "temperature": 5.0,
+                },
+                {
+                    "tag_key": "212586",
+                    "date_key": 1600128000,
+                    "depth": 200.0,
+                    "epoch": 1600171200,
+                    "temperature": 8.0,
+                },
+                {
+                    "tag_key": "205564",
+                    "date_key": 1606348800,
+                    "depth": 150.0,
+                    "epoch": 1606392000,
+                    "temperature": 7.0,
+                },
+                {
+                    "tag_key": "205564",
+                    "date_key": 1606348800,
+                    "depth": 155.0,
+                    "epoch": 1606395600,
+                    "temperature": 7.0,
+                },
             ]
         )
 

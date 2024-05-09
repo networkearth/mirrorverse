@@ -12,7 +12,11 @@ from mirrorverse.warehouse.etls.dimensions.cwt import (
     build_cwt_tags,
 )
 from mirrorverse.warehouse.etls.dimensions.tags import build_tags
-from mirrorverse.warehouse.etls.facts.tags import format_tag_tracks, format_home_regions
+from mirrorverse.warehouse.etls.facts.tags import (
+    format_tag_tracks,
+    format_home_regions,
+    format_tag_depths,
+)
 from mirrorverse.warehouse.etls.facts.elevation import format_elevation
 from mirrorverse.warehouse.etls.facts.surface_temperature import (
     format_surface_temperature,
@@ -31,4 +35,5 @@ FACT_FORMATTERS = {
     "elevation": format_elevation,
     "surface_temperature": format_surface_temperature,
     "home_regions": format_home_regions,
+    "tag_depths": format_tag_depths,
 }

@@ -85,3 +85,32 @@ HOME_REGIONS_DATA = pd.DataFrame(
         {"tag_key": "239204", "MBC_Broadscaleregion": np.nan},
     ]
 )
+
+TAG_DEPTHS_DATA = pd.DataFrame(
+    [
+        {
+            "Ptt": "211761",
+            "date.time.GMT": "2021-05-01 12:00",
+            "depth.m": 100.0,
+            "temp.c": 5.0,
+        },
+        {
+            "Ptt": "212586",
+            "date.time.GMT": "2020-09-15 12:00",
+            "depth.m": 200.0,
+            "temp.c": 8.0,
+        },
+        {
+            "Ptt": "205564",
+            "date.time.GMT": "2020-11-26 12:00",
+            "depth.m": 150.0,
+            "temp.c": 7.0,
+        },
+        {
+            "Ptt": "205564",
+            "date.time.GMT": "2020-11-26 13:00",
+            "depth.m": 155.0,
+            "temp.c": 7.0,
+        },
+    ]
+)
