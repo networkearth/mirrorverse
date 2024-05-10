@@ -50,6 +50,23 @@ class TagTracks(ModelBase):
     h3_level_4_key: Mapped[int] = mapped_column(ForeignKey("h3_level_4.h3_level_4_key"))
 
 
+class TagDepths(ModelBase):
+    """
+    Tag Depths Fact Table
+    """
+
+    __tablename__ = "tag_depths"
+
+    tag_key: Mapped[str] = mapped_column(ForeignKey("tags.tag_key"), primary_key=True)
+    date_key: Mapped[int] = mapped_column(
+        ForeignKey("dates.date_key"), primary_key=True
+    )
+    epoch: Mapped[int] = mapped_column(primary_key=True)
+
+    depth: Mapped[Optional[float]]
+    temperature: Mapped[Optional[float]]
+
+
 class Elevation(ModelBase):
     """
     Elevation Facts Table

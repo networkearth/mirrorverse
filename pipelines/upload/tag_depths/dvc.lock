@@ -1,0 +1,66 @@
+schema: '2.0'
+stages:
+  format:
+    cmd: mirrorverse_upload_facts -t tag_depths -f data/HMM_Time_Series_Data_Marcel_2.12.2024.csv
+      -o status.json
+    deps:
+    - path: ../../../mirrorverse/warehouse/commands.py
+      hash: md5
+      md5: 23af4d1ca228185b4d3bf51c8cecee46
+      size: 2921
+    - path: ../../../mirrorverse/warehouse/etls/dimensions/dates.py
+      hash: md5
+      md5: 71a65b46bd7719a890cb7fbaa555ad6a
+      size: 1172
+    - path: ../../../mirrorverse/warehouse/etls/facts/tags.py
+      hash: md5
+      md5: 2673bb0ac0c9448fcffd02e2b95f31e1
+      size: 2139
+    - path: ../../../mirrorverse/warehouse/models/facts.py
+      hash: md5
+      md5: f9df8f316d4d57f984a6731d4c4e1dec
+      size: 2765
+    - path: ../../../mirrorverse/warehouse/utils.py
+      hash: md5
+      md5: f9578063005fd9df9f998a720cbc9339
+      size: 811
+    - path: data/HMM_Time_Series_Data_Marcel_2.12.2024.csv
+      hash: md5
+      md5: b9faecc69cab81e922fd949d2c4c1da2
+      size: 47578252
+    params:
+      params.yaml:
+        raw_data: data/HMM_Time_Series_Data_Marcel_2.12.2024.csv
+    outs:
+    - path: status.json
+      hash: md5
+      md5: 2bdcf1f14cd6f8f21af4234c5540e022
+      size: 54
+  enumerate_missing_dimensions:
+    cmd: mirrorverse_enumerate_missing_dimensions -t tag_depths -o missing_dimensions.json
+    deps:
+    - path: ../../../mirrorverse/warehouse/etls/missing_dimensions.py
+      hash: md5
+      md5: eac6c00ab1ae4da5367a809f07d7f76f
+      size: 4344
+    - path: ../../../mirrorverse/warehouse/models/dimensions.py
+      hash: md5
+      md5: be45b815c87e3430b95dd03e3e1f7766
+      size: 2033
+    - path: ../../../mirrorverse/warehouse/models/facts.py
+      hash: md5
+      md5: f9df8f316d4d57f984a6731d4c4e1dec
+      size: 2765
+    - path: ../../../mirrorverse/warehouse/utils.py
+      hash: md5
+      md5: f9578063005fd9df9f998a720cbc9339
+      size: 811
+    - path: status.json
+      hash: md5
+      md5: 2bdcf1f14cd6f8f21af4234c5540e022
+      size: 54
+    outs:
+    - path: missing_dimensions.json
+      hash: md5
+      md5: 72a201770c4c58f9d8bdfe5381ff9c16
+      size: 37
