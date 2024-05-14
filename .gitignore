@@ -9,6 +9,7 @@ build/
 mirrorverse.egg-info/
 *.pkl
 *.csv
+*.csv.gz
 *.db
 cwt_query.txt
 scratch.ipynb
