@@ -21,17 +21,26 @@
 \section{Objectives}
 
 \begin{objective}
-To provide tooling that allows machine learning methods to fit processes of the form
+To provide tooling that allows for using machine learning methods to fit models of the form
 
-$$P(v|\theta)=F(v, \theta)$$ 
+$$\psi_k = G(\eta_k)$$
 
-using maximizing a likelihood function as the objective:
+that maximize the following objective:
 
-$$\mathcal{L}=\prod_i \hat{F}(v_i, \theta_i)$$
+
+$$\mathcal{L}=\prod_i P'(v_i | \eta_i)$$
+
+where:
+
+$$P'(v_i|\eta_i) = \frac{\psi_i}{\sum_k \psi_k}$$
+
+These models will be known as odds models as they predict the "odds for" each outcome $v_k$ given the information contained in $\eta_k$. 
 
 \end{objective}
 
 \subsection{Rationale for Objective 1}
+
+\subsubsection{Value of Machine Learning in Model Building}
 
 One of the functions of science is to build models of the world around us. Specifically to look for functions of the form:
 
@@ -78,21 +87,59 @@ Each step in this cycle is highly non-trivial. However special interest should b
 
 The standard method here has been to propose a family of possible $F$ which are defined by a set of parameters $\mu$. Then using some choice of likelihood maximization method the set of $\mu$ are searched for that maximize the likelihood of the data $\mathcal{L}$. While this method has borne considerable fruit it still requires a great deal of effort on the side of the scientist to envision various hypotheses on what families of functions would make sense, coding those up, fitting them, and then evaluating them post-fit. Furthermore if the true form of $F$ is not contained in those set of hypotheses tested then $F$ is never found. Lots of effort without any kind of guarantee that $F$ will be discovered.  
 
-The field of Machine Learning (ML) on the other hand has been specifically occupied with finding ways to maximize objectives without having to assume much, if anything, about the functional form of the prediction function. Therefore it provides an opportunity to lessen the toil and uncertainty in step 3 and allow scientists to focus more of the efforts on the other steps (and thereby accelerate the whole cycle). 
+The field of Machine Learning (ML) (specifically probabilistic machine learning) on the other hand has been specifically occupied with finding ways to maximize objectives without having to assume much, if anything, about the functional form of the prediction function. Therefore it provides an opportunity to lessen the toil and uncertainty in step 3 and allow scientists to focus more of the efforts on the other steps (and thereby accelerate the whole cycle).
 
-However, ML has traditionally not been occupied with loss functions like our likelihood $\mathcal{L}$. Instead the field has been more concerned with models of the form we first introduced:
+\subsubsection{Issues with Probabilistic Machine Learning when Applied to Behavior}
 
-$$v=F(\theta)$$
+Probabilistic machine classification of the kind we were pointing to in the last section has two pitfalls when it comes to modeling behavior. 
 
-and therefore have been more focused on such things as accuracy and precision (as defined in the field). 
+The first comes from the fact that such models predict on the same set of outcomes each time, regardless of $\theta$. For example, if we were trying to predict which drink a person will buy at their local cafe we would not only have to include everything currently on the menu but also everything that could be on the menu across all time points we are interested in predicting. If suddenly a new menu item appears that we have not trained on, our probabilistic classifier will be at a loss. 
 
-There is therefore work to be done in modifying standard ML methods to follow the form:
+The second issue comes from the "curse of dimensionality". Basically this is an issue where as the dimensionality of $\theta$ increases, the amount of data required to find real relationships in that data increases exponentially. This is a particular problem for behavioral modeling because we in all likelihood need to include data on each of the possible decisions before us. So if I can choose between 5 different drinks I need to provide features on each of those five drinks. This leads to very high dimensional spaces very quickly. \newline
 
-$$P(v|\theta)=F(v, \theta)$$ 
 
-and optimize for $\mathcal{L}$. But if it can be done that would turn step 3 into an automated process and thereby significantly improve the likelihood that $F$ is actually well approximated while reducing the labor involved the whole cycle thereby accelerating it. 
+We can get around both of these problems by introducing what we will term an "odds model". Specifically if we imagine $\theta$ now as a variable length vector composed of vectors $\eta_k$ for each of our possible outcomes $v_k$ then the odds model is given by the function:
 
-Indeed, at that point, modeling becomes almost completely about gathering, hypothesizing on, and cleaning the data itself. 
+$$\psi_k=G(\eta_k)$$
+
+where we now say that:
+
+$$P'(v_k|\theta) = \frac{\psi_k}{\sum_j \psi_j}$$
+
+We can see why we chose the name "odds model" as the $\psi_k$ are simply the "odds for" outcome $v_k$. \newline
+
+Now note it is not necessarily true that:
+
+$$P'(v_k|\eta_k) = P(v_k|\theta)$$
+
+because it is possible that information in the other $\eta_j$ informs the probability of $v_k$. However it should be possible to include such information in the $\eta_k$ if necessary. 
+
+By making this sacrifice, however, we have achieved two things:
+
+\begin{enumerate}
+\item So long as we can provide a $\eta_k$ for a newly seen outcome we can predict on it. Therefore we need not have a fixed set of possible outcomes (or a fixed number of such outcomes per $\theta$).
+\item Compared to the corresponding probabilistic machine learning classifier, if our total number of outcomes were $|V|$ we've now reduced the dimensionality of our feature space by $|V|$. 
+\end{enumerate}
+
+And this means that unless we have to pass large amounts of information between the $\eta_k$ the amount of data we need to collect to fit our model has decreased tremendously. And in cases where data is hard to come by (like animal behavior), any reduction in data requirements is of the utmost importance. 
+
+So finally to model behavior we'd like to fit an odds model of the form:
+
+$$\psi_k = G(\eta_k)$$
+
+that maximizes:
+
+$$\mathcal{L}=\prod_i P'(v_i | \eta_i)$$
+
+where 
+
+$$P'(v_i|\eta_i) = \frac{\psi_i}{\sum_k \psi_k}$$\newline
+
+To the author's knowledge there is presently no tooling to fit and diagnose such models. 
+
+
+
+
 
 
 
