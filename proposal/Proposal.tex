@@ -7,18 +7,31 @@
 \usepackage[super]{nth}
 \usepackage{amsthm}
 \newtheorem{theorem}{Theorem}
+\newtheorem{objective}{Objective}
+
 
 \title{Master's Thesis Proposal}
 \author{Marcel Gietzmann-Sanders}
 \date{}
-\setcounter{tocdepth}{1}
+\setcounter{tocdepth}{2}
 \begin{document}
 \maketitle
 \tableofcontents
 
-\section{Introduction}
+\section{Objectives}
 
-\subsection{Breaking Down Modeling}
+\begin{objective}
+To provide tooling that allows machine learning methods to fit processes of the form
+
+$$P(v|\theta)=F(v, \theta)$$ 
+
+using maximizing a likelihood function as the objective:
+
+$$\mathcal{L}=\prod_i \hat{F}(v_i, \theta_i)$$
+
+\end{objective}
+
+\subsection{Rationale for Objective 1}
 
 One of the functions of science is to build models of the world around us. Specifically to look for functions of the form:
 
@@ -53,13 +66,33 @@ Therefore finding the "true" $F$ can be summarized with two steps:
 \item Find the $\hat{F}$ that maximizes the likelihood of that data.
 \end{enumerate}
 
-So is this all there is to modeling? Absolutely not. Everything we've said so far is dependent upon a chosen information set $\theta$. For each choice there is a $F$ and obviously the usefulness of these is a balance between how accessible $\theta$ is when the model needs to be used and how predictive $F$ is (i.e. how much variance is represented by it's predicted $P(v|\theta)$. Determining the best $\theta$ is really what makes any kind of modeling an art form. 
+All of this, however, has been conditional on the form of $\theta$ having been chosen. Obviously, the information we choose to collect and build our model with has an impact on how good the model is from a purely predictive perspective. So how can we compare the predictive power of different $\theta$? Well as we find $\theta$ that are more predictive the corresponding $F$'s will have greater and greater likelihoods $\mathcal{L}$, given the data. But this presents us with a chicken and the egg style problem - to know the value of $\theta$ we must know $F$, but to know $F$ we must have fit $\hat{F}$ which requires a reasonable amount of data to have been collected. I.e. I cannot know in advance if the data I am collecting is going to be useful or not. Instead anyone doing modeling finds themselves in the cycle illustrated by Fig. \ref{fig:model_cycle}.
 
+\begin{figure}[h!] 
+  \includegraphics[width=\linewidth]{model_cycle.png}
+  \caption{Modeling Cycle}
+  \label{fig:model_cycle}
+\end{figure}
 
-\subsection{Searching for Maximal Functions - Machine Learning}
+Each step in this cycle is highly non-trivial. However special interest should be paid to step 3 (finding an $\hat{F}$ that best approximates $F$). 
 
-While the first step outlined is obviously highly dependent on what we are trying to model, once the data has been collected 
+The standard method here has been to propose a family of possible $F$ which are defined by a set of parameters $\mu$. Then using some choice of likelihood maximization method the set of $\mu$ are searched for that maximize the likelihood of the data $\mathcal{L}$. While this method has borne considerable fruit it still requires a great deal of effort on the side of the scientist to envision various hypotheses on what families of functions would make sense, coding those up, fitting them, and then evaluating them post-fit. Furthermore if the true form of $F$ is not contained in those set of hypotheses tested then $F$ is never found. Lots of effort without any kind of guarantee that $F$ will be discovered.  
 
+The field of Machine Learning (ML) on the other hand has been specifically occupied with finding ways to maximize objectives without having to assume much, if anything, about the functional form of the prediction function. Therefore it provides an opportunity to lessen the toil and uncertainty in step 3 and allow scientists to focus more of the efforts on the other steps (and thereby accelerate the whole cycle). 
+
+However, ML has traditionally not been occupied with loss functions like our likelihood $\mathcal{L}$. Instead the field has been more concerned with models of the form we first introduced:
+
+$$v=F(\theta)$$
+
+and therefore have been more focused on such things as accuracy and precision (as defined in the field). 
+
+There is therefore work to be done in modifying standard ML methods to follow the form:
+
+$$P(v|\theta)=F(v, \theta)$$ 
+
+and optimize for $\mathcal{L}$. But if it can be done that would turn step 3 into an automated process and thereby significantly improve the likelihood that $F$ is actually well approximated while reducing the labor involved the whole cycle thereby accelerating it. 
+
+Indeed, at that point, modeling becomes almost completely about gathering, hypothesizing on, and cleaning the data itself. 
 
 
 
