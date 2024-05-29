@@ -17,6 +17,7 @@
 \begin{document}
 \maketitle
 \tableofcontents
+\newpage
 
 \section{Objectives}
 
@@ -37,6 +38,65 @@ $$P'(v_i|\eta_i) = \frac{\psi_i}{\sum_k \psi_k}$$
 These models will be known as odds models as they predict the "odds for" each outcome $v_k$ given the information contained in $\eta_k$. 
 
 \end{objective}
+
+
+\begin{objective}
+To provide tooling that allows for running spatio-temporal simulations of management strategies using movement models as defined above. Such simulations should allow for:
+
+\begin{enumerate}
+\item Flexible initial assumptions that capture heterogeneity in the stock.
+\item The ability to impose spatio-temporal mortality (both fishing and natural).
+\item The ability to capture heterogeneity in fishing vulnerability.
+\end{enumerate}
+
+Likewise these simulations need to be quick enough to allow for capturing uncertainty in initial conditions through bootstrapping.\newline
+
+These simulations will be known as diffusion models as they model the probabilistic behavior of cohorts as opposed to individual fish or schools. 
+\end{objective}
+
+
+\newpage
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Demonstrations}
+
+
+\newpage
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Rationales}
 
 \subsection{Rationale for Objective 1}
 
@@ -136,6 +196,72 @@ where
 $$P'(v_i|\eta_i) = \frac{\psi_i}{\sum_k \psi_k}$$\newline
 
 To the author's knowledge there is presently no tooling to fit and diagnose such models. 
+
+
+
+
+
+
+
+\subsection{Rationale for Objective 2}
+
+From studies that started with Beverton and Holt's work on recruitment in fisheries we know, with a reasonable degree of certainty, that as a general rule fish stocks operate according to a pattern as illustrated in Fig. \ref{fig:recruitment}.
+
+\begin{figure}[h!] 
+  \includegraphics[width=\linewidth]{recruitment.png}
+  \caption{Recruitment}
+  \label{fig:recruitment}
+\end{figure}
+
+What we see is a clear pattern in recruitment verses spawners for low spawners and the eventually we reach a point where this curve asymptotes and large changes to the number of spawners creates little to no change (especially when considering the actual variability in this data) in the number of recruits. Obviously, given the real variability in nature, this pattern looks more like a scatter shot of points but plenty of studies over several species have shown this overall pattern in the mean borne out. \newline
+
+The implication for fisheries management is pretty clear - sustainable fishing is in large part driven by just maintaining the spawning stock biomass (SSB) above that knee in the curve. Indeed this is well noted as the basis of why fisheries \textit{can} exist in the first place. If taking spawners always led to decreases in recruits, we'd quickly fish a stock out of existence. It is only through the compensation we get on the asymptote that sustainable fisheries are possible. \newline
+
+However, two very simple observations of fish biology will show how actually managing SSB can be made difficult.
+
+The first, and simplest, is age structure. Obviously we're talking here about maintaining a specific level of spawning stock biomass. But today's juveniles are tomorrows SSB and as fish grow they typically become more fecund. This means that in order to maintain our SSB over time we have to be careful about how we target each age group. This gets even more complicated for fish like Pacific salmon or many species of groupers where life history is intimately entwined with spawning. The salmon obviously only breed once and several species of groupers are protogynous hermaphrodites meaning that if you target a specific age group you are effectively targeting a specific sex. Clearly understanding and managing our age class selectivity matters when it comes to maintaining a healthy SSB for years to come. \newline
+
+The other observation is that many species of fish actually form multiple sub stocks within what we may consider a single fishery (or sometimes many fisheries distributed across different countries). Pacific salmon are once again a good example in that the home to specific streams and only breed with other salmon in those streams. Bluefin tuna are also known to form specific breeding aggregations, as are many tropical fishes. Recent research too also indicates that even fish like Atlantic herring likely form distinct genetic groups due to differences in homing during breeding and school behavior. 
+
+What does this mean? It means that if we trust our beverton-holt style model that instead of having a single SSB to manage we really have several SSB's - one for each sub stock. Obviously, if we set one global piece of management like an Allowable Biological Catch (ABC) that makes sense for a single SSB but then we have biased fishing mortality where one sub stock is getting fished out far more than the others we may drop below the SSB for that one stock without actually exceeding our expected ABC for the whole fishery. And this can certainly happen as different sub stocks will often exhibit quite different spatial behaviors in movement. \newline
+
+All of this to say that understanding heterogeneity in vulnerability by things like age class and sub stock is of the utmost importance for managing a fisheries and truly ensuring an appropriate amount of SSB remains year over year. 
+
+It is also worth noting that this knowledge around changes in selectivity in space and time is not only useful for considerations around SSB but also for other management issues such as bycatch avoidance and growth overfishing to name just two. 
+
+What kind of tooling do we need in order to address these issues and test out ideas for "selectivity aware" fisheries management? Clearly we need some kind of reliable simulation. \newline
+
+Suppose we built models of spatio-temporal behavior (specifically movement) as expressed in Objective 1. These models we know can be fed information that captures both environmental variables but also factors we'd like to categorize by in order to understand heterogeneity in selectivity. Such variables could include features like the age and genetic cohorts that we just described. Then we could take some baseline assumptions about abundance in space at a given time (say providing recruits at spawning grounds or taking a spatio-temporal assessment as a starting point) and then using our behavioral models to simulate time-steps forward. As we do these time steps we could account for natural mortality as well to complete the "environment" portion of our simulation. 
+
+It is important to note that while this may seem like a Lagrangian approach to simulation it actually falls more into the Eulerian camp as, in order to reduce our computational costs, we'd simply have cohorts as a function of space. Remember that our model is only taking the categories that separate one group from the next thereby allowing us to model cohorts instead of single individuals. Furthermore instead of modeling the specific singular behaviors our behavior model as outlined in Objective 1 allows us to understand the "many world" probabilistic outcomes of behavior. We are not following a single fish but instead are watching as that cohort diffuses across its decision space. Therefore we'll term this simulation a diffusion model.
+
+Into our diffusion model we can now incorporate whatever management policy we like as a spatio-temporal specification of fishing mortality - which can now be modulated by our understanding of, say, gear selectivity as a function of space and time. So if we want to implement a marine protected area we can take a baseline fishing pattern and exclude specific areas in space. If we want to see what would happen if we redistribute the fleet we can as well. If we just want to understand the selectivity biases already present we can simulate fleet patterns as they occur today. 
+
+The point is that with such a simulation we are able to test different hypotheses of management on data driven understanding of fish behavior. 
+
+
+
+
+
+
+\newpage
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
