@@ -8,6 +8,7 @@
 \usepackage{amsthm}
 \newtheorem{theorem}{Theorem}
 \newtheorem{objective}{Objective}
+\newtheorem{model}{Model}
 
 
 \title{Master's Thesis Proposal}
@@ -76,6 +77,108 @@ These simulations will be known as diffusion models as they model the probabilis
 
 \section{Demonstrations}
 
+Our demonstrations of the above objectives will be split into two chapters. 
+
+\subsection{Chapter 1}
+
+Chapter 1 will be concerned with demonstrating the tooling for creating odds models for spatio-temporal movement behavior. It will pursue two specific modeling examples:
+
+\begin{model}
+A depth occupancy model for Chinook salmon in the Gulf of Alaska (GOA). \newline
+
+\textbf{Target:} Depth range. \newline
+
+\textbf{Features:} Environmental data derived either from environmental simulations or from remote sensing such as Google Earth, cohort data about the fish themselves, and temporal features such as month, season, or time of day. \newline
+
+\textbf{Data:} PSAT tagging data from the GOA. \newline 
+
+\textbf{Purpose:} To study the heterogeneity in depth occupancy as a function of cohort, environment, and time.  
+\end{model}
+
+\begin{model}
+A movement model for Chinook salmon in the Gulf of Alaska (GOA). \newline
+
+\textbf{Target:} Spatial grid cell selection as movement. Any state feature updates needed to capture internal states of a cohort. \newline
+
+\textbf{Features:} Environmental data derived either from environmental simulations or from remote sensing such as Google Earth, cohort data about the fish themselves, temporal features such as month, season, or time of day, and internal state information about the cohort. \newline
+
+\textbf{Data:} PAST tagging data from the GOA. \newline
+
+\textbf{Purpose:} To study the heterogeneity in spatial movement/preference as a function of cohort, environment, and time.\newline
+
+\end{model}
+
+In building these models our primary purpose is to demonstrate the tooling exists to prudently build odds models. We can frame this goal in terms of a "standard" machine learning pipeline and work-flow. 
+
+\begin{enumerate}
+\item Formatting Data for Odds Modeling 
+\item Class Balancing
+\item Splitting Data into Train, Validation, Test
+\item Training and Hyperparameter Tuning Using Standard Model Types
+\item Diagnoses of Fit and Comparison of Different Model Types
+\item Identifying Sample Groups that are More or Less Fit
+\end{enumerate}
+
+We will want to explicitly demonstrate each of these processes, provide guidance on using the tools for them, and use them to build the models listed above. \newline
+
+The outcome will be a package in Python for building, diagnosing, and running odds models.
+
+\subsection{Chapter 2}
+
+Chapter 2 will be concerned with taking these models for Chinook in the Gulf of Alaska and building a spatio-temporal movement simulation that can be used to investigate a series of management questions. It is worth noting that we will use the simulation to ask questions that may come up in general management settings even if they may not be directly applicable to the issues currently faced by Chinook management in the GOA. This is just to demonstrate general applicability. \newline
+
+The overview of the components of this simulation are outlined in Fig. \ref{fig:simulation}. Boxes with rounded edges would be inputs specified by the user. The hexagons are functions provided by the simulation and the trapezoids are data generated during the main loop. 
+
+\begin{figure}[h!] 
+  \includegraphics[width=\linewidth]{simulation.png}
+  \caption{Simulation Outline}
+  \label{fig:simulation}
+\end{figure}
+
+
+With this simulation we will attempt to demonstrate the following:
+
+\begin{enumerate}
+\item \textbf{Connectivity:} by looking at the vector flows of fish throughout the space we will be able to identify which areas are highly connected and which are more or less separated by environment, cohort, or other factors of fish behavior.
+\item \textbf{Vulnerability:} by especially looking at changes in depth occupancy and preference for habitat we will attempt to quantify the degree of vulnerability in different parts of the space. 
+\item \textbf{Cumulative Mortality:} we would like to demonstrate that we can model the effect of fishing the same cohorts through space as opposed to distributing the fishing mortality across more of the stock. 
+\item \textbf{Protected Areas/Times:} we will attempt to demonstrate that we can simulate the effects of MPA or other kinds of closures in space and time. 
+\item \textbf{Cohort Bias:} we will show (models willing) that we can understand and model differences in the above by cohort.
+\item \textbf{Uncertainty:} we will show that such a simulation can be run at scale, bootstrapping can be applied, and therefore uncertainty in simulation outcomes quantified. 
+\end{enumerate}
+
+The outcome will be a package in Python for deploying, running, and analyzing diffusion models. 
+
+
+
+
+
+\newpage
+
+
+
+\section{Timeline}
+
+\subsection{Class Work}
+
+\begin{enumerate}
+\item \textbf{Fall 2023:} (University of Florida) FAS 6355c Fisheries Management, FAS 6337c Population Dynamics
+\item \textbf{Spring 2024:} FISH F621 Estimation of Fish Abundance, FISH F427 Ichthyology
+\item \textbf{Fall 2024:} STAT F641 Bayesian Statistics, FISH F692 Seminar
+\item \textbf{Spring 2025:} FISH F631 Data Analysis in Community Ecology, FISH 699 Thesis 
+\item \textbf{Fall 2025:} STAT F651 Statistical Theory I, FISH 699 Thesis
+\item \textbf{Spring 2026:} FISH F626  Behavioral Ecology of Fishes, STAT F605 Spatial Statistics 
+\end{enumerate}
+
+\subsection{Thesis}
+
+\begin{enumerate}
+\item \textbf{Spring 2024:} Depth and Movement Models v0, Thesis Exploration
+\item \textbf{Fall 2024:} Graduate Study Plan, Self Evaluation, Thesis Proposal, Depth and Movement Models v1
+\item \textbf{Spring 2025:} Thesis Proposal Defense, Simulation v1
+\item \textbf{Fall 2025:} Self Evaluation, Write Chapters, Publish Package(s)
+\item \textbf{Spring 2026:} Thesis Defense
+\end{enumerate}
 
 \newpage
 
@@ -98,7 +201,7 @@ These simulations will be known as diffusion models as they model the probabilis
 
 \section{Rationales}
 
-\subsection{Rationale for Objective 1}
+\subsection{Objective 1}
 
 \subsubsection{Value of Machine Learning in Model Building}
 
@@ -203,7 +306,7 @@ To the author's knowledge there is presently no tooling to fit and diagnose such
 
 
 
-\subsection{Rationale for Objective 2}
+\subsection{Objective 2}
 
 From studies that started with Beverton and Holt's work on recruitment in fisheries we know, with a reasonable degree of certainty, that as a general rule fish stocks operate according to a pattern as illustrated in Fig. \ref{fig:recruitment}.
 
@@ -238,6 +341,76 @@ It is important to note that while this may seem like a Lagrangian approach to s
 Into our diffusion model we can now incorporate whatever management policy we like as a spatio-temporal specification of fishing mortality - which can now be modulated by our understanding of, say, gear selectivity as a function of space and time. So if we want to implement a marine protected area we can take a baseline fishing pattern and exclude specific areas in space. If we want to see what would happen if we redistribute the fleet we can as well. If we just want to understand the selectivity biases already present we can simulate fleet patterns as they occur today. 
 
 The point is that with such a simulation we are able to test different hypotheses of management on data driven understanding of fish behavior. 
+
+
+\subsection{Chinook Salmon PSAT Data from GOA}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Related Work}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -292,8 +465,12 @@ The point is that with such a simulation we are able to test different hypothese
 
 
 
+
+
 \section{Appendices}
-\subsection{Proof of Log Likelihood Maximization}
+
+
+\subsection{Value of Log Likelihood Maximization}
 
 \begin{theorem}
 Suppose we have a set of possible outcomes $V=\lbrace v_k \rbrace$ with probabilities $P_k$. Such that:
@@ -404,6 +581,8 @@ and that $\lim_{N\rightarrow \inf}N_k = F(v_k, \theta)N$ so that we have:
 $$\prod_k \left(\frac{F(v_k, \theta)\alpha_k}{F(v_k, \theta)}\right)^{F(v_k, \theta)N}$$
 
 which is now in the exact same form as our theorem above. And we now know that this ratio is maximized when $\alpha_k\equiv 1$. So as $N\rightarrow \inf$ a higher $\mathcal{L}$ means we are closer to approximating $F$. 
+
+
 
 
 
