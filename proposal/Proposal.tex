@@ -11,12 +11,38 @@
 \newtheorem{model}{Model}
 
 
-\title{Master's Thesis Proposal}
-\author{Marcel Gietzmann-Sanders}
-\date{}
+\makeatletter
+\renewcommand{\maketitle}{
+\begin{center}
+
+\pagestyle{empty}
+\phantom{.}  %necessary to add space on top before the title
+\vspace{3cm}
+
+{\Huge \bf \@title\par}
+\vspace{2.5cm}
+
+{\LARGE Marcel Gietzmann-Sanders}\\[1cm]
+
+{\Large\@date}
+
+\vspace{2.5cm}
+{\Large Dr. Andrew Seitz}\hspace{2cm}{\Large Dr. Curry Cunningham}\\[2cm]{\Large Michael Courtney, M.S.}\\[2cm]
+College of Fisheries and Ocean Sciences\\
+University of Alaska Fairbanks
+
+
+\end{center}
+}\makeatother
+
+
+\title{Master's Research Proposal}
+
+\date{2024}
 \setcounter{tocdepth}{2}
 \begin{document}
 \maketitle
+\newpage
 \tableofcontents
 \newpage
 
