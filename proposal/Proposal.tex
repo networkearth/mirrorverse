@@ -199,7 +199,7 @@ The outcome will be a package in Python for deploying, running, and analyzing di
 
 
 
-\section{Rationales}
+\section{Rationale}
 
 \subsection{Objective 1}
 
@@ -343,7 +343,38 @@ Into our diffusion model we can now incorporate whatever management policy we li
 The point is that with such a simulation we are able to test different hypotheses of management on data driven understanding of fish behavior. 
 
 
-\subsection{Chinook Salmon PSAT Data from GOA}
+\subsection{PSAT Data}
+
+Pop-up Satellite Archival Tags (PSATs) are a great way of collecting behavior data. They are defined by three key properties:
+
+\begin{enumerate}
+\item \textbf{Archival:} Transmitting data is only possible if animals come to the surface. Therefore these tags archive collected data for later transmission. 
+\item \textbf{Pop Up:} These tags are programmed to release from a fish at a specific time or under specific conditions to facilitate retrieval. 
+\item \textbf{Satellite:} On pop-up the tags then broadcast data (usually summarized) to Argos satellites which is then relayed to a database for retrieval. Such tags usually also broadcast some positioning information which allows for direct retrieval and access to the full archived dataset.
+\end{enumerate}
+
+The normal lifecycle then is to catch an animal, attach the tag, allow the animal to go about its life all while collecting data, have the tag pop-up, transfer data to satellite or retrieve the tag, and then clean and analyze the data. \newline
+
+For our purposes these tags critically capture:
+
+\begin{enumerate}
+\item Temperature
+\item Depth
+\item Light Levels
+\end{enumerate}
+
+The latter two are then used along with tag release location to predict animal movement (latitude and longitude) using a proprietary statistical model. 
+
+We will look at movements on a day by day basis and depths at the transmitted resolution (2-5 minutes). For those tags retrieved, a much higher resolution is available (1-3 seconds) however most fish had data only from transmission and not from retrieval. 
+\newline
+
+Clearly then this kind of data suites our modeling and simulation purposes well as we get behavior outcomes directly. 
+
+\subsection{Chinook in the GOA}
+
+At this point in time the main interest here is that Chinook present an interesting model species for testing out the efficacy of these models and simulations. Chinook are highly motile and undergo clear migration behaviors. Therefore they should provide a good challenge to attempts at behavioral modeling and simulation. It is the author's hope that patterns useful to Chinook management issues may arise from this research but it is not a necessity as the intention here is to develop tools that justify additional data collection for species where spatial management is of interest. 
+
+
 
 
 
