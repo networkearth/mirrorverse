@@ -466,6 +466,84 @@ At this point in time the main interest here is that Chinook present an interest
 
 \section{Related Work}
 
+
+
+\subsection{Spatial Management}
+
+Fisheries management is as diverse a subject as the species and cultures to which it is applied. It simultaneously has to deal with creatures from Bluefin Tuna who make large oceanic migrations around the globe to various clams whose entire life cycles can be summarized within a few square meters. There are species that school and species that consume those schools. Some live entirely at sea, some in inland rivers and lakes, and some, like Salmon and eels spend time in both. There are species whose lives last the span of a year to others that can live longer than any of us human beings. 
+
+And to capture this vast array of diversity are similarly diverse strategies and gears. From hooks to gillnets, from small boats to at sea factories, from recreational fishers to roving commercial bands, and everything in between the variety in strategies to catch fish are numerous. 
+
+And then there are the stakeholders of these fisheries and their multitude of objectives. What kinds of fish sell the best? Is selling fish even the point or is subsistence a big concern? Is this a primary source of livelihood or are fishers also fishing for other things, or occupied with entirely different forms of work during other parts of the year? Where do conservation groups fit in? What about the natural predators and prey lodged nearby in the food web? Is the stock in need of rebuilding? What requirements of management are there? 
+
+Fisheries management is a field in which the phrase "the devil is in the details" is incredibly relevant. \newline
+
+As with any such endeavor that can come in so many forms and captures so many different people, interests, and potential problems and opportunities, the best creative solutions come when everyone is working together to build and understand those solutions. And of utmost importance here is the inclusion of those who actually go out and do the fishing. Fisheries management that creates a sense of inclusion and involvement with the fishing community is the best kind of management because of a number of things:
+
+\begin{enumerate}
+\item Fishers often have incredible amounts of insight into the species they are targeting 
+\item Fishers have an interest in the long term sustainability of their work and therefore often have ideas on how to achieve this
+\item There are plenty of examples of fishers helping to self enforce policies if they agree with said policy
+\item Fishers are key when it comes to collecting the kinds of data required to do management
+\item Fishers are one of the primary stakeholders impacted and therefore must have a say in what is going to be done
+\end{enumerate}
+
+But in general creating cooperation improves the overall solution whereas exclusion simply creates conflict that works against any kind of management. Therefore the first priority on our list when it comes to doing good management (spatial or otherwise) has to be creating engagement. \newline
+
+To this end simulations and models of the kind that we are proposing should be helpful. 
+
+\subsubsection{Driving Engagement}
+
+First, it is clear that engagement is best facilitated by presentations of knowledge or data that are visual and relevant to the ways in which people normally think about their world. By having simulations that can simply be shown and laid down on a map that places the spatio-temporal modeling in familiar context one should be able to make objective or confirmation extremely easy. Rather than having to attempt to condense down loads of parameters, summary statistics, and the like in a model, one can simply show a map and folks can point at things that line up or are in disagreement with their intuition and experience. In this way mapped out views of the simulation work to be a useful device for consensus building among multiple groups of stakeholders. Not everyone may be familiar with the nuances of a specific kind of model but everyone in the problem can point to a map and understand what's going on. 
+\newline
+
+With the simulation providing an easier to understand jumping off point to create feedback around a model, the models themselves provide a reasonably straightforward method for taking that feedback and working it into the model itself. This is because these models rely only on the information input as opposed to requiring modelers to determine the relationship between the information and the outcomes. 
+
+For example suppose that we have a more standard model that has been hand crafted by a scientist familiar with the species in question. They may have included specific reactions to, say, oceanic currents, temperatures, and primary productivity. But then if someone looking at the simulation points out that they think the species' behavior is also being driven by day/night patterns the scientist then has to go back to the drawing board, figure out how to add this into their overall model, code it up, tune parameters, and then return - all without any real guarantee that whoever provided the feedback is right. And this would be for one piece of feedback. If there are several this only gets more difficult. 
+
+Instead by using machine learning as proposed here, such feedback would amount to perhaps playing around with a few day light features, pushing those to the model, retraining using the same automation as for any of the other feature combinations, and then just reporting if that information helped or not. Feedback can be incorporated much more easily allowing for direct contribution to the model on the part of those who may have no modeling experience but have lots of practical experience that could suggest forms of information that would improve how targeted the model is.
+\newline
+
+In summary the combination of clear, relevant visuals from the simulation, and ease of feature incorporation model side allow for a nice iterative loop to drive engagement and input from all stakeholders into the underlying spatial understanding of the fishery.  
+
+\subsubsection{Spatial Management Today} 
+
+While we've already noted that the creative solutions in fisheries management are as diverse as the people, species, and objectives present, there are some specific kinds of strategies that are used across the world to do spatial management. By and large they are comprised of performing spatial closures, however those closures differ with regards to who they effect and for how long. \newline
+
+\begin{enumerate}
+\item \textbf{Marine Protected Areas (MPAs)} - MPAs are usually permanent closures intended to reduce the fishing pressure in specific areas in the hope that those areas can become "sources" of larvae and stock to help build up the surrounding areas or to help scientists understand the "unfished" condition. Sometimes these areas are total no-go zones for all fishing activity, sometimes specific "low pressure" activities are allowed. In general it is clear that the efficacy of MPAs is largely dependent on the spatio-temporal behavior and spatio-temporal aspects of the species' life cycle as well as the same aspects of behavior and lifestyle of the species' predators and prey. Species that move about dramatically may not be helped by MPAs and species that are "too" sessile may not actually do much to contribute to stocks outside of the MPA itself. Therefore it is clear that a good understanding of movement is extremely important when both thinking about the overall efficacy of an MPA and also where to place them. 
+\item \textbf{Territorial Use Rights for Fisheries (TURFs)} - TURFs delineate a fishery into spatial regions and then give exclusive access rights to specific communities of fishers to each of the defined regions. The intention with exclusivity is to align the incentives of the fishers with that of sustainability and is a way to address "tragedy of the commons" style issues that arise with completely open access. However, as with MPAs, it is clear that understanding the spatio-temporal behavior of the species in question is of the utmost importance here because for species that exhibit considerable movement, small regions would mean that while spatial rights exist those rights don't really have anything to do with the underlying fish. 
+\item \textbf{Temporary Closures} - These kinds of closures are designed to deal with specific issues directly related to the target species (or related bycatch's) ecology. For example seasonal closures in specific areas might exist to protect spawning aggregations or other kinds of aggregations that create a particularly dangerous kind of vulnerability. Or these closures might protect against vulnerability by another species to fishing activities such as preventing hits on whales or bycatch of an endangered species. Here again, clear spatio-temporal understanding is necessary for defining and determining the efficacy of these kinds of measures. 
+\item \textbf{Real Time Management} - This is a particularly interesting kind of management as instead of trying to predict where closures are needed, in this strategy metrics from the fishers themselves help dictate where closures are needed temporarily. For example if bycatch avoidance is the goal then catch logs (that are usually reported with some frequency in these cases) are used to determine areas where bycatch abundance has spiked and then the fishery can call for a temporary closure last days to months in order to avoid that aggregation. In general this strategy is comprised of measuring some overall catch statistic and then responding to that statistic in real time as needs be. Here models of the kind we're proposing are arguably less relevant as prediction is not \textit{required} for this kind of strategy to work. However they could certainly help in both defining the extent of the closures in both space and time and potentially helping fishers avoid such closures in the first place by helping drive understanding of where things like high bycatch may occur. 
+\end{enumerate}
+
+Unsurprisingly then, for any kind of spatial management tool in use today, spatio-temporal understanding of the stock is key to both definition and efficacy. Therefore it seems likely that bringing high resolution spatio-temporal data to the bear on the issue can only help make such techniques more nuanced, precise, and thereby effective. 
+
+\subsubsection{"Weather" Forecasting}
+
+Finally it is worth noting that the potential in combining this modeling with fisheries dependent information is quite interesting on its own. Any forecasting model is always going to have issues predicting farther and farther into the future but fisheries dependent data could provide a means for making corrections to keep the model in line. This would amount to something like weather forecast where for the next few days the forecast is accurate enough to precise predict specific kinds of movement helpful to fishers themselves. 
+
+For example it could help them predict where to go to avoid high levels of bycatch, help optimize their use of fuel and labor when searching for fish, or, depending on the degree of subtlety in the model might even be able to help them target catches that are more or less valuable on the market itself. 
+
+With such direct incentives to fishers this might provide a jumping off point to bring them into helping collect the kinds and quantities of data that would allow for increased precision in these models. With such "weather forecasting" any such increases would directly benefit them in addition to providing benefits to management. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \subsection{Chinook Ecology}
 
 \subsection{Chinook Management}
@@ -475,25 +553,6 @@ At this point in time the main interest here is that Chinook present an interest
 \subsection{Spatial Modeling}
 
 \subsection{Spatial Assessment}
-
-\subsection{Spatial Management}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
