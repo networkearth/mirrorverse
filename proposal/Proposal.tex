@@ -527,6 +527,139 @@ For example it could help them predict where to go to avoid high levels of bycat
 
 With such direct incentives to fishers this might provide a jumping off point to bring them into helping collect the kinds and quantities of data that would allow for increased precision in these models. With such "weather forecasting" any such increases would directly benefit them in addition to providing benefits to management. 
 
+\newpage
+
+
+\subsection{Spatial Assessments}
+
+\subsubsection{Assessments in Short}
+
+Fisheries assessments are one way in which unknown parameters important to management are estimated. By and large they are comprised of two models - (1) a state model that represents the underlying stock and contains such things as growth, age composition, recruitment, abundance, and so on and (2) an observation model that represents how data such as catch rates, fishery independent indices, and so are arise from the state model. Depending on how the assessment is being done the parameters in the state model will either be estimated independently or left as parameters in the model to be fit and the observation model is encoded as a set of distributions dependent on those parameters thus allowing for a likelihood to be computed against known data for any given set of parameters. This, in turn, allows for maximum likelihood estimation (MLE) routines to then fit the likely parameters of the assessment. \newline
+
+So, as an example, you might have your state model be comprised of age cohorts that have a specific growth pattern (fit externally) and then you leave as parameters natural mortality and recruitment. Then you might model vulnerability to a couple different kinds of gear, provide an expected distribution for catches given your underlying abundance by cohort, and then "simulate" a few years. Matching this back to real catch data would then allow you to estimate your natural mortality and recruitment by year. \newline
+
+In short the pattern is (1) design a sim that has your unknown statistics as parameters, (2) specify how data is drawn from the sim, (3) fit your parameters using MLE. Then those desired statistics are extracted from the assessment (usually with some notion of uncertainty attached to them) and used to inform management. 
+
+\subsubsection{Features of Spatial Assessments}
+
+As has been noted by several authors most standard assessments have typically assumed in their state model (or simulation) that the stock they are working with is bounded by the area under assessment, is well mixed, and constitutes a single unit. However from studies of fish behavior and the fact that fish don't obey national or state defined boundaries, these assumptions are rarely true and indeed simulation studies have shown that assuming them can lead to significant errors and biases. 
+
+Therefore in recent years there has been work in creating new assessments that are able to capture spatial heterogeneity and movement. There are effectively two different kinds of heterogeneity that such models have to capture - that in recruitment and that in post recruitment movement and connectivity (or lack thereof). As such these models are usually structured as having multiple sub regions within the overall assessment region and then two deviations from the standard assessment follow:
+
+\begin{enumerate}
+\item First sub-region specific mortality, growth, recruitment, or other sub-population specific parameters may be estimated. The degree to which these are shared between or constrained by other regions is often related to the data available and how flexible the model is allowed to be.
+\item Movement among regions at each time step is also modeled, usually as a matrix $X$ such that the elements $X_{i,j}$ signify movement rates from sub-region $i$ to sub-region $j$. 
+\end{enumerate} 
+
+Different assessment paradigms will have varying degree of resolution in the sub-regions, will estimate certain parameters freely to not at all, leave $X$ free or constrain it on other kinds of assumptions (indeed some assessments don't model movement at all). 
+
+Ultimately what is bounding the freedom in parametrizing these assessments is the availability of data to actually fit all of these parameters - a subject to which we turn next.
+
+\subsubsection{Integrated Assessments}
+
+A primary issue with spatial assessments is their hunger for data. This makes sense given the combination of the "curse of dimensionality" and the fact that adding per region parameters and across region movements introduces not just new parameters but many multiples of parameters as compared to a non-spatial assessment model. 
+
+Therefore a huge step forward in being able to run these kinds of assessments was the development of "integrated assessments" - assessments that can take advantage of pretty much any kind of data collected from the fishery. The process here falls neatly into our earlier description of how an assessment works - for some new kind of data (say acoustic tag data) one must add a new component to our observation model that describes the distribution that would generate our acoustic tag data. With this in hand we've connected a new data type to our underlying parameters and can therefore use that data to help fit our parameters. 
+
+There are of course issues that arise in terms of how to weight one data type against another when doing MLE but by and large integrated assessments are a boon because they increase the data available to fit assessments and have led to several tag integrated assessments that include electronic tag data in addition to more standard mark and recapture tag data. 
+
+\subsubsection{Validating Spatial Assessments}
+
+With the recency of their development and overall complexity it has been noted that diagnosing goodness of fit and relevance of spatial assessments is an art that is still in development (although several papers exist that given guidance on best practices in choosing and using spatial assessment paradigms). 
+
+Every assessment paradigm is of course a simplification of reality but what's important to know is whether those simplifications are obscuring important structure of the stock and sub-stocks. I.e. are the simplifications introducing bias or errors that would lead to contradictory results from sound management based on the advice of the assessment? 
+
+Given that ultimately we do \textit{not} know the underlying structure (models such as these are built specifically to elucidate such meaningful structure) we find ourselves with a "Catch-22". We need spatial components to understand spatial structure, but need to know the spatial structure in order to understand what simplifications are allowable. Note that it is not enough to simply design the most complicated spatial model possible given the data will likely not exist to fit that model with any degree of confidence. 
+
+The way out of this hole, as many authors have noted, is to use simulations. Specifically one can use simulations to do hypothesis testing of the form - if my stock had spatial structure of the form X would my specific assessment capture that at all or would it introduce biases and/or errors as a result? This is a very powerful technique that has been responsible for illustrating just how important spatial assessments are to management in the first place.\newline
+
+Here then is another potential application of the kind of model proposed in this document. As we mentioned earlier these assessments are trying to model at least three things - recruitment, local population dynamics parameters such as growth or natural mortality, and then movement. By having a movement simulation based on real observations of the species in question we would be able to help build a high quality simulation of at least the last of those three. Rather than having to assume one form of a movement or another we'd instead be able to see whether the assessment paradigm in question can capture the relevant aspects of structure in the \textit{real} movement of our stocks and sub-stocks. And this in turn would help in selecting the assessments best suited to the job (as well as illustrate what uncertainties exist if a lack of specific kinds of data requires us to use an over-simplified assessment paradigm). 
+
+\subsubsection{Comments on Interpretation}
+
+Something that any student of statistical or Machine Learning learns early on is that models can be deceiving in interpretation due to correlations in different kinds of data or parameters. For example a common critic of using "feature importance" on random forests is that models like random forests can extract the value of a set of correlated features out of a single feature. So, for example if studying vulnerability to a specific kind of disease, a low feature importance for something like exercise may not mean anything given exercise patterns may be heavily correlated with things like, say, diet. As models get more and more complicated and include more features the likelihood that situations like these arise becomes greater and greater. 
+
+For such things as fisheries assessments this is particularly concerning as the specific ranges of parameters derived from the models are used directly to set such things as allowable biological catch. Yet given we are often estimated recruitment, abundance, mortality, and in the case of spatial assessments things like movement and spatial heterogeneity all in the same model the only guarantee we have is that this choice of parameters fits the current data, not that they are parameters that are indicative of reality itself. 
+
+In order to get a better guarantee that the parameters of the model are indicative of reality rather than just parameters that cause fit in the overall model one would need to estimate the parameters independently so cross feature "compensation" cannot occur and obscure the interpretation of the results. 
+
+It has been noted that one of the most difficult aspects to fit is the movement matrix $X$ described above. So here too is another application of the model proposed in this document. Rather than having to depend on fitting $X$ through the assessment MLE routine such a fit could be taken directly from the behavioral model proposed herein thereby reducing the data requirements for the assessment itself and guaranteeing that $X$ is not being used to improve fit of the model in compensation for other important life history and abundance patterns. 
+
+\subsubsection{Other Applications of a Movement Model}
+
+There are many decisions that have to be made when designing a spatial assessment and some of these would directly benefit from the kind of view our proposed model would provide:
+
+\begin{enumerate}
+\item \textbf{Choosing sub-regions} - Selecting the scale of sub-regions, the boundaries of those regions, and whether those regions should move over time requires intimate knowledge of fish movement.
+\item \textbf{Parameters to make regional} - Not all population dynamic parameters need be regional and obviously being able to share information across regions reduce the data requirements for the assessments. By knowing what kinds of covariates actually drive movement, data driven decision about what to keep regional versus not could be made.
+\item \textbf{Temporal resolution} - What time step to choose or whether only specific seasons need to modeled (and what those season are) would be another place in which data driven decisions would be aided by models of the kind proposed herein. 
+\end{enumerate}
+
+\newpage
+
+
+\subsection{Modeling Movement}
+
+Modeling movement has traditionally divided into two categories - the Eulerian and Lagrangian approaches. In brief the former deals with movement as a series of flows throughout a space (that may or may not be discretized) while the latter treats each animal independently. We will provide a brief introduction to both approaches.
+
+\subsubsection{Eulerian Approach}
+
+The typical strategy behind the Eulerian approach is to subdivide the region in question into discrete subregions and then model movements between the boundaries of these regions as the result of advection and diffusion where advection is a directed movement and diffusion is not. 
+
+These advection and diffusion terms are represented by partial differential equations where each may be parametrized by life history or environmental factors depending on the model in question. Data is included in the model as boundary conditions, for example where we were fish released and where were they recovered. Finally time too is discretized in order to allow finite difference methods to be used to solve the PDE's in question. 
+
+The result of solution is a description of the advection and diffusion terms parametrized by whatever was included in the original model. With these in hand simulations can then be run to represent the overall movement modeled.
+
+The advantage of the Eulerian approach is that it is specifically attempting to catch population level movement patterns and therefore does not need as thorough parametrization as the langragian approaches. It is also therefore less data intense in its requirements and generally stock assessments are only interested in population or sub-population level movement anyways. 
+
+
+\subsubsection{Lagrangian Approach}
+
+In contrast the Eulerian approach the Lagrangian approach attempts to model at the individual level. Therefore you'll see the terms Lagrangian and Individual Based Model (IBM) used interchangeably. 
+
+The approaches used to build these kinds of models are extremely variable (a point we'll get back to momentarily) but follow the general paradigm of:
+
+\begin{enumerate}
+\item Collect some form of movement data (could be very high resolution or quite low resolution in some cases).
+\item Collect environmental data such as temperatures, measures of abundance, measures of productivity, flow/current data, etc.
+\item Craft a model that relates the specific queues from the environment into specific movements.
+\item Tune any parameters of those models through some kind of fitting paradigm.
+\end{enumerate}
+
+All of these steps are presented so vaguely because there really are no general paradigms for how these are done. For example, in the last step - tuning the parameters - strategies range from MLE style routines, to "by-eye" tuning, to weighted averages across multiple different allowable parameters. \newline
+
+Such approaches however have been shown to be able to model very fine scale movement dynamics and have been especially useful in applications in rivers where structures like dams are being designed and the ecological impacts are wanting to be understood. These kinds of fine scale dynamics are not possible with Eulerian approaches. 
+
+IBM's can also capture much finer detail about \textit{why} specific movements occur because they are effectively modeling the individual itself. Whereas such detail ends up getting washed out by Eulerian approaches the focus on the individual means very specific details of behavior have to be sorted out and understood. A feature which, depending on the situation, can be a pro or a con. 
+
+Finally it has been noted that one can derive Eulerian models from Lagrangian ones make the latter perhaps the more general strategy. \newline
+
+\subsubsection{Struggles in Building IBM's}
+
+There are a series of issues that have arisen in building IBM's of which we will note a few key issues that relate to our proposal:
+
+\begin{enumerate}
+\item \textbf{High Precision as a Requirement} - IBM's typically predict what an animal \textit{will} do as opposed to the likelihoods of what it \textit{could} do. This creates the requirement for capturing \textit{all} the meaningful drivers of variability in the behavior of the animal. To see why this is consider the example of a creature that can either choose to stay put or move to another location. If the more likely of the two actions is to stay put a deterministic model \textit{must} predict that the animal will \textit{always} stay put. But this is obviously non-sensical. However because the model is deterministic in nature the modeler cannot depend on stochasticity to save the day - instead they must find whatever is driving the difference between staying put and moving on. And this can cascade into greater and greater requirements for modeling the "interal state" of an animal. 
+\item \textbf{Obscurity} - given the inherent complexity of IBM's that arises from the point above it gets increasingly difficult to make IBM's clear to new users or potential developers. There can often be many dozens of different parameters, functions, and "internal states" to keep track of without even considering all of the external modeling that has to go in place to provide for all of this. And this makes for not just complicated descriptions but equally if not more complicated code.
+\item \textbf{Hand Made} - almost all IBM's that the author has come across have been hand-coded in the sense that every functional relationship is specifically crafted and outlined by the modeler. This is obviously a very laborious process but it also means that no two IBM's are the same and that lack of generalization or abstraction makes exchanging lessons learned near difficult to impossible. 
+\item \textbf{No Generalization of Fitting or Diagnostics} - because each IBM is effectively unique the methods for fitting, the data used, and the diagnostics developed are all unique as well. This once again increases the workload of the modeler, makes exchanging lessons learned and best practices extremely difficult, and also makes starting a new model quite prohibitive. 
+\end{enumerate}
+
+\subsubsection{Comparison to Proposed Odds Model}
+
+Our odds modeling approach looks to directly address these issues by:
+
+\begin{enumerate}
+\item \textbf{Modeling Likelihoods} - by modeling likelihoods instead of having a deterministic model we no longer \textit{have} to model each kind of relevant variance, instead the variance can be encoded through stochasticity. While we would obviously like to know what creates the variance this allows us to build our model iteratively and to whatever complexity is allowable by the data. It also means we can build models that can be used in contexts where specific kinds of environmental or "internal state" data may be missing.
+\item \textbf{Information as the Model} - by using machine learning (ML) we are drawing the attention away from the specifics of the model itself to what information was used to train it and what metrics were used to select the best fit. This makes the model far clearer and creates a generalized paradigm for describing any such model.
+\item \textbf{Machine Learning} - as described in our rationale for creating these models, ML allows us to remove much of the labor in finding the approximate function that relates our inputs and outputs and instead allows us to place our focus on creating quality information to input to the model.
+\item \textbf{MLE in All Cases} - odds modeling allows us to use the same measure of fitness every single time - likelihood. And because all of the models share the same format the form of diagnostics and fitting can also be shared.
+\end{enumerate}
+
+
+
+\newpage
+
 
 
 
@@ -550,9 +683,9 @@ With such direct incentives to fishers this might provide a jumping off point to
 
 \subsection{Other Applications of PSAT Data}
 
-\subsection{Spatial Modeling}
 
-\subsection{Spatial Assessment}
+
+
 
 
 
