@@ -36,7 +36,7 @@ University of Alaska Fairbanks
 }\makeatother
 
 
-\title{Master's Research Proposal (IN PROGRESS)}
+\title{Master's Research Proposal (DRAFT)}
 
 \date{2024}
 \setcounter{tocdepth}{2}
@@ -56,7 +56,7 @@ Finally there is a \textbf{timeline} provided to give a sense of when these outc
 
 If these are compelling enough there is no need to read any further. \newline
 
-However if you are interested in the rationales behind these objectives or diving into related work has already been done by others, the \textbf{Rationale} and \textbf{Related Work} sections are for you. 
+However if you are interested in the rationales behind these objectives or diving into related work has already been done by others, the \textbf{Rationale} and \textbf{Related Context} sections are for you. 
 
 \newpage
 
@@ -300,7 +300,7 @@ The field of Machine Learning (ML) (specifically probabilistic machine learning)
 
 \subsubsection{Issues with Probabilistic Machine Learning when Applied to Behavior}
 
-Probabilistic machine classification of the kind we were pointing to in the last section has two pitfalls when it comes to modeling behavior. 
+Probabilistic machine classification \cite{durr} of the kind we were pointing to in the last section has two pitfalls when it comes to modeling behavior. 
 
 The first comes from the fact that such models predict on the same set of outcomes each time, regardless of $\theta$. For example, if we were trying to predict which drink a person will buy at their local cafe we would not only have to include everything currently on the menu but also everything that could be on the menu across all time points we are interested in predicting. If suddenly a new menu item appears that we have not trained on, our probabilistic classifier will be at a loss. 
 
@@ -354,7 +354,7 @@ To the author's knowledge there is presently no tooling to fit and diagnose such
 
 \subsection{Objective 2}
 
-From studies that started with Beverton and Holt's work on recruitment in fisheries we know, with a reasonable degree of certainty, that as a general rule fish stocks operate according to a pattern as illustrated in Fig. \ref{fig:recruitment}.
+From studies that started with Beverton and Holt's work on recruitment in fisheries we know, with a reasonable degree of certainty, that as a general rule fish stocks operate according to a pattern as illustrated in Fig. \ref{fig:recruitment} \cite{waltersmartell}.
 
 \begin{figure}[h!] 
   \includegraphics[width=\linewidth]{recruitment.png}
@@ -362,21 +362,21 @@ From studies that started with Beverton and Holt's work on recruitment in fisher
   \label{fig:recruitment}
 \end{figure}
 
-What we see is a clear pattern in recruitment verses spawners for low spawners and the eventually we reach a point where this curve asymptotes and large changes to the number of spawners creates little to no change (especially when considering the actual variability in this data) in the number of recruits. Obviously, given the real variability in nature, this pattern looks more like a scatter shot of points but plenty of studies over several species have shown this overall pattern in the mean borne out. \newline
+What we see is a clear pattern in recruitment verses spawners for low spawners and the eventually we reach a point where this curve asymptotes and large changes to the number of spawners creates little to no change (especially when considering the actual variability in this data) in the number of recruits. Obviously, given the real variability in nature, this pattern looks more like a scatter shot of points but plenty of studies over several species have shown this overall pattern in the mean borne out \cite{waltersmartell}. \newline
 
-The implication for fisheries management is pretty clear - sustainable fishing is in large part driven by just maintaining the spawning stock biomass (SSB) above that knee in the curve. Indeed this is well noted as the basis of why fisheries \textit{can} exist in the first place. If taking spawners always led to decreases in recruits, we'd quickly fish a stock out of existence. It is only through the compensation we get on the asymptote that sustainable fisheries are possible. \newline
+The implication for fisheries management is pretty clear - sustainable fishing is in large part driven by just maintaining the spawning stock biomass (SSB) above that knee in the curve \cite{waltersmartell} \cite{king}. Indeed this is well noted as the basis of why fisheries \textit{can} exist in the first place. If taking spawners always led to decreases in recruits, we'd quickly fish a stock out of existence. It is only through the compensation we get on the asymptote that sustainable fisheries are possible. \newline
 
 However, two very simple observations of fish biology will show how actually managing SSB can be made difficult.
 
-The first, and simplest, is age structure. Obviously we're talking here about maintaining a specific level of spawning stock biomass. But today's juveniles are tomorrows SSB and as fish grow they typically become more fecund. This means that in order to maintain our SSB over time we have to be careful about how we target each age group. This gets even more complicated for fish like Pacific salmon or many species of groupers where life history is intimately entwined with spawning. The salmon obviously only breed once and several species of groupers are protogynous hermaphrodites meaning that if you target a specific age group you are effectively targeting a specific sex. Clearly understanding and managing our age class selectivity matters when it comes to maintaining a healthy SSB for years to come. \newline
+The first, and simplest, is age structure. Obviously we're talking here about maintaining a specific level of spawning stock biomass. But today's juveniles are tomorrow's SSB and as fish grow they typically become more fecund. This means that in order to maintain our SSB over time we have to be careful about how we target each age group. This gets even more complicated for fish like Pacific salmon or many species of groupers where life history is intimately entwined with spawning. The salmon obviously only breed once \cite{NOAA24} and some species of groupers are protogynous hermaphrodites \cite{RedGrouper} meaning that if you target a specific age group you are effectively targeting a specific sex. Clearly understanding and managing our age class selectivity matters when it comes to maintaining a healthy SSB for years to come. \newline
 
-The other observation is that many species of fish actually form multiple sub stocks within what we may consider a single fishery (or sometimes many fisheries distributed across different countries). Pacific salmon are once again a good example in that the home to specific streams and only breed with other salmon in those streams. Bluefin tuna are also known to form specific breeding aggregations, as are many tropical fishes. Recent research too also indicates that even fish like Atlantic herring likely form distinct genetic groups due to differences in homing during breeding and school behavior. 
+The other observation is that many species of fish actually form multiple sub stocks within what we may consider a single fishery (or sometimes many fisheries distributed across different countries) \cite{lorenzen2010} \cite{salmonplan} \cite{prince2010}. Pacific salmon are once again a good example in that the home to specific streams and only breed with other salmon in those streams and many other species of fish form fish spawning aggregations as well \cite{erisman2017}. Research also indicates that even fish like Atlantic herring likely form distinct genetic groups due to differences in homing during breeding and school behavior \cite{armstrong2001}. 
 
-What does this mean? It means that if we trust our beverton-holt style model that instead of having a single SSB to manage we really have several SSB's - one for each sub stock. Obviously, if we set one global piece of management like an Allowable Biological Catch (ABC) that makes sense for a single SSB but then we have biased fishing mortality where one sub stock is getting fished out far more than the others we may drop below the SSB for that one stock without actually exceeding our expected ABC for the whole fishery. And this can certainly happen as different sub stocks will often exhibit quite different spatial behaviors in movement. \newline
+What does this mean? It means that if we trust our beverton-holt style model, instead of having a single SSB to manage we really have several SSB's - one for each sub stock. Obviously, if we set one global piece of management like an Allowable Biological Catch (ABC) that makes sense for a single SSB but then we have biased fishing mortality where one sub stock is getting fished out far more than the others we may drop below the SSB for that one stock without actually exceeding our expected ABC for the whole fishery. And this can certainly happen as different sub stocks will often exhibit quite different spatial behaviors in movement \cite{tucker2019} \cite{punt2019} \cite{cadrin2020}. \newline
 
 All of this to say that understanding heterogeneity in vulnerability by things like age class and sub stock is of the utmost importance for managing a fisheries and truly ensuring an appropriate amount of SSB remains year over year. 
 
-It is also worth noting that this knowledge around changes in selectivity in space and time is not only useful for considerations around SSB but also for other management issues such as bycatch avoidance and growth overfishing to name just two. 
+It is also worth noting that this knowledge around changes in selectivity in space and time is not only useful for considerations around SSB but also for other management issues such as bycatch avoidance and growth overfishing. 
 
 What kind of tooling do we need in order to address these issues and test out ideas for "selectivity aware" fisheries management? Clearly we need some kind of reliable simulation. \newline
 
@@ -391,7 +391,7 @@ The point is that with such a simulation we are able to test different hypothese
 
 \subsection{PSAT Data}
 
-Pop-up Satellite Archival Tags (PSATs) are a great way of collecting behavior data. They are defined by three key properties:
+Pop-up Satellite Archival Tags (PSATs) are a great way of collecting behavior data \cite{PSAT}. They are defined by three key properties:
 
 \begin{enumerate}
 \item \textbf{Archival:} Transmitting data is only possible if animals come to the surface. Therefore these tags archive collected data for later transmission. 
@@ -411,14 +411,14 @@ For our purposes these tags critically capture:
 
 The latter two are then used along with tag release location to predict animal movement (latitude and longitude) using a proprietary statistical model. 
 
-We will look at movements on a day by day basis and depths at the transmitted resolution (2-5 minutes). For those tags retrieved, a much higher resolution is available (1-3 seconds) however most fish had data only from transmission and not from retrieval. 
+We will look at movements on a day by day basis and depths at the transmitted resolution (2-5 minutes). For those tags retrieved, a much higher resolution is available (1-3 seconds) however most data is only guaranteed from transmission and not from retrieval \cite{PSAT}. 
 \newline
 
 Clearly then this kind of data suites our modeling and simulation purposes well as we get behavior outcomes directly. 
 
 \subsection{Chinook in the GOA}
 
-At this point in time the main interest here is that Chinook present an interesting model species for testing out the efficacy of these models and simulations. Chinook are highly motile and undergo clear migration behaviors. Therefore they should provide a good challenge to attempts at behavioral modeling and simulation. It is the author's hope that patterns useful to Chinook management issues may arise from this research but it is not a necessity as the intention here is to develop tools that justify additional data collection for species where spatial management is of interest. 
+At this point in time the main interest here is that Chinook present an interesting model species for testing out the efficacy of these models and simulations. Chinook are highly motile and undergo clear migration behaviors \cite{tucker2019} \cite{langan2024}. Therefore they should provide a good challenge to attempts at behavioral modeling and simulation. It is the author's hope that patterns useful to Chinook management issues may arise from this research but it is not a necessity as the intention here is to develop tools that justify additional data collection for species where spatial management is of interest. 
 
 
 
@@ -464,7 +464,7 @@ At this point in time the main interest here is that Chinook present an interest
 
 
 
-\section{Related Work}
+\section{Related Context}
 
 
 
@@ -670,7 +670,7 @@ Our odds modeling approach looks to directly address these issues by:
 
 
 
-\subsection{Chinook}
+\subsection{Chinook Ecology and Management}
 
 
 Chinook salmon (\textit{Oncorhynchus tshawytscha}) are the largest species of Pacific salmon \cite{oceanchinook}. Like other Pacific salmon the species is both anadromous and semelparous leading to a very interesting and distinct life history. 
