@@ -15,3 +15,11 @@ cwt_query.txt
 scratch.ipynb
 *.nc
 notebooks/
+*.aux
+*.log
+*.synctex.gz
+*.toc
+*.bbl
+*.bcf
+*.blg
+*.run.xml
