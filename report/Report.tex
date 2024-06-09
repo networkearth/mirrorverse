@@ -1,0 +1,152 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[super]{nth}
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{objective}{Objective}
+\newtheorem{procedure}{Procedure}
+\newtheorem{model}{Model}
+
+
+\makeatletter
+\renewcommand{\maketitle}{
+\begin{center}
+
+\pagestyle{empty}
+\phantom{.}  %necessary to add space on top before the title
+\vspace{3cm}
+
+{\Huge \bf \@title\par}
+\vspace{2.5cm}
+
+{\LARGE Marcel Gietzmann-Sanders}\\[1cm]
+
+{\Large\@date}
+
+\vspace{2.5cm}
+{\Large Dr. Andrew Seitz}\hspace{2cm}{\Large Dr. Curry Cunningham}\\[2cm]{\Large Michael Courtney, M.S.}\\[2cm]
+College of Fisheries and Ocean Sciences\\
+University of Alaska Fairbanks
+
+
+\end{center}
+}\makeatother
+
+
+\title{Spatio-Temporal Modeling and Simulation}
+
+\date{2024}
+\setcounter{tocdepth}{2}
+\begin{document}
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+
+\section{Odds Modeling}
+
+\begin{objective}
+To provide tooling that allows for using machine learning methods to fit models of the form
+
+$$\psi_k = G(\eta_k)$$
+
+that maximize the following objective:
+
+
+$$\mathcal{L}=\prod_i P'(v_i | \eta_i)$$
+
+where:
+
+$$P'(v_i|\eta_i) = \frac{\psi_i}{\sum_k \psi_k}$$
+
+These models will be known as odds models as they predict the "odds for" each outcome $v_k$ given the information contained in $\eta_k$. 
+
+\end{objective}
+
+\subsection{Fitting an Odds Model}
+
+All standard Machine Learning (ML) pipelines assume that you have at least two things - targets and features. In our case we certainly have the latter but our target $\psi_k$ is both unknown to us and also unmeasureable. So how are we to fit ML models if we have no target? In short, through iteration. Let's see how this can be done.\newline
+
+First some notation to help us. Our data is composed of a series of decisions $D_j=\lbrace v_{jk} \rbrace$ where $j$ indicates each of the specific decisions and $k$ the options within each decision. For each iteration we will build a model $\hat{G_i}(\eta_{jk})$ using the pairs $\psi_{jk(i-1)},\eta_{jk}$. We will designate the outcome of that model $\phi_{jki}$:
+
+$$\phi_{jki} = \hat{G_i}(\eta_{jk})$$
+
+Then our proposed probabilities are:
+
+$$P_i'(v_{jk}|\eta_{jk})=\frac{\phi_{jki}}{\sum_p \phi_{jpi}}$$
+
+Then if the $k$ selected per decision $D_j$ is given by $s_j$ we want to maximize:
+
+$$\mathcal{L}=\prod_j P_i'(v_{js_j} | \eta_{js_j})\rightarrow \sum_j \ln{\left[ P_i'(v_{js_j} | \eta_{js_j}) \right]}$$
+
+Using this information we will then propose an update $u_{jki}$ s.t. $\psi_{jki}=\phi_{jki} + u_{jki}$ and repeat our iteration loop. 
+
+With that notation cleared up we can begin our iteration procedure. \newline
+
+First, let's assume we already have a guess for $\psi_{jk(i-1)}$. We can therefore train our model off of the $\psi_{jk0},\eta_{jk}$ pairs in standard ML fashion. Specifically we will fit a model that optimizes Mean Squared Error (the most common objective across ML software packages):
+
+$$\min{\left[ \sum_{jk}\left(\hat{G_i}(\eta_{jk}) - \psi_{jk(i-1)}\right)^2 \right]}$$
+
+We now need to choose a set of updates $u_{jki}$. To get these we will turn to our overall objective function:
+
+$$\sum_j \ln{\left[ P_i'(v_{js_j} | \eta_{js_j}) \right]}= \sum_j \ln{\left[ \frac{\phi_{js_ji}}{\sum_p \phi_{jpi}} \right]}$$
+
+Let's look at the gradient of this w.r.t the $\phi_{jki}$. There are two cases:
+
+$$\partial_{\phi_{js_ji}}\ln{\mathcal{L}}=\frac{1}{P_i'(v_{js_j} | \eta_{js_j})}\frac{\sum_p \phi_{jpi}-\phi_{js_ji}}{\left( \sum_p \phi_{jpi} \right)^2}=\frac{1}{\sum_p \phi_{jpi}}\frac{\left(1-P_i'(v_{js_j} | \eta_{js_j}) \right)}{P_i'(v_{js_j} | \eta_{js_j})}$$ 
+
+$$\partial_{\phi_{j\not{s_j}i}}\ln{\mathcal{L}}=\frac{1}{P_i'(v_{js_j} | \eta_{js_j})}\frac{-\phi_{js_ji}}{\left( \sum_p \phi_{jpi} \right)^2} = \frac{-1 }{\sum_p \phi_{jpi}}$$ 
+
+Next for point of illustration let's suppose that there are a set of $\psi_{jki}$ which we'll designate as $Z$ which share the same features $\eta$, i.e. our model has to give a single $\phi_{jki}$ for all such options. Our derivative then for that collection $Z$ is given by:
+
+$$\partial_Z \ln{\mathcal{L}}=\sum_{\phi_{js_ji} \in Z}\frac{1}{\sum_p \phi_{jpi}}\frac{\left(1-P_i'(v_{js_j} | \eta_{js_j}) \right)}{P_i'(v_{js_j} | \eta_{js_j})}-\sum_{\phi_{j\not{s_j}i}\in Z}\frac{1 }{\sum_p \phi_{jpi}}$$
+
+Given classic optimization tactics we know that our function will be maximized when these sums are $0$ (and technically we'd also want to know that the second derivative was negative but we'll assume that's the case given how our iterations will work). \newline
+
+With this in mind let's now propose that our updates are given by:
+
+$$u_{jki} = \alpha_i \partial_{\phi_{jki}} \ln{\mathcal{L}} $$
+
+where $\alpha_i$ is a constant we'll call our "learning rate". Note that by using this update we will increase our $\psi_{jki}$ guess where it corresponds to a taken option ($s_j$) and will decrease it where it corresponds to an option not taken ($\not{s_j}$). This will therefore push us towards maximizing $\ln{\mathcal{L}}$ as opposed to minimizing it. \newline
+
+We are left with a final question - will our iteration sequence end when we've found the maximizing guesses of $\psi_{jki}$? To answer this we turn back to the term we are maximizing when fitting the $\hat{G_i}$: 
+
+$$\min{\left[ \sum_{jk}\left(\hat{G_i}(\eta_{jk}) - \psi_{jk(i-1)}\right)^2 \right]}$$
+
+Our new fit will look like:
+
+$$\sum_{jk}\left(\hat{G}_{i+1}(\eta_{jk}) - (\hat{G}_i(\eta_{jk}) + u_{jki})\right)^2=\sum_{jk}\left( \delta \hat{G}_{jk} - u_{jki}\right)^2$$
+
+Given our $Z$ once again we can take the derivative w.r.t $\delta \hat{G}_{jk}$ where $\phi_{jki} \in Z$. 
+
+$$\partial_Z \left[ \sum_{jk}\left( \delta \hat{G}_{jk} - u_{jki}\right)^2 \right] = \sum_{\phi_{jki} \in Z} 2\left( \delta \hat{G}_{jk} - u_{jki}\right) = \sum_{\phi_{jki} \in Z} \delta \hat{G}_{jk} - \sum_{\phi_{jki} \in Z} u_{jki}$$
+
+But now remember that if we've maximized w.r.t $Z$ that:
+
+$$\sum_{\phi_{jki} \in Z} u_{jki} = 0$$
+
+which means that in order for our partial derivative above to be zero (and therefore our error term be at a minimum) that $\delta \hat{G}_{jk}=0$. And this means our iteration will have stopped! 
+
+\newpage
+
+\begin{procedure}{Fitting an Odds Model}
+\begin{enumerate}
+\item Collect decisions $D_j$ and corresponding features $\eta_{jk}$, options $v_{jk}$, and selection $s_j$. 
+\item Make an initial guess $\psi_{jk0} = 1$.
+\item Fit $\hat{G}_i$ on the pairs of $\psi_{jk(i-1)},\eta_{jk}$ using MSE to produce the $\phi_{jki}$.
+\item Generate the $u_{jki} = \alpha_i \partial_{\phi_{jki}} \ln{\mathcal{L}}$ and produce a new set of $\psi_{jki}$.
+\item Repeat 3 and 4 until, varying $\alpha_i$ until convergence. 
+
+$$\partial_{\phi_{js_ji}}\ln{\mathcal{L}}=\frac{1}{\sum_p \phi_{jpi}}\frac{\left(1-P_i'(v_{js_j} | \eta_{js_j}) \right)}{P_i'(v_{js_j} | \eta_{js_j})}$$ 
+
+$$\partial_{\phi_{j\not{s_j}i}}\ln{\mathcal{L}}=\frac{-1 }{\sum_p \phi_{jpi}}$$ 
+\end{enumerate}
+
+\end{procedure}
+
+
+\end{document}
