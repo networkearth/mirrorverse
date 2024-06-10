@@ -25,7 +25,6 @@ def test_get_central_likelihood():
             "probability": [0.1, 0.2, 0.3, 0.4],
         }
     )
-    print(X)
     likelihood = get_central_likelihood(X)
     assert likelihood == np.exp((np.log(0.2) + np.log(0.3)) / 2)
 
