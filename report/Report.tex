@@ -123,13 +123,13 @@ $$\sum_{jk}\left(\hat{G}_{i+1}(\eta_{jk}) - (\hat{G}_i(\eta_{jk}) + u_{jki})\rig
 
 Given our $Z$ once again we can take the derivative w.r.t $\delta \hat{G}_{jk}$ where $\phi_{jki} \in Z$. 
 
-$$\partial_Z \left[ \sum_{jk}\left( \delta \hat{G}_{jk} - u_{jki}\right)^2 \right] = \sum_{\phi_{jki} \in Z} 2\left( \delta \hat{G}_{jk} - u_{jki}\right) = \sum_{\phi_{jki} \in Z} \delta \hat{G}_{jk} - \sum_{\phi_{jki} \in Z} u_{jki}$$
+$$\partial_Z \left[ \sum_{jk}\left( \delta \hat{G} - u_{jki}\right)^2 \right] = \sum_{\phi_{jki} \in Z} 2\left( \delta \hat{G} - u_{jki}\right) = 2\sum_{\phi_{jki} \in Z} \delta \hat{G} - 2\sum_{\phi_{jki} \in Z} u_{jki}$$
 
 But now remember that if we've maximized w.r.t $Z$ that:
 
 $$\sum_{\phi_{jki} \in Z} u_{jki} = 0$$
 
-which means that in order for our partial derivative above to be zero (and therefore our error term be at a minimum) that $\delta \hat{G}_{jk}=0$. And this means our iteration will have stopped! 
+which means that in order for our partial derivative above to be zero (and therefore our error term be at a minimum) that $\delta \hat{G}=0$. And this means our iteration will have stopped! 
 
 \newpage
 
