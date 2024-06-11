@@ -1,0 +1,7 @@
+{
+    "bootstrap": false,
+    "n_jobs": 6,
+    "n_estimators": 25,
+    "min_weight_fraction_leaf": 0.0001,
+    "max_features": 2
+}

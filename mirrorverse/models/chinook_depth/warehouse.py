@@ -114,6 +114,8 @@ def join_in_context_data(input_files, output_file):
     input_files = input_files.split(",")
     depth_data = pd.read_csv(input_files[0])
     context_data = pd.read_csv(input_files[1])
+    depth_data["tag_key"] = depth_data["tag_key"].astype(str)
+    context_data["tag_key"] = context_data["tag_key"].astype(str)
     data = depth_data.merge(
         context_data[
             ["tag_key", "date_key", "longitude", "latitude", "home_region", "elevation"]
