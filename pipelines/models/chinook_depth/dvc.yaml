@@ -1,0 +1,79 @@
+stages:
+  load_depth_data:
+    cmd: mirrorverse_chinook_depth --function load_depth_data --output_file depth_data.csv.gz
+    deps:
+      - ../../../mirrorverse/models/chinook_depth/warehouse.py
+    outs:
+      - depth_data.csv.gz
+  add_depth_classes:
+    cmd: mirrorverse_chinook_depth --function add_depth_classes --input_file depth_data.csv.gz --output_file depth_classes.csv.gz --depth_classes "${depth_classes}"
+    deps:
+      - ../../../mirrorverse/models/chinook_depth/warehouse.py
+      - depth_data.csv.gz
+    params:
+      - depth_classes
+    outs:
+      - depth_classes.csv.gz
+  load_context_data:
+    cmd: mirrorverse_chinook_depth --function load_context_data --output_file context_data.csv.gz
+    deps:
+      - ../../../mirrorverse/models/chinook_depth/warehouse.py
+    outs:
+      - context_data.csv.gz
+  join_in_context_data:
+    cmd: mirrorverse_chinook_depth --function join_in_context_data --input_files "depth_classes.csv.gz,context_data.csv.gz" --output_file warehouse_data.csv.gz
+    deps:
+      - ../../../mirrorverse/models/chinook_depth/warehouse.py
+      - depth_classes.csv.gz
+      - context_data.csv.gz
+    outs:
+      - warehouse_data.csv.gz
+  add_time_features:
+    cmd: mirrorverse_chinook_depth --function add_time_features --input_file warehouse_data.csv.gz --output_file data_w_time_features.csv.gz
+    deps:
+      - ../../../mirrorverse/models/chinook_depth/time.py
+      - warehouse_data.csv.gz
+    outs:
+      - data_w_time_features.csv.gz
+  downsample_data:
+    cmd: mirrorverse_chinook_depth --function downsample_data --input_file data_w_time_features.csv.gz --output_file downsampled.csv.gz --size_per_individual ${size_per_individual}
+    deps:
+      - ../../../mirrorverse/models/chinook_depth/choices.py
+      - data_w_time_features.csv.gz
+    params:
+      - size_per_individual
+    outs:
+      - downsampled.csv.gz
+  fill_out_choices:
+    cmd: mirrorverse_chinook_depth --function fill_out_choices --input_file downsampled.csv.gz --output_file choices.csv.gz --depth_classes "${depth_classes}"
+    deps:
+      - ../../../mirrorverse/models/chinook_depth/choices.py
+      - downsampled.csv.gz
+    params:
+      - depth_classes
+    outs:
+      - choices.csv.gz
+  split_data:
+    cmd: mirrorverse_chinook_depth --function split_data --input_file choices.csv.gz --output_file full.csv.gz --train_fraction ${train_fraction}
+    deps:
+      - ../../../mirrorverse/models/chinook_depth/model.py
+      - choices.csv.gz
+    params:
+      - train_fraction
+    outs:
+      - train_full.csv.gz
+      - test_full.csv.gz
+  do_search:
+    cmd: mirrorverse_chinook_depth --function do_search --input_files "train_full.csv.gz,test_full.csv.gz,params.json" --output_files "diagnostics.csv,param_sets.json" --features "${features}" --iterations ${iterations} --num_param_sets ${num_param_sets}
+    deps:
+      - ../../../mirrorverse/models/chinook_depth/model.py
+      - train_full.csv.gz
+      - test_full.csv.gz
+      - params.json
+    params:
+      - features
+      - num_param_sets
+      - iterations
+    outs:
+      - diagnostics.csv
+      - param_sets.json

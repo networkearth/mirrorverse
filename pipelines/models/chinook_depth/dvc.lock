@@ -1,0 +1,220 @@
+schema: '2.0'
+stages:
+  load_depth_data:
+    cmd: mirrorverse_chinook_depth --function load_depth_data --output_file depth_data.csv.gz
+    deps:
+    - path: ../../../mirrorverse/models/chinook_depth/warehouse.py
+      hash: md5
+      md5: 69c55e8536bbac3d22004471bde0dbf7
+      size: 3653
+    outs:
+    - path: depth_data.csv.gz
+      hash: md5
+      md5: 0cabac106d55ffc9751e9093aa701f0d
+      size: 3768646
+  add_depth_classes:
+    cmd: mirrorverse_chinook_depth --function add_depth_classes --input_file depth_data.csv.gz
+      --output_file depth_classes.csv.gz --depth_classes "[25, 50, 75, 100, 150, 200,
+      250, 300, 400, 500]"
+    deps:
+    - path: ../../../mirrorverse/models/chinook_depth/warehouse.py
+      hash: md5
+      md5: 69c55e8536bbac3d22004471bde0dbf7
+      size: 3653
+    - path: depth_data.csv.gz
+      hash: md5
+      md5: 0cabac106d55ffc9751e9093aa701f0d
+      size: 3768646
+    params:
+      params.yaml:
+        depth_classes: '[25, 50, 75, 100, 150, 200, 250, 300, 400, 500]'
+    outs:
+    - path: depth_classes.csv.gz
+      hash: md5
+      md5: 12f55d35362fa11b0fce2686a4c711fc
+      size: 4116483
+  load_context_data:
+    cmd: mirrorverse_chinook_depth --function load_context_data --output_file context_data.csv.gz
+    deps:
+    - path: ../../../mirrorverse/models/chinook_depth/warehouse.py
+      hash: md5
+      md5: 69c55e8536bbac3d22004471bde0dbf7
+      size: 3653
+    outs:
+    - path: context_data.csv.gz
+      hash: md5
+      md5: 7b6f56dfe24ca7dd65722fced6b5f0a7
+      size: 90231
+  join_in_context_data:
+    cmd: mirrorverse_chinook_depth --function join_in_context_data --input_files "depth_classes.csv.gz,context_data.csv.gz"
+      --output_file warehouse_data.csv.gz
+    deps:
+    - path: ../../../mirrorverse/models/chinook_depth/warehouse.py
+      hash: md5
+      md5: 69c55e8536bbac3d22004471bde0dbf7
+      size: 3653
+    - path: context_data.csv.gz
+      hash: md5
+      md5: 7b6f56dfe24ca7dd65722fced6b5f0a7
+      size: 90231
+    - path: depth_classes.csv.gz
+      hash: md5
+      md5: 12f55d35362fa11b0fce2686a4c711fc
+      size: 4116483
+    outs:
+    - path: warehouse_data.csv.gz
+      hash: md5
+      md5: d4b0362c18c5dc9dbbbb71fb8669c1e7
+      size: 4363117
+  add_time_features:
+    cmd: mirrorverse_chinook_depth --function add_time_features --input_file warehouse_data.csv.gz
+      --output_file data_w_time_features.csv.gz
+    deps:
+    - path: ../../../mirrorverse/models/chinook_depth/time.py
+      hash: md5
+      md5: 5a450ab92d7616cba382e3848c9c7dcc
+      size: 1869
+    - path: warehouse_data.csv.gz
+      hash: md5
+      md5: d4b0362c18c5dc9dbbbb71fb8669c1e7
+      size: 4363117
+    outs:
+    - path: data_w_time_features.csv.gz
+      hash: md5
+      md5: 20a6b39567fb91cff27e834b9886e170
+      size: 8137430
+  fill_out_choices:
+    cmd: mirrorverse_chinook_depth --function fill_out_choices --input_file downsampled.csv.gz
+      --output_file choices.csv.gz --depth_classes "[25, 50, 75, 100, 150, 200, 250,
+      300, 400, 500]"
+    deps:
+    - path: ../../../mirrorverse/models/chinook_depth/choices.py
+      hash: md5
+      md5: 1581cf34dd9800b088bc761752fe5775
+      size: 1997
+    - path: downsampled.csv.gz
+      hash: md5
+      md5: ea8d2c2160774606ba656a0f96bc8ddb
+      size: 1889860
+    params:
+      params.yaml:
+        depth_classes: '[25, 50, 75, 100, 150, 200, 250, 300, 400, 500]'
+    outs:
+    - path: choices.csv.gz
+      hash: md5
+      md5: ce05d609b307074265e53e1bf522b480
+      size: 6675357
+  split_data:
+    cmd: mirrorverse_chinook_depth --function split_data --input_file choices.csv.gz
+      --output_file full.csv.gz --train_fraction 0.6
+    deps:
+    - path: ../../../mirrorverse/models/chinook_depth/model.py
+      hash: md5
+      md5: 1abe4d8a2e34f73749b8d95655aea6fe
+      size: 4039
+    - path: choices.csv.gz
+      hash: md5
+      md5: ce05d609b307074265e53e1bf522b480
+      size: 6675357
+    params:
+      params.yaml:
+        train_fraction: 0.6
+    outs:
+    - path: test_full.csv.gz
+      hash: md5
+      md5: ea423272b4964aa42df0bd9a2ce7f67e
+      size: 242261
+    - path: train_full.csv.gz
+      hash: md5
+      md5: 7d859f98bc74d579b224758bc0dd17a9
+      size: 4048791
+  train_model:
+    cmd: mirrorverse_chinook_depth --function train_model --input_files "train_full.csv.gz,test_full.csv.gz,params.json"
+      --output_files "diagnostics.csv.gz,model.pkl" --learning_rate 0.8 --iterations
+      3 --features "['depth_class', 'sunrise', 'sunset']"
+    deps:
+    - path: ../../../mirrorverse/models/chinook_depth/model.py
+      hash: md5
+      md5: 9fe60ee43b5e5f2f7d80099aff467072
+      size: 2249
+    - path: params.json
+      hash: md5
+      md5: 9e49af8dbe2aa65cacb4b13305c21b8b
+      size: 130
+    - path: test_full.csv.gz
+      hash: md5
+      md5: 1c70b6df524e0b14bc3393cdec94fc2b
+      size: 362899
+    - path: train_full.csv.gz
+      hash: md5
+      md5: 51cf72bf57a7a1d6b0024e5b00c7d0d8
+      size: 3957798
+    params:
+      params.yaml:
+        features: "['depth_class', 'sunrise', 'sunset']"
+        iterations: 3
+        learning_rate: 0.8
+    outs:
+    - path: diagnostics.csv.gz
+      hash: md5
+      md5: 7520f1f3d2254e022c966ccab57d216e
+      size: 170
+    - path: model.pkl
+      hash: md5
+      md5: 2ab7b03b25ac9ee6408207fbc1dea876
+      size: 1496171
+  downsample_data:
+    cmd: mirrorverse_chinook_depth --function downsample_data --input_file data_w_time_features.csv.gz
+      --output_file downsampled.csv.gz --size_per_individual 1000
+    deps:
+    - path: ../../../mirrorverse/models/chinook_depth/choices.py
+      hash: md5
+      md5: 1581cf34dd9800b088bc761752fe5775
+      size: 1997
+    - path: data_w_time_features.csv.gz
+      hash: md5
+      md5: 20a6b39567fb91cff27e834b9886e170
+      size: 8137430
+    params:
+      params.yaml:
+        size_per_individual: 1000
+    outs:
+    - path: downsampled.csv.gz
+      hash: md5
+      md5: ea8d2c2160774606ba656a0f96bc8ddb
+      size: 1889860
+  do_search:
+    cmd: mirrorverse_chinook_depth --function do_search --input_files "train_full.csv.gz,test_full.csv.gz,params.json"
+      --output_files "diagnostics.csv,param_sets.json" --features "['depth_class',
+      'sunrise', 'sunset']" --iterations 3 --num_param_sets 2
+    deps:
+    - path: ../../../mirrorverse/models/chinook_depth/model.py
+      hash: md5
+      md5: 1abe4d8a2e34f73749b8d95655aea6fe
+      size: 4039
+    - path: params.json
+      hash: md5
+      md5: 95d6dde71eb92b14c6680b6414cb30c2
+      size: 172
+    - path: test_full.csv.gz
+      hash: md5
+      md5: ea423272b4964aa42df0bd9a2ce7f67e
+      size: 242261
+    - path: train_full.csv.gz
+      hash: md5
+      md5: 7d859f98bc74d579b224758bc0dd17a9
+      size: 4048791
+    params:
+      params.yaml:
+        features: "['depth_class', 'sunrise', 'sunset']"
+        iterations: 3
+        num_param_sets: 2
+    outs:
+    - path: diagnostics.csv
+      hash: md5
+      md5: 7021a7e01e0257b7d4ad8b5333e2340b
+      size: 725
+    - path: param_sets.json
+      hash: md5
+      md5: 640236ab9e9bd0c07e27484480cd3f6a
+      size: 382

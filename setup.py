@@ -23,6 +23,7 @@ setup(
         "eralchemy2==1.3.8",
         "netCDF4==1.6.5",
         "earthengine-api==0.1.390",
+        "suntimes==1.1.2",
     ],
     entry_points={
         "console_scripts": [
@@ -42,6 +43,7 @@ setup(
             "mirrorverse_build_blob=mirrorverse.blob.tree.blob_root:build_blob",
             "blob_train=mirrorverse.blob.train:main",
             "blob_states=mirrorverse.blob.states:main",
+            "mirrorverse_chinook_depth=mirrorverse.models.chinook_depth.api:main",
         ]
     },
 )
