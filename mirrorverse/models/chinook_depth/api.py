@@ -4,7 +4,7 @@ API for the Chinook Depth Model
 
 import click
 
-from mirrorverse.models.chinook_depth.data import (
+from mirrorverse.models.chinook_depth.warehouse import (
     load_depth_data,
     add_depth_classes,
     load_context_data,
