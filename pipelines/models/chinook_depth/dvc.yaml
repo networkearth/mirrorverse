@@ -28,3 +28,10 @@ stages:
       - context_data.csv.gz
     outs:
       - warehouse_data.csv.gz
+  add_time_features:
+    cmd: mirrorverse_chinook_depth --function add_time_features --input_file warehouse_data.csv.gz --output_file data_w_time_features.csv.gz
+    deps:
+      - ../../../mirrorverse/models/chinook_depth/time.py
+      - warehouse_data.csv.gz
+    outs:
+      - data_w_time_features.csv.gz

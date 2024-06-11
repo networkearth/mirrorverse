@@ -10,6 +10,7 @@ from mirrorverse.models.chinook_depth.warehouse import (
     load_context_data,
     join_in_context_data,
 )
+from mirrorverse.models.chinook_depth.time import add_time_features
 
 
 @click.command()
@@ -31,6 +32,10 @@ def main(**kwargs):
         "join_in_context_data": (
             join_in_context_data,
             ["input_files", "output_file"],
+        ),
+        "add_time_features": (
+            add_time_features,
+            ["input_file", "output_file"],
         ),
     }
     _callable, required_args = functions[kwargs["function"]]

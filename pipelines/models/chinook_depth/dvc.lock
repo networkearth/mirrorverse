@@ -66,3 +66,20 @@ stages:
       hash: md5
       md5: 478fc835485ec5e3bc0b44ad5fc9b350
       size: 978994
+  add_time_features:
+    cmd: mirrorverse_chinook_depth --function add_time_features --input_file warehouse_data.csv.gz
+      --output_file data_w_time_features.csv.gz
+    deps:
+    - path: ../../../mirrorverse/models/chinook_depth/time.py
+      hash: md5
+      md5: 15891ccb250b014562e99f0765e2cf48
+      size: 1709
+    - path: warehouse_data.csv.gz
+      hash: md5
+      md5: 478fc835485ec5e3bc0b44ad5fc9b350
+      size: 978994
+    outs:
+    - path: data_w_time_features.csv.gz
+      hash: md5
+      md5: 0309af2a56d1c3f077b492f61e4845b0
+      size: 1807595
