@@ -78,3 +78,45 @@ def add_depth_classes(input_file, depth_classes, output_file):
         lambda x: select_a_class(x, depth_classes)
     )
     depth_data.to_csv(output_file, index=False)
+
+
+def load_context_data(output_file):
+    """
+    Inputs:
+    - output_file: str, path to save the output file
+
+    Loads the context data from the warehouse and saves it to a csv file.
+    """
+    sql = """
+    select 
+        tt.*,
+        h.home_region,
+        e.elevation
+    from 
+        tag_tracks tt 
+        left join home_regions h
+            on tt.tag_key = h.tag_key
+        left join elevation e 
+            on tt.h3_level_4_key = e.h3_level_4_key
+    """
+    context = pd.read_sql(sql, get_engine())
+    context.to_csv(output_file, index=False)
+
+
+def join_in_context_data(input_files, output_file):
+    """
+    Inputs:
+    - input_files: list of str, paths to the input files
+    - output_file: str, path to save the output file
+
+    Joins the context data to the depth data and saves it to a csv file.
+    """
+    input_files = input_files.split(",")
+    depth_data = pd.read_csv(input_files[0])
+    context_data = pd.read_csv(input_files[1])
+    data = depth_data.merge(
+        context_data[
+            ["tag_key", "date_key", "longitude", "latitude", "home_region", "elevation"]
+        ]
+    )
+    data.to_csv(output_file, index=False)

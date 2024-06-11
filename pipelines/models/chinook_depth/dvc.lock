@@ -3,27 +3,27 @@ stages:
   load_depth_data:
     cmd: mirrorverse_chinook_depth --function load_depth_data --output_file depth_data.csv.gz
     deps:
-    - path: ../../../mirrorverse/models/chinook_depth/data.py
+    - path: ../../../mirrorverse/models/chinook_depth/warehouse.py
       hash: md5
-      md5: e58c8bf5ef266d338d65e9db975b56cc
-      size: 2337
+      md5: 68d8d228217bd9e391943c9f4bda112c
+      size: 3496
     outs:
     - path: depth_data.csv.gz
       hash: md5
-      md5: 03c00d31207490c0edefad62b339095c
+      md5: c78fdd7dacef5782f363e8b6ac216ca0
       size: 3768646
   add_depth_classes:
     cmd: mirrorverse_chinook_depth --function add_depth_classes --input_file depth_data.csv.gz
       --output_file depth_classes.csv.gz --depth_classes "[25, 50, 75, 100, 150, 200,
       250, 300, 400, 500]"
     deps:
-    - path: ../../../mirrorverse/models/chinook_depth/data.py
+    - path: ../../../mirrorverse/models/chinook_depth/warehouse.py
       hash: md5
-      md5: e58c8bf5ef266d338d65e9db975b56cc
-      size: 2337
+      md5: 68d8d228217bd9e391943c9f4bda112c
+      size: 3496
     - path: depth_data.csv.gz
       hash: md5
-      md5: 03c00d31207490c0edefad62b339095c
+      md5: c78fdd7dacef5782f363e8b6ac216ca0
       size: 3768646
     params:
       params.yaml:
@@ -31,5 +31,38 @@ stages:
     outs:
     - path: depth_classes.csv.gz
       hash: md5
-      md5: 4959eb804dd23411100282099544e1bb
-      size: 4115737
+      md5: 071475bb55fe94d84a6f4ac6d120531e
+      size: 4115879
+  load_context_data:
+    cmd: mirrorverse_chinook_depth --function load_context_data --output_file context_data.csv.gz
+    deps:
+    - path: ../../../mirrorverse/models/chinook_depth/warehouse.py
+      hash: md5
+      md5: 68d8d228217bd9e391943c9f4bda112c
+      size: 3496
+    outs:
+    - path: context_data.csv.gz
+      hash: md5
+      md5: db529e746e8f013555212ad7d349eb01
+      size: 90231
+  join_in_context_data:
+    cmd: mirrorverse_chinook_depth --function join_in_context_data --input_files "depth_classes.csv.gz,context_data.csv.gz"
+      --output_file warehouse_data.csv.gz
+    deps:
+    - path: ../../../mirrorverse/models/chinook_depth/warehouse.py
+      hash: md5
+      md5: 68d8d228217bd9e391943c9f4bda112c
+      size: 3496
+    - path: context_data.csv.gz
+      hash: md5
+      md5: db529e746e8f013555212ad7d349eb01
+      size: 90231
+    - path: depth_classes.csv.gz
+      hash: md5
+      md5: 071475bb55fe94d84a6f4ac6d120531e
+      size: 4115879
+    outs:
+    - path: warehouse_data.csv.gz
+      hash: md5
+      md5: 478fc835485ec5e3bc0b44ad5fc9b350
+      size: 978994
