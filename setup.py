@@ -23,6 +23,7 @@ setup(
         "eralchemy2==1.3.8",
         "netCDF4==1.6.5",
         "earthengine-api==0.1.390",
+        "suntimes==1.1.2",
     ],
     entry_points={
         "console_scripts": [
