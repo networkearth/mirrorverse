@@ -72,8 +72,8 @@ stages:
     deps:
     - path: ../../../mirrorverse/models/chinook_depth/time.py
       hash: md5
-      md5: 15891ccb250b014562e99f0765e2cf48
-      size: 1709
+      md5: 5a450ab92d7616cba382e3848c9c7dcc
+      size: 1869
     - path: warehouse_data.csv.gz
       hash: md5
       md5: d4b0362c18c5dc9dbbbb71fb8669c1e7
@@ -81,8 +81,8 @@ stages:
     outs:
     - path: data_w_time_features.csv.gz
       hash: md5
-      md5: 6376d953c1a741de07d6fd7f131932c6
-      size: 7954208
+      md5: 20a6b39567fb91cff27e834b9886e170
+      size: 8137430
   fill_out_choices:
     cmd: mirrorverse_chinook_depth --function fill_out_choices --input_file downsampled.csv.gz
       --output_file choices.csv.gz --depth_classes "[25, 50, 75, 100, 150, 200, 250,
@@ -94,40 +94,40 @@ stages:
       size: 1997
     - path: downsampled.csv.gz
       hash: md5
-      md5: af53f94ddafa17c09b5736eb60ab4e34
-      size: 1821500
+      md5: ea8d2c2160774606ba656a0f96bc8ddb
+      size: 1889860
     params:
       params.yaml:
         depth_classes: '[25, 50, 75, 100, 150, 200, 250, 300, 400, 500]'
     outs:
     - path: choices.csv.gz
       hash: md5
-      md5: 97a11447d5cfbc62f6140b9b32db8bba
-      size: 6555562
+      md5: ce05d609b307074265e53e1bf522b480
+      size: 6675357
   split_data:
     cmd: mirrorverse_chinook_depth --function split_data --input_file choices.csv.gz
       --output_file full.csv.gz --train_fraction 0.6
     deps:
     - path: ../../../mirrorverse/models/chinook_depth/model.py
       hash: md5
-      md5: 9fe60ee43b5e5f2f7d80099aff467072
-      size: 2249
+      md5: 1abe4d8a2e34f73749b8d95655aea6fe
+      size: 4039
     - path: choices.csv.gz
       hash: md5
-      md5: 97a11447d5cfbc62f6140b9b32db8bba
-      size: 6555562
+      md5: ce05d609b307074265e53e1bf522b480
+      size: 6675357
     params:
       params.yaml:
         train_fraction: 0.6
     outs:
     - path: test_full.csv.gz
       hash: md5
-      md5: 1c70b6df524e0b14bc3393cdec94fc2b
-      size: 362899
+      md5: ea423272b4964aa42df0bd9a2ce7f67e
+      size: 242261
     - path: train_full.csv.gz
       hash: md5
-      md5: 51cf72bf57a7a1d6b0024e5b00c7d0d8
-      size: 3957798
+      md5: 7d859f98bc74d579b224758bc0dd17a9
+      size: 4048791
   train_model:
     cmd: mirrorverse_chinook_depth --function train_model --input_files "train_full.csv.gz,test_full.csv.gz,params.json"
       --output_files "diagnostics.csv.gz,model.pkl" --learning_rate 0.8 --iterations
@@ -173,13 +173,48 @@ stages:
       size: 1997
     - path: data_w_time_features.csv.gz
       hash: md5
-      md5: 6376d953c1a741de07d6fd7f131932c6
-      size: 7954208
+      md5: 20a6b39567fb91cff27e834b9886e170
+      size: 8137430
     params:
       params.yaml:
         size_per_individual: 1000
     outs:
     - path: downsampled.csv.gz
       hash: md5
-      md5: af53f94ddafa17c09b5736eb60ab4e34
-      size: 1821500
+      md5: ea8d2c2160774606ba656a0f96bc8ddb
+      size: 1889860
+  do_search:
+    cmd: mirrorverse_chinook_depth --function do_search --input_files "train_full.csv.gz,test_full.csv.gz,params.json"
+      --output_files "diagnostics.csv,param_sets.json" --features "['depth_class',
+      'sunrise', 'sunset']" --iterations 3 --num_param_sets 2
+    deps:
+    - path: ../../../mirrorverse/models/chinook_depth/model.py
+      hash: md5
+      md5: 1abe4d8a2e34f73749b8d95655aea6fe
+      size: 4039
+    - path: params.json
+      hash: md5
+      md5: 95d6dde71eb92b14c6680b6414cb30c2
+      size: 172
+    - path: test_full.csv.gz
+      hash: md5
+      md5: ea423272b4964aa42df0bd9a2ce7f67e
+      size: 242261
+    - path: train_full.csv.gz
+      hash: md5
+      md5: 7d859f98bc74d579b224758bc0dd17a9
+      size: 4048791
+    params:
+      params.yaml:
+        features: "['depth_class', 'sunrise', 'sunset']"
+        iterations: 3
+        num_param_sets: 2
+    outs:
+    - path: diagnostics.csv
+      hash: md5
+      md5: 7021a7e01e0257b7d4ad8b5333e2340b
+      size: 725
+    - path: param_sets.json
+      hash: md5
+      md5: 640236ab9e9bd0c07e27484480cd3f6a
+      size: 382

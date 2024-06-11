@@ -61,4 +61,8 @@ def add_time_features(input_file, output_file):
         data["hour"] > data["sunrise"]
     ) & (data["hour"] < data["sunset"])
 
+    data["month"] = data["datetime"].dt.month
+    data["interval"] = 24 - data["sunrise"] + data["sunset"]
+    data["daytime"] = data["daytime"].astype(float)
+
     data.to_csv(output_file, index=False)

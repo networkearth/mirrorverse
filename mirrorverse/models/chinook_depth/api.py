@@ -17,6 +17,7 @@ from mirrorverse.models.chinook_depth.choices import fill_out_choices, downsampl
 from mirrorverse.models.chinook_depth.model import (
     split_data,
     train_model,
+    do_search,
 )
 
 
@@ -32,6 +33,7 @@ from mirrorverse.models.chinook_depth.model import (
 @click.option("--learning_rate", type=float)
 @click.option("--iterations", type=int)
 @click.option("--size_per_individual", type=int)
+@click.option("--num_param_sets", type=int)
 def main(**kwargs):
     """
     Just a Router
@@ -69,6 +71,10 @@ def main(**kwargs):
         "downsample_data": (
             downsample_data,
             ["input_file", "output_file", "size_per_individual"],
+        ),
+        "do_search": (
+            do_search,
+            ["input_files", "output_files", "features", "iterations", "num_param_sets"],
         ),
     }
     _callable, required_args = functions[kwargs["function"]]

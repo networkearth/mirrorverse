@@ -1,6 +1,6 @@
 depth_classes: "[25, 50, 75, 100, 150, 200, 250, 300, 400, 500]"
 train_fraction: 0.6
-learning_rate: 0.8
 iterations: 3
+num_param_sets: 2
 features: "['depth_class', 'sunrise', 'sunset']"
 size_per_individual: 1000
