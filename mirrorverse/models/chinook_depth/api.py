@@ -7,6 +7,8 @@ import click
 from mirrorverse.models.chinook_depth.data import (
     load_depth_data,
     add_depth_classes,
+    load_context_data,
+    join_in_context_data,
 )
 
 
@@ -21,6 +23,14 @@ def main(**kwargs):
         "add_depth_classes": (
             add_depth_classes,
             ["input_file", "depth_classes", "output_file"],
+        ),
+        "load_context_data": (
+            load_context_data,
+            ["output_file"],
+        ),
+        "join_in_context_data": (
+            join_in_context_data,
+            ["input_files", "output_file"],
         ),
     }
     _callable, required_args = functions[kwargs["function"]]
