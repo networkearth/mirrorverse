@@ -2,6 +2,8 @@
 Building the Model Itself
 """
 
+# pylint: disable=eval-used
+
 import json
 import pickle
 
@@ -36,6 +38,16 @@ def split_data(input_file, output_file, train_fraction):
 
 
 def train_model(input_files, output_files, features, learning_rate, iterations):
+    """
+    Inputs:
+    - input_files: str, paths to the input files
+    - output_files: str, paths to save the output files
+    - features: str, list of feature names
+    - learning_rate: float, learning rate for the model
+    - iterations: int, number of iterations to run
+
+    Trains the model and saves the diagnostics and model to csv and pickle files.
+    """
     input_files = input_files.split(",")
     train_data = pd.read_csv(input_files[0])
     test_data = pd.read_csv(input_files[1])

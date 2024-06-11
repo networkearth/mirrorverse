@@ -2,6 +2,8 @@
 API for the Chinook Depth Model
 """
 
+# pylint: disable=eval-used
+
 import click
 
 from mirrorverse.models.chinook_depth.warehouse import (
@@ -27,6 +29,9 @@ from mirrorverse.models.chinook_depth.model import split_data, train_model
 @click.option("--learning_rate", type=float)
 @click.option("--iterations", type=int)
 def main(**kwargs):
+    """
+    Just a Router
+    """
     functions = {
         "load_depth_data": (load_depth_data, ["output_file"]),
         "add_depth_classes": (

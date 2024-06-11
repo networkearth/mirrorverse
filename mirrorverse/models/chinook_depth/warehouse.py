@@ -2,6 +2,8 @@
 Loading and Prepping Data for the Chinook Depth Model
 """
 
+# pylint: disable=eval-used
+
 import pandas as pd
 import numpy as np
 from scipy.stats import norm

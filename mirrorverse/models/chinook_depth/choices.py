@@ -2,11 +2,21 @@
 Creates Full Array of Choices
 """
 
+# pylint: disable=eval-used
+
 import pandas as pd
 import numpy as np
 
 
 def fill_out_choices(input_file, output_file, depth_classes):
+    """
+    Inputs:
+    - input_file: str, path to the input file
+    - output_file: str, path to save the output file
+    - depth_classes: str, string of depth classes as an array
+
+    Fills out the choices with all possible depth classes and saves it to a csv file.
+    """
     depth_classes = np.array(eval(depth_classes))
     choices = pd.read_csv(input_file)
     choices = (
