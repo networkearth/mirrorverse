@@ -13,8 +13,11 @@ from mirrorverse.models.chinook_depth.warehouse import (
     join_in_context_data,
 )
 from mirrorverse.models.chinook_depth.time import add_time_features
-from mirrorverse.models.chinook_depth.choices import fill_out_choices
-from mirrorverse.models.chinook_depth.model import split_data, train_model
+from mirrorverse.models.chinook_depth.choices import fill_out_choices, downsample_data
+from mirrorverse.models.chinook_depth.model import (
+    split_data,
+    train_model,
+)
 
 
 @click.command()
@@ -28,6 +31,7 @@ from mirrorverse.models.chinook_depth.model import split_data, train_model
 @click.option("--features", type=str)
 @click.option("--learning_rate", type=float)
 @click.option("--iterations", type=int)
+@click.option("--size_per_individual", type=int)
 def main(**kwargs):
     """
     Just a Router
@@ -61,6 +65,10 @@ def main(**kwargs):
         "train_model": (
             train_model,
             ["input_files", "output_files", "features", "learning_rate", "iterations"],
+        ),
+        "downsample_data": (
+            downsample_data,
+            ["input_file", "output_file", "size_per_individual"],
         ),
     }
     _callable, required_args = functions[kwargs["function"]]

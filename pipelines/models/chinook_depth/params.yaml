@@ -3,3 +3,4 @@ train_fraction: 0.6
 learning_rate: 0.8
 iterations: 3
 features: "['depth_class', 'sunrise', 'sunset']"
+size_per_individual: 1000
