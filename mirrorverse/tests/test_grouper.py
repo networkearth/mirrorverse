@@ -12,7 +12,7 @@ from mirrorverse.grouper import (
     create_individual,
     mutate,
     crossover,
-    get_explained_variances,
+    get_central_likelihoods,
     evaluate,
 )
 
@@ -65,18 +65,18 @@ def test_crossover():
     assert ind2.fitness is None
 
 
-def test_get_explained_variances():
+def test_get_central_likelihoods():
     groups = [1, 1, 2, 2, 3]
     identifiers = [1, 2, 3, 3, 4]
     data = {
         "_identifier": [1, 2, 3, 3, 4],
-        "selected": [0, 1, 0, 1, 0],
-        "probability": [0, 1, 0.0, 0.5, 0],
+        "_selected": [False, True, False, True, True],
+        "probability": [0, 1, 0.0, 0.5, 0.25],
     }
     data = pd.DataFrame(data)
-    explained_variances, counts = get_explained_variances(groups, identifiers, data)
+    likelihoods, counts = get_central_likelihoods(groups, identifiers, data)
 
-    assert explained_variances == {1: 1.0, 2: 0.75, 3: 1.0}
+    assert likelihoods == {1: 1.0, 2: 0.5, 3: 0.25}
     assert counts == {1: 2, 2: 1, 3: 1}
 
 
@@ -85,10 +85,10 @@ def test_evaulate():
     identifiers = [1, 2, 3, 3, 4]
     data = {
         "_identifier": [1, 2, 3, 3, 4],
-        "selected": [0, 1, 0, 1, 0],
-        "probability": [0, 1, 0.0, 0.5, 0],
+        "_selected": [False, True, False, True, True],
+        "probability": [0, 1, 0.0, 0.5, 0.25],
     }
     data = pd.DataFrame(data)
     result = evaluate(groups, identifiers, data, 0.5)
-    expected_result = ((1 - 0.5) * 2 + (0.75 - 0.5) * 1 + (1 - 0.5) * 1) / 4
+    expected_result = ((1 - 0.5) * 2 + (0.5 - 0.5) * 1 + (0.5 - 0.25) * 1) / 4
     assert result == expected_result

@@ -4,3 +4,5 @@ iterations: 3
 num_param_sets: 2
 features: "['depth_class', 'sunrise', 'sunset']"
 size_per_individual: 1000
+groups: 7
+num_generations: 50

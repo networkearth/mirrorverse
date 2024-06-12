@@ -10,8 +10,9 @@ from multiprocessing import Pool
 import click
 import pandas as pd
 import numpy as np
-from sklearn.metrics import explained_variance_score
 from tqdm import tqdm
+
+from mirrorverse.odds_model.odds_model import get_central_likelihood
 
 
 # pylint: disable=missing-class-docstring, missing-function-docstring
@@ -71,7 +72,7 @@ def crossover(ind1, ind2, crossover_gene_rate):
             ind1[i], ind2[i] = ind2[i], ind1[i]
 
 
-def get_explained_variances(groups, identifiers, data):
+def get_central_likelihoods(groups, identifiers, data):
     """
     Inputs:
     - groups (list): the groups
@@ -80,25 +81,23 @@ def get_explained_variances(groups, identifiers, data):
         should have columns "_identifier", "selected",
         and "probability"
 
-    Returns the explained variances of the groups and the
+    Returns the central likelihoods of the groups and the
     counts of the groups.
 
     dict, dict
     """
     groups = pd.DataFrame({"_identifier": identifiers, "group": groups})
     merged_data = data.merge(groups, on="_identifier")
-    variances = {}
+    likelihoods = {}
     counts = {}
     for group in merged_data["group"].unique():
         filtered_data = merged_data[merged_data["group"] == group]
-        variances[group] = explained_variance_score(
-            filtered_data["selected"], filtered_data["probability"]
-        )
+        likelihoods[group] = get_central_likelihood(filtered_data)
         counts[group] = filtered_data["_identifier"].nunique()
-    return variances, counts
+    return likelihoods, counts
 
 
-def evaluate(individual, identifiers, data, explained_variance):
+def evaluate(individual, identifiers, data, central_likelihood):
     """
     Inputs:
     - individual (list): the individual to evaluate
@@ -106,16 +105,16 @@ def evaluate(individual, identifiers, data, explained_variance):
     - data (pd.DataFrame): the data to evaluate over
         should have columns "_identifier", "selected",
         and "probability"
-    - explained_variance (float): the explained variance
+    - central_likelihood (float): the central likelihood
         of the whole dataset
 
-    Returns the average difference between the explained
+    Returns the average difference between the central
     variance of the groups and the whole dataset.
     """
-    variances, counts = get_explained_variances(individual, identifiers, data)
+    likelihoods, counts = get_central_likelihoods(individual, identifiers, data)
     differences, counts_array = [], []
-    for group, variance in variances.items():
-        differences.append(np.abs(variance - explained_variance))
+    for group, variance in likelihoods.items():
+        differences.append(np.abs(variance - central_likelihood))
         counts_array.append(counts[group])
     result = np.sum(np.array(differences) * np.array(counts_array)) / np.sum(
         counts_array
@@ -206,14 +205,14 @@ def group_data(
 
     Returns:
     - a dataframe with a mapping of identifiers to
-        groups and the attendant explained variance
+        groups and the attendant central likelihood
     - a dataframe of statistics about the genetic
         algorithm
     """
 
     groups = list(range(num_groups))
     identifiers = data["_identifier"].unique()
-    explained_variance = explained_variance_score(data["selected"], data["probability"])
+    explained_variance = get_central_likelihood(data)
 
     population = [
         create_individual(identifiers, groups) for _ in range(num_individuals)
@@ -266,7 +265,7 @@ def group_data(
             statistics.append(build_statistics(generation, population))
 
     best_individual = max(population, key=lambda x: x.fitness)
-    explained_variances, _ = get_explained_variances(best_individual, identifiers, data)
+    explained_variances, _ = get_central_likelihoods(best_individual, identifiers, data)
     groupings = pd.DataFrame(
         [
             {
@@ -282,10 +281,15 @@ def group_data(
 
 @click.command()
 @click.option("-n", "--name", required=True, help="name of the data file")
+@click.option(
+    "-v", "--num_generations", default=300, type=int, help="number of generations"
+)
 @click.option("-g", "--groups", required=True, type=int, help="number of groups")
-def main(name, groups):
+def main(name, num_generations, groups):
     name = ".".join(name.split(".")[:-1])
     data = pd.read_csv(f"{name}.csv")
-    groupings, statistics = group_data(data, int(groups))
+    groupings, statistics = group_data(
+        data, int(groups), num_generations=num_generations
+    )
     groupings.to_csv(f"{name}_groupings.csv", index=False)
     statistics.to_csv(f"{name}_statistics.csv", index=False)

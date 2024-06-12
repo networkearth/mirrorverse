@@ -29,6 +29,7 @@ def load_depth_data(output_file):
     """
     depth = pd.read_sql(sql, get_engine())
     depth = depth[~np.isnan(depth["depth"])]
+    depth["tag_key"] = "tk" + depth["tag_key"].astype(str)
     depth.to_csv(output_file, index=False)
 
 
@@ -102,6 +103,7 @@ def load_context_data(output_file):
             on tt.h3_level_4_key = e.h3_level_4_key
     """
     context = pd.read_sql(sql, get_engine())
+    context["tag_key"] = "tk" + context["tag_key"].astype(str)
     context.to_csv(output_file, index=False)
 
 
