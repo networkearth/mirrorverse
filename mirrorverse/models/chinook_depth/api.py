@@ -66,7 +66,7 @@ def main(**kwargs):
         ),
         "train_model": (
             train_model,
-            ["input_files", "output_files", "features", "learning_rate", "iterations"],
+            ["input_files", "output_files", "features", "iterations"],
         ),
         "downsample_data": (
             downsample_data,
