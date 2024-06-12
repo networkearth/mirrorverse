@@ -9,7 +9,7 @@ import unittest
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 
-from mirrorverse.odds_model.search import (
+from mirrorverse.log_odds_model.search import (
     build_randomized_param_sets,
     randomized_odds_model_search,
 )

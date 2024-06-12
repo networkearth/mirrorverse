@@ -94,44 +94,44 @@ stages:
       size: 1997
     - path: downsampled.csv
       hash: md5
-      md5: aa1090a186db2c56182c8c17863bfd7c
-      size: 14465645
+      md5: f7b733788a7e68bcceb873d5fb3273d3
+      size: 28927503
     params:
       params.yaml:
         depth_classes: '[25, 50, 75, 100, 150, 200, 250, 300, 400, 500]'
     outs:
     - path: choices.csv.gz
       hash: md5
-      md5: 6b1b27eae5bf7de5290805f084026651
-      size: 6634323
+      md5: 8494f7b9f8dbdd47823369b9a91e6fe1
+      size: 13270050
   split_data:
     cmd: mirrorverse_chinook_depth --function split_data --input_file choices.csv.gz
       --output_file "full.csv.gz" --train_fraction 0.6
     deps:
     - path: ../../../mirrorverse/models/chinook_depth/model.py
       hash: md5
-      md5: 48fbe425d48789c862e4773b9d03553b
-      size: 4285
+      md5: 621153bca1dd6c7819942a57af8680f1
+      size: 4303
     - path: choices.csv.gz
       hash: md5
-      md5: 6b1b27eae5bf7de5290805f084026651
-      size: 6634323
+      md5: 8494f7b9f8dbdd47823369b9a91e6fe1
+      size: 13270050
     params:
       params.yaml:
         train_fraction: 0.6
     outs:
     - path: test_full.csv.gz
       hash: md5
-      md5: 7ce6b8deedade38feca0fe8a170e7fcf
-      size: 2672610
+      md5: 51e918492fe468fdee8f2462ed8e103a
+      size: 5365881
     - path: train_full.csv.gz
       hash: md5
-      md5: 9ba56009f9d2bc1550517b4e58e1a275
-      size: 3961989
+      md5: 8e67e1ea1527ecf7f08b6d2b85e1385f
+      size: 7905215
   train_model:
     cmd: mirrorverse_chinook_depth --function train_model --input_files "train_full.csv.gz,test_full.csv.gz,param_sets.json,search_diagnostics.csv"
       --output_files "diagnostics.csv,model.pkl,test_preds.csv" --features "['depth_class',
-      'sunrise', 'sunset']" --iterations 3
+      'month', 'elevation', 'sunrise', 'sunset', 'hour']" --iterations 5
     deps:
     - path: ../../../mirrorverse/models/chinook_depth/model.py
       hash: md5
@@ -139,40 +139,40 @@ stages:
       size: 4285
     - path: param_sets.json
       hash: md5
-      md5: 74685aea61b52428f18ea9f7b7fa4e83
-      size: 382
+      md5: 1b951616a662c654d27e0b5a0c9902c5
+      size: 1872
     - path: search_diagnostics.csv
       hash: md5
-      md5: ec5e511cb5e318ab3d5619fe1e435f9a
-      size: 728
+      md5: 03e12d565fc4402ec6f828f6c21eaf22
+      size: 4352
     - path: test_full.csv.gz
       hash: md5
-      md5: 7ce6b8deedade38feca0fe8a170e7fcf
-      size: 2672610
+      md5: a5ddfd954ab2e3a389b453215818f634
+      size: 5353349
     - path: train_full.csv.gz
       hash: md5
-      md5: 9ba56009f9d2bc1550517b4e58e1a275
-      size: 3961989
+      md5: facd8486bbbfb781b3418e6687c1bb19
+      size: 7917590
     params:
       params.yaml:
-        features: "['depth_class', 'sunrise', 'sunset']"
-        iterations: 3
+        features: "['depth_class', 'month', 'elevation', 'sunrise', 'sunset', 'hour']"
+        iterations: 5
     outs:
     - path: diagnostics.csv
       hash: md5
-      md5: 8c690b2e88a3c78aad0830e42f155166
-      size: 210
+      md5: 021701e8b46c1fac95fc8caa57fd15b9
+      size: 289
     - path: model.pkl
       hash: md5
-      md5: 3385aeb57ca77eb97b322f2332e2303b
-      size: 1472411
+      md5: 1dfb07fba06989b4fafa6f87d028f955
+      size: 1822352
     - path: test_preds.csv
       hash: md5
-      md5: cda3206dce77ac121bd9436b0aae652d
-      size: 27241931
+      md5: 02622e94656a300b7b1952e088e57f0b
+      size: 77294096
   downsample_data:
     cmd: mirrorverse_chinook_depth --function downsample_data --input_file data_w_time_features.csv.gz
-      --output_file downsampled.csv --size_per_individual 1000
+      --output_file downsampled.csv --size_per_individual 2000
     deps:
     - path: ../../../mirrorverse/models/chinook_depth/choices.py
       hash: md5
@@ -184,16 +184,17 @@ stages:
       size: 8252199
     params:
       params.yaml:
-        size_per_individual: 1000
+        size_per_individual: 2000
     outs:
     - path: downsampled.csv
       hash: md5
-      md5: aa1090a186db2c56182c8c17863bfd7c
-      size: 14465645
+      md5: f7b733788a7e68bcceb873d5fb3273d3
+      size: 28927503
   do_search:
     cmd: mirrorverse_chinook_depth --function do_search --input_files "train_full.csv.gz,test_full.csv.gz,params.json"
       --output_files "search_diagnostics.csv,param_sets.json" --features "['depth_class',
-      'sunrise', 'sunset']" --iterations 3 --num_param_sets 2
+      'month', 'elevation', 'sunrise', 'sunset', 'hour']" --iterations 20 --num_param_sets
+      1
     deps:
     - path: ../../../mirrorverse/models/chinook_depth/model.py
       hash: md5
@@ -201,30 +202,30 @@ stages:
       size: 4285
     - path: params.json
       hash: md5
-      md5: 95d6dde71eb92b14c6680b6414cb30c2
-      size: 172
+      md5: cff1e8bf01694a6d1c559e5128694982
+      size: 166
     - path: test_full.csv.gz
       hash: md5
-      md5: 7ce6b8deedade38feca0fe8a170e7fcf
-      size: 2672610
+      md5: a5ddfd954ab2e3a389b453215818f634
+      size: 5353349
     - path: train_full.csv.gz
       hash: md5
-      md5: 9ba56009f9d2bc1550517b4e58e1a275
-      size: 3961989
+      md5: facd8486bbbfb781b3418e6687c1bb19
+      size: 7917590
     params:
       params.yaml:
-        features: "['depth_class', 'sunrise', 'sunset']"
-        iterations: 3
-        num_param_sets: 2
+        features: "['depth_class', 'month', 'elevation', 'sunrise', 'sunset', 'hour']"
+        iterations: 20
+        num_param_sets: 1
     outs:
     - path: param_sets.json
       hash: md5
-      md5: 74685aea61b52428f18ea9f7b7fa4e83
-      size: 382
+      md5: bd85091cb9f400bd6278b818addef082
+      size: 190
     - path: search_diagnostics.csv
       hash: md5
-      md5: ec5e511cb5e318ab3d5619fe1e435f9a
-      size: 728
+      md5: a63a7db95521bd3d54b903b14406b2da
+      size: 1626
   merge_back:
     cmd: mirrorverse_chinook_depth --function merge_back --input_files "test_preds.csv,test_full.csv.gz"
       --output_file test_preds_w_choices.csv
@@ -235,17 +236,17 @@ stages:
       size: 4285
     - path: test_full.csv.gz
       hash: md5
-      md5: 7ce6b8deedade38feca0fe8a170e7fcf
-      size: 2672610
+      md5: a5ddfd954ab2e3a389b453215818f634
+      size: 5353349
     - path: test_preds.csv
       hash: md5
-      md5: cda3206dce77ac121bd9436b0aae652d
-      size: 27241931
+      md5: 02622e94656a300b7b1952e088e57f0b
+      size: 77294096
     outs:
     - path: test_preds_w_choices.csv
       hash: md5
-      md5: 5a588a2486fa2ea08f8a7f0459931df3
-      size: 80854065
+      md5: d7b92ed38c2c25ae5c419d923b6a4da8
+      size: 163754390
   group_results:
     cmd: mirrorverse_group -n test_preds_w_choices.csv -g 7 -v 50
     deps:
@@ -255,8 +256,8 @@ stages:
       size: 9158
     - path: test_preds_w_choices.csv
       hash: md5
-      md5: 5a588a2486fa2ea08f8a7f0459931df3
-      size: 80854065
+      md5: d7b92ed38c2c25ae5c419d923b6a4da8
+      size: 163754390
     params:
       params.yaml:
         groups: 7
@@ -264,9 +265,9 @@ stages:
     outs:
     - path: test_preds_w_choices_groupings.csv
       hash: md5
-      md5: 378e7bfa9ac14e7457f5de538de010b6
-      size: 1431
+      md5: e543449bb7011383ff9d39c7370d77f3
+      size: 1417
     - path: test_preds_w_choices_statistics.csv
       hash: md5
-      md5: 46da28ea6ebdc07ff5279aa41c181f6f
-      size: 4381
+      md5: bf3313f73296db413b2cbdf8b41ecbb5
+      size: 4356

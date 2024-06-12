@@ -24,55 +24,52 @@ def get_central_likelihood(dataframe):
 def get_probability(dataframe):
     """
     Inputs:
-    - dataframe (pd.DataFrame): a dataframe with columns "utility"
+    - dataframe (pd.DataFrame): a dataframe with columns "log_odds"
         and "_decision"
 
     Adds/modifies the following columns to the dataframe:
-    - "sum_utility": the sum of the "utility" column for each decision
+    - "odds": the odds for of selecting each decision
+    - "sum_odds": the sum of the "odds" column for each decision
     - "probability": the probability of selecting each decision
     """
-    dataframe["sum_utility"] = dataframe.groupby("_decision")["utility"].transform(
-        "sum"
-    )
-    dataframe["probability"] = dataframe["utility"] / dataframe["sum_utility"]
+    dataframe["odds"] = np.exp(dataframe["log_odds"])
+    dataframe["sum_odds"] = dataframe.groupby("_decision")["odds"].transform("sum")
+    dataframe["probability"] = dataframe["odds"] / dataframe["sum_odds"]
 
 
-def get_proposed_utility(dataframe, learning_rate):
+def get_proposed_log_odds(dataframe, learning_rate):
     """
     Inputs:
-    - dataframe (pd.DataFrame): a dataframe with columns "utility",
-        "_selected", "sum_utility", "probability",
-    - learning_rate (float): a float between 0 and 1 that determines
-        how much the proposed utility values should be adjusted
+    - dataframe (pd.DataFrame): a dataframe with columns "log_odds",
+        "odds", "_selected", "sum_odds", "probability",
+    - learning_rate (float): a float between that determines
+        how much the proposed log odds values should be adjusted
 
     Adds/modifies the following columns to the dataframe:
-    - "partial": the partial derivative of the probability with respect to the utility
-    - "step": the maximum step that can be taken without causing the probability to be negative
-    - "proposed": the proposed utility for each decision
+    - "partial": the partial derivative of the probability with respect to the log odds
+    - "step": the step that will be taken in the direction of the gradient
+    - "proposed": the proposed log odds for each decision
     """
-    assert 0 < learning_rate < 1, "learning_rate must be between 0 and 1"
 
     # calculate the partial derivative of the probability with respect to the utility
     dataframe["partial"] = (
         1
-        / dataframe["sum_utility"]
+        / dataframe["sum_odds"]
         * (
             dataframe["_selected"]
             * ((1 - dataframe["probability"]) / dataframe["probability"])
             - (1 - dataframe["_selected"])
         )
+        * dataframe["odds"]
     )
 
-    # this is the maximum step that can be taken without causing the probability to be negative
-    worst_case = (dataframe["partial"] / dataframe["utility"]).min()
-    factor = (1 / abs(worst_case)) * learning_rate
-    dataframe["step"] = dataframe["partial"] * factor
+    dataframe["step"] = dataframe["partial"] * learning_rate
 
     # propose new utility values
-    dataframe["proposed"] = dataframe["utility"] + dataframe["step"]
+    dataframe["proposed"] = dataframe["log_odds"] + dataframe["step"]
 
 
-class OddsModel:
+class LogOddsModel:
     """
     The Odds Model
     """
@@ -108,13 +105,13 @@ class OddsModel:
         diagnostics = []
 
         # setup an initial guess
-        X_train["utility"] = 1
-        X_test["utility"] = 1
+        X_train["log_odds"] = 0
+        X_test["log_odds"] = 0
 
         get_probability(X_train)
         get_probability(X_test)
-        get_proposed_utility(X_train, learning_rate)
-        get_proposed_utility(X_test, learning_rate)
+        get_proposed_log_odds(X_train, learning_rate)
+        get_proposed_log_odds(X_test, learning_rate)
 
         diagnostics.append(
             {
@@ -127,13 +124,13 @@ class OddsModel:
         for i in tqdm(range(1, iterations + 1)):
             self.model.fit(X_train[features], X_train["proposed"])
 
-            X_train["utility"] = self.model.predict(X_train[features])
-            X_test["utility"] = self.model.predict(X_test[features])
+            X_train["log_odds"] = self.model.predict(X_train[features])
+            X_test["log_odds"] = self.model.predict(X_test[features])
 
             get_probability(X_train)
             get_probability(X_test)
-            get_proposed_utility(X_train, learning_rate)
-            get_proposed_utility(X_test, learning_rate)
+            get_proposed_log_odds(X_train, learning_rate)
+            get_proposed_log_odds(X_test, learning_rate)
 
             diagnostics.append(
                 {
@@ -145,8 +142,9 @@ class OddsModel:
 
         X_train.drop(
             columns=[
-                "utility",
-                "sum_utility",
+                "log_odds",
+                "odds",
+                "sum_odds",
                 "probability",
                 "partial",
                 "step",
@@ -156,8 +154,9 @@ class OddsModel:
         )
         X_test.drop(
             columns=[
-                "utility",
-                "sum_utility",
+                "log_odds",
+                "odds",
+                "sum_odds",
                 "probability",
                 "partial",
                 "step",
@@ -179,6 +178,6 @@ class OddsModel:
 
         features = [c for c in X.columns if c not in ["_decision", "_selected"]]
 
-        X["utility"] = self.model.predict(X[features])
+        X["log_odds"] = self.model.predict(X[features])
         get_probability(X)
-        X.drop(columns=["sum_utility"], inplace=True)
+        X.drop(columns=["sum_odds"], inplace=True)

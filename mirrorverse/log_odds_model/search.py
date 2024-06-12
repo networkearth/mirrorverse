@@ -7,7 +7,7 @@ Hyperparameter search for the odds model.
 import numpy as np
 import pandas as pd
 
-from mirrorverse.odds_model.odds_model import OddsModel
+from mirrorverse.log_odds_model.log_odds_model import LogOddsModel
 
 
 def build_randomized_param_sets(param_grids, M, max_attempts):
@@ -65,7 +65,7 @@ def randomized_odds_model_search(
     for i, param_set in enumerate(param_sets):
         print(f"Running parameter set {i + 1}/{M}")
         to_pass = {k: v for k, v in param_set.items() if k != "learning_rate"}
-        model = OddsModel(model_class(**to_pass))
+        model = LogOddsModel(model_class(**to_pass))
         model.fit(train_data, test_data, param_set["learning_rate"], iterations)
         diagnostics = model.diagnostics
         for param, val in param_set.items():

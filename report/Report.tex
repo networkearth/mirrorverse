@@ -47,7 +47,7 @@ University of Alaska Fairbanks
 \tableofcontents
 \newpage
 
-\section{Odds Modeling}
+\section{Log Odds Modeling}
 
 \begin{objective}
 To provide tooling that allows for using machine learning methods to fit models of the form
@@ -61,9 +61,9 @@ $$\mathcal{L}=\prod_i P'(v_i | \eta_i)$$
 
 where:
 
-$$P'(v_i|\eta_i) = \frac{\psi_i}{\sum_k \psi_k}$$
+$$P'(v_i|\eta_i) = \frac{e^{\psi_i}}{\sum_k e^{\psi_k}}$$
 
-These models will be known as odds models as they predict the "odds for" each outcome $v_k$ given the information contained in $\eta_k$. 
+These models will be known as log odds models as they predict the "log odds for" each outcome $v_k$ given the information contained in $\eta_k$. 
 
 \end{objective}
 
@@ -75,11 +75,11 @@ First some notation to help us. Our data is composed of a series of decisions $D
 
 $$\phi_{jki} = \hat{G_i}(\eta_{jk})$$
 
-Then our proposed probabilities are:
+Our probability is therefore:
 
-$$P_i'(v_{jk}|\eta_{jk})=\frac{\phi_{jki}}{\sum_p \phi_{jpi}}$$
+$$P_i'(v_{jk}|\eta_{jk})=\frac{e^{\phi_{jki}}}{\sum_p e^{\phi_{jpi}}}$$
 
-Then if the $k$ selected per decision $D_j$ is given by $s_j$ we want to maximize:
+Now if the $k$ selected per decision $D_j$ is given by $s_j$ we want to maximize:
 
 $$\mathcal{L}=\prod_j P_i'(v_{js_j} | \eta_{js_j})\rightarrow \sum_j \ln{\left[ P_i'(v_{js_j} | \eta_{js_j}) \right]}$$
 
@@ -93,17 +93,25 @@ $$\min{\left[ \sum_{jk}\left(\hat{G_i}(\eta_{jk}) - \psi_{jk(i-1)}\right)^2 \rig
 
 We now need to choose a set of updates $u_{jki}$. To get these we will turn to our overall objective function:
 
-$$\sum_j \ln{\left[ P_i'(v_{js_j} | \eta_{js_j}) \right]}= \sum_j \ln{\left[ \frac{\phi_{js_ji}}{\sum_p \phi_{jpi}} \right]}$$
+$$\sum_j \ln{\left[ P_i'(v_{js_j} | \eta_{js_j}) \right]}= \sum_j \ln{\left[ \frac{e^{\phi_{js_ji}}}{\sum_p e^{\phi_{jpi}}} \right]}$$
 
 Let's look at the gradient of this w.r.t the $\phi_{jki}$. There are two cases:
 
-$$\partial_{\phi_{js_ji}}\ln{\mathcal{L}}=\frac{1}{P_i'(v_{js_j} | \eta_{js_j})}\frac{\sum_p \phi_{jpi}-\phi_{js_ji}}{\left( \sum_p \phi_{jpi} \right)^2}=\frac{1}{\sum_p \phi_{jpi}}\frac{\left(1-P_i'(v_{js_j} | \eta_{js_j}) \right)}{P_i'(v_{js_j} | \eta_{js_j})}$$ 
+$$\partial_{\phi_{js_ji}}\ln{\mathcal{L}}
+=
+\frac{1}{P_i'(v_{js_j} | \eta_{js_j})}\frac{\sum_p e^{\phi_{jpi}}-e^{\phi_{js_ji}}}{\left( \sum_p e^{\phi_{jpi}} \right)^2} e^{\phi_{js_ji}}
+=
+\frac{1}{\sum_p e^{\phi_{jpi}}}\frac{\left(1-P_i'(v_{js_j} | \eta_{js_j}) \right)}{P_i'(v_{js_j} | \eta_{js_j})} e^{\phi_{js_ji}}$$ 
 
-$$\partial_{\phi_{j\not{s_j}i}}\ln{\mathcal{L}}=\frac{1}{P_i'(v_{js_j} | \eta_{js_j})}\frac{-\phi_{js_ji}}{\left( \sum_p \phi_{jpi} \right)^2} = \frac{-1 }{\sum_p \phi_{jpi}}$$ 
+$$\partial_{\phi_{j\not{s_j}i}}\ln{\mathcal{L}}
+=
+\frac{1}{P_i'(v_{js_j} | \eta_{js_j})}\frac{-e^{\phi_{js_ji}}}{\left( \sum_p e^{\phi_{jpi}} \right)^2} e^{\phi_{j\not{s_j}i}}
+= 
+\frac{-1 }{\sum_p e^{\phi_{jpi}}}e^{\phi_{j\not{s_j}i}}$$ 
 
 Next for point of illustration let's suppose that there are a set of $\psi_{jki}$ which we'll designate as $Z$ which share the same features $\eta$, i.e. our model has to give a single $\phi_{jki}$ for all such options. Our derivative then for that collection $Z$ is given by:
 
-$$\partial_Z \ln{\mathcal{L}}=\sum_{\phi_{js_ji} \in Z}\frac{1}{\sum_p \phi_{jpi}}\frac{\left(1-P_i'(v_{js_j} | \eta_{js_j}) \right)}{P_i'(v_{js_j} | \eta_{js_j})}-\sum_{\phi_{j\not{s_j}i}\in Z}\frac{1 }{\sum_p \phi_{jpi}}$$
+$$\partial_Z \ln{\mathcal{L}}=\sum_{\phi_{js_ji} \in Z}\frac{1}{\sum_p \phi_{jpi}}\frac{\left(1-P_i'(v_{js_j} | \eta_{js_j}) \right)}{P_i'(v_{js_j} | \eta_{js_j})}e^{\phi_{js_ji}}-\sum_{\phi_{j\not{s_j}i}\in Z}\frac{1 }{\sum_p \phi_{jpi}}e^{\phi_{j\not{s_j}i}}$$
 
 Given classic optimization tactics we know that our function will be maximized when these sums are $0$ (and technically we'd also want to know that the second derivative was negative but we'll assume that's the case given how our iterations will work). \newline
 
@@ -133,17 +141,17 @@ which means that in order for our partial derivative above to be zero (and there
 
 \newpage
 
-\begin{procedure}{Fitting an Odds Model}
+\begin{procedure}{Fitting a Log Odds Model}
 \begin{enumerate}
 \item Collect decisions $D_j$ and corresponding features $\eta_{jk}$, options $v_{jk}$, and selection $s_j$. 
-\item Make an initial guess $\psi_{jk0} = 1$.
+\item Make an initial guess $\psi_{jk0} = 0$.
 \item Fit $\hat{G}_i$ on the pairs of $\psi_{jk(i-1)},\eta_{jk}$ using MSE to produce the $\phi_{jki}$.
 \item Generate the $u_{jki} = \alpha_i \partial_{\phi_{jki}} \ln{\mathcal{L}}$ and produce a new set of $\psi_{jki}$.
 \item Repeat 3 and 4 until, varying $\alpha_i$ until convergence. 
 
-$$\partial_{\phi_{js_ji}}\ln{\mathcal{L}}=\frac{1}{\sum_p \phi_{jpi}}\frac{\left(1-P_i'(v_{js_j} | \eta_{js_j}) \right)}{P_i'(v_{js_j} | \eta_{js_j})}$$ 
+$$\partial_{\phi_{js_ji}}\ln{\mathcal{L}}=\frac{1}{\sum_p e^{\phi_{jpi}}}\frac{\left(1-P_i'(v_{js_j} | \eta_{js_j}) \right)}{P_i'(v_{js_j} | \eta_{js_j})}e^{\phi_{js_ji}}$$ 
 
-$$\partial_{\phi_{j\not{s_j}i}}\ln{\mathcal{L}}=\frac{-1 }{\sum_p \phi_{jpi}}$$ 
+$$\partial_{\phi_{j\not{s_j}i}}\ln{\mathcal{L}}=\frac{-1 }{\sum_p e^{\phi_{jpi}}}e^{\phi_{j\not{s_j}i}}$$ 
 \end{enumerate}
 
 \end{procedure}

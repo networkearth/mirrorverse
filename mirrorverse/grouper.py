@@ -12,7 +12,7 @@ import pandas as pd
 import numpy as np
 from tqdm import tqdm
 
-from mirrorverse.odds_model.odds_model import get_central_likelihood
+from mirrorverse.log_odds_model.log_odds_model import get_central_likelihood
 
 
 # pylint: disable=missing-class-docstring, missing-function-docstring

@@ -11,8 +11,8 @@ import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 
-from mirrorverse.odds_model.odds_model import OddsModel
-from mirrorverse.odds_model.search import randomized_odds_model_search
+from mirrorverse.log_odds_model.log_odds_model import LogOddsModel
+from mirrorverse.log_odds_model.search import randomized_odds_model_search
 
 
 pd.options.mode.chained_assignment = None
@@ -124,7 +124,7 @@ def train_model(input_files, output_files, features, iterations):
     assert "_selected" not in features
     features += ["_decision", "_selected"]
 
-    model = OddsModel(RandomForestRegressor(**model_params))
+    model = LogOddsModel(RandomForestRegressor(**model_params))
     model.fit(train_data[features], test_data[features], learning_rate, iterations)
 
     output_data = test_data[features].copy()
