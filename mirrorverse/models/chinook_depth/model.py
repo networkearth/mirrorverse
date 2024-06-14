@@ -11,8 +11,8 @@ import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 
-from mirrorverse.odds_model.odds_model import OddsModel
-from mirrorverse.odds_model.search import randomized_odds_model_search
+from mirrorverse.log_odds_model.log_odds_model import LogOddsModel
+from mirrorverse.log_odds_model.search import randomized_odds_model_search
 
 
 pd.options.mode.chained_assignment = None
@@ -39,37 +39,6 @@ def split_data(input_file, output_file, train_fraction):
     test_data = data[data["_identifier"].isin(test_ids)]
     train_data.to_csv(f"train_{output_file}", index=False)
     test_data.to_csv(f"test_{output_file}", index=False)
-
-
-def train_model(input_files, output_files, features, learning_rate, iterations):
-    """
-    Inputs:
-    - input_files: str, paths to the input files
-    - output_files: str, paths to save the output files
-    - features: str, list of feature names
-    - learning_rate: float, learning rate for the model
-    - iterations: int, number of iterations to run
-
-    Trains the model and saves the diagnostics and model to csv and pickle files.
-    """
-    input_files = input_files.split(",")
-    train_data = pd.read_csv(input_files[0])
-    test_data = pd.read_csv(input_files[1])
-    with open(input_files[2], "r") as f:
-        model_params = json.load(f)
-
-    features = eval(features)
-    assert "_decision" not in features
-    assert "_selected" not in features
-    features += ["_decision", "_selected"]
-
-    model = OddsModel(RandomForestRegressor(**model_params))
-    model.fit(train_data[features], test_data[features], learning_rate, iterations)
-
-    output_files = output_files.split(",")
-    model.diagnostics.to_csv(output_files[0], index=False)
-    with open(output_files[1], "wb") as f:
-        pickle.dump(model, f)
 
 
 def clean(param_set):
@@ -128,3 +97,41 @@ def do_search(input_files, output_files, features, iterations, num_param_sets):
     param_sets = [clean(param_set) for param_set in param_sets]
     with open(output_files[1], "w") as f:
         json.dump(param_sets, f, indent=4, sort_keys=True)
+
+
+def train_model(input_files, output_files, features, iterations):
+    """
+    Inputs:
+    - input_files: str, paths to the input files
+    - output_files: str, paths to save the output files
+    - features: str, list of feature names
+    - iterations: int, number of iterations to run
+
+    Trains the model and saves the diagnostics and model to csv and pickle files.
+    """
+    input_files = input_files.split(",")
+    train_data = pd.read_csv(input_files[0])
+    test_data = pd.read_csv(input_files[1])
+    with open(input_files[2], "r") as f:
+        param_sets = json.load(f)
+    diagnostics = pd.read_csv(input_files[3])
+
+    model_params = param_sets[diagnostics[diagnostics["best"]]["_param_set"].values[0]]
+    learning_rate = model_params.pop("learning_rate")
+
+    features = eval(features)
+    assert "_decision" not in features
+    assert "_selected" not in features
+    features += ["_decision", "_selected"]
+
+    model = LogOddsModel(RandomForestRegressor(**model_params))
+    model.fit(train_data[features], test_data[features], learning_rate, iterations)
+
+    output_data = test_data[features].copy()
+    model.predict(output_data)
+
+    output_files = output_files.split(",")
+    model.diagnostics.to_csv(output_files[0], index=False)
+    with open(output_files[1], "wb") as f:
+        pickle.dump(model, f)
+    output_data.to_csv(output_files[2], index=False)

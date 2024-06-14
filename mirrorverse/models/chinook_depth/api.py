@@ -19,6 +19,7 @@ from mirrorverse.models.chinook_depth.model import (
     train_model,
     do_search,
 )
+from mirrorverse.models.chinook_depth.grouping import merge_back
 
 
 @click.command()
@@ -66,7 +67,7 @@ def main(**kwargs):
         ),
         "train_model": (
             train_model,
-            ["input_files", "output_files", "features", "learning_rate", "iterations"],
+            ["input_files", "output_files", "features", "iterations"],
         ),
         "downsample_data": (
             downsample_data,
@@ -75,6 +76,10 @@ def main(**kwargs):
         "do_search": (
             do_search,
             ["input_files", "output_files", "features", "iterations", "num_param_sets"],
+        ),
+        "merge_back": (
+            merge_back,
+            ["input_files", "output_file"],
         ),
     }
     _callable, required_args = functions[kwargs["function"]]

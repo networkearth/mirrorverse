@@ -10,11 +10,11 @@ import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 
-from mirrorverse.odds_model.odds_model import (
+from mirrorverse.log_odds_model.log_odds_model import (
     get_central_likelihood,
     get_probability,
-    get_proposed_utility,
-    OddsModel,
+    get_proposed_log_odds,
+    LogOddsModel,
 )
 
 
@@ -30,30 +30,37 @@ def test_get_central_likelihood():
 
 
 def test_get_probability():
-    X = pd.DataFrame({"_decision": [0, 1, 1, 2], "utility": [1, 2, 3, 4]})
+    X = pd.DataFrame(
+        {
+            "_decision": [0, 1, 1, 2],
+            "log_odds": [np.log(1), np.log(2), np.log(3), np.log(4)],
+        }
+    )
     get_probability(X)
-    assert (X["probability"] == [1, 2 / 5, 3 / 5, 1]).all()
-    assert (X["sum_utility"] == [1, 5, 5, 4]).all()
+    print(X["probability"] - [1, 2 / 5, 3 / 5, 1])
+    assert np.abs(X["probability"] - [1.0, 2 / 5, 3 / 5, 1.0]).max() < 10**-10
+    assert np.abs(X["sum_odds"] - [1, 5, 5, 4]).max() < 10**-10
 
 
-def test_get_proposed_utility():
+def test_get_proposed_log_odds():
     X = pd.DataFrame(
         {
             "_decision": [0, 1, 1, 2],
             "_selected": [True, False, True, True],
-            "utility": [1, 2, 3, 4],
-            "sum_utility": [1, 5, 5, 4],
+            "log_odds": [0, 1, 2, 3],
+            "odds": [1, 2, 3, 4],
+            "sum_odds": [1, 5, 5, 4],
             "probability": [1, 2 / 5, 3 / 5, 1],
         }
     )
     learning_rate = 0.9
-    get_proposed_utility(X, learning_rate)
+    get_proposed_log_odds(X, learning_rate)
     assert (
-        abs(X["partial"] - [0, -1 / 5, 1 / 5 * 5 / 3 * (1 - 3 / 5), 0]).max() < 10**-10
+        abs(X["partial"] - [0, -1 / 5 * 2, 1 / 5 * 5 / 3 * (1 - 3 / 5) * 3, 0]).max()
+        < 10**-10
     )
-    factor = 2 / (1 / 5) * learning_rate
-    assert (X["step"] == X["partial"] * factor).all()
-    assert (X["proposed"] == X["utility"] + X["step"]).all()
+    assert (X["step"] == X["partial"] * learning_rate).all()
+    assert (X["proposed"] == X["log_odds"] + X["step"]).all()
 
 
 class TestOddsModel(unittest.TestCase):
@@ -97,7 +104,7 @@ class TestOddsModel(unittest.TestCase):
         )
 
         model = RandomForestRegressor()
-        self.odds_model = OddsModel(model)
+        self.odds_model = LogOddsModel(model)
         self.odds_model.fit(self.X_train, self.X_test, 0.8, 10)
 
     def test_odds_model_fit(self):
@@ -137,7 +144,7 @@ class TestOddsModel(unittest.TestCase):
     def test_odds_model_predict(self):
         self.odds_model.predict(self.X_test)
         assert set(self.X_test.columns) == set(
-            ["feature", "_decision", "_selected", "utility", "probability"]
+            ["feature", "_decision", "_selected", "odds", "log_odds", "probability"]
         )
         assert self.X_test[self.X_test["feature"] == 0]["probability"].mean() > 0.7
         assert self.X_test[self.X_test["feature"] == 1]["probability"].mean() < 0.7
