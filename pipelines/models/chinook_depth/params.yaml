@@ -1,8 +1,9 @@
 depth_classes: "[25, 50, 75, 100, 150, 200, 250, 300, 400, 500]"
 train_fraction: 0.6
-iterations: 10
-num_param_sets: 20
-features: "['depth_class', 'month', 'elevation', 'sunrise', 'sunset', 'hour']"
+tuning_iterations: 62
+training_iterations: 10
+num_param_sets: 1
+features: "['depth_class', 'month', 'daytime', 'seak', 'wa/or', 'bc']"
 size_per_individual: 2000
 groups: 7
 num_generations: 50

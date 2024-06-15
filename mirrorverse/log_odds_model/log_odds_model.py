@@ -52,18 +52,29 @@ def get_proposed_log_odds(dataframe, learning_rate):
     """
 
     # calculate the partial derivative of the probability with respect to the utility
-    dataframe["partial"] = (
-        1
-        / dataframe["sum_odds"]
-        * (
-            dataframe["_selected"]
-            * ((1 - dataframe["probability"]) / dataframe["probability"])
-            - (1 - dataframe["_selected"])
-        )
-        * dataframe["odds"]
+    # dataframe["partial"] = (
+    #    1
+    #    / dataframe["sum_odds"]
+    #    * (
+    #        dataframe["_selected"]
+    #        * ((1 - dataframe["probability"]) / dataframe["probability"])
+    #        - (1 - dataframe["_selected"])
+    #    )
+    #    * dataframe["odds"]
+    # )
+
+    dataframe["partial"] = dataframe["_selected"] * (1 - dataframe["probability"]) - (
+        (1 - dataframe["_selected"]) * dataframe["probability"]
     )
 
-    dataframe["step"] = dataframe["partial"] * learning_rate
+    dataframe["curvature"] = dataframe["probability"] * (1 - dataframe["probability"])
+    dataframe["total_curvature"] = dataframe.groupby("log_odds")["curvature"].transform(
+        "mean"
+    )
+
+    dataframe["step"] = (
+        dataframe["partial"] / dataframe["total_curvature"] * learning_rate
+    )
 
     # propose new utility values
     dataframe["proposed"] = dataframe["log_odds"] + dataframe["step"]
@@ -105,8 +116,8 @@ class LogOddsModel:
         diagnostics = []
 
         # setup an initial guess
-        X_train["log_odds"] = 0
-        X_test["log_odds"] = 0
+        X_train["log_odds"] = 3
+        X_test["log_odds"] = 3
 
         get_probability(X_train)
         get_probability(X_test)
@@ -121,11 +132,59 @@ class LogOddsModel:
             }
         )
 
+        CHANGE = None
+
         for i in tqdm(range(1, iterations + 1)):
-            self.model.fit(X_train[features], X_train["proposed"])
+            print(get_central_likelihood(X_train))
+            update = X_train[["_selected", "_decision", "proposed"]].rename(
+                {"proposed": "log_odds"}, axis=1
+            )
+            get_probability(update)
+            print(get_central_likelihood(update))
+
+            # TODO: remove me
+            print(X_train.groupby("log_odds")["curvature"].max().describe())
+
+            # df = X_train.groupby(features)["step"].mean().reset_index()
+            # df["iteration"] = i
+            # output_file = "tmp.csv"
+            # if i == 1:
+            #    df.to_csv(output_file, index=False)
+            # else:
+            #    df.to_csv(output_file, mode="a", header=False, index=False)
+            try:
+                self.model.fit(X_train[features], X_train["proposed"])
+            except:
+                break
+
+            old = X_train["log_odds"]
 
             X_train["log_odds"] = self.model.predict(X_train[features])
             X_test["log_odds"] = self.model.predict(X_test[features])
+
+            # print(np.abs(X_train["log_odds"] - old).describe())
+            # change = (
+            #    np.sqrt(np.sum((X_train["log_odds"] - old) ** 2)) / X_train.shape[0]
+            # )
+            # if CHANGE == None:
+            #    CHANGE = change
+            # print(
+            #    "CHANGE:",
+            #    change,
+            # )
+            # if change < CHANGE / 2:
+            #    print("CHANGING RATE")
+            #    learning_rate *= 1.5
+            #    CHANGE = None
+            # print(np.sqrt(np.sum(X_train["step"] ** 2)) / X_train.shape[0])
+
+            # if np.abs(X_train["log_odds"] - old).max() < TARGET:
+            #    learning_rate *= 2
+            #    print("DOUBLE IT!")
+            # if np.abs(X_train["log_odds"] - old).max() > TARGET * 10:
+            #    learning_rate /= 4
+            #    TARGET /= 1.5
+            #    print(f"HALF IT! {TARGET}")
 
             get_probability(X_train)
             get_probability(X_test)

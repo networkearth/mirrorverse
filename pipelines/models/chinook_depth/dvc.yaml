@@ -64,7 +64,7 @@ stages:
       - train_full.csv.gz
       - test_full.csv.gz
   do_search:
-    cmd: mirrorverse_chinook_depth --function do_search --input_files "train_full.csv.gz,test_full.csv.gz,params.json" --output_files "search_diagnostics.csv,param_sets.json" --features "${features}" --iterations ${iterations} --num_param_sets ${num_param_sets}
+    cmd: mirrorverse_chinook_depth --function do_search --input_files "train_full.csv.gz,test_full.csv.gz,params.json" --output_files "search_diagnostics.csv,param_sets.json" --features "${features}" --iterations ${tuning_iterations} --num_param_sets ${num_param_sets}
     deps:
       - ../../../mirrorverse/models/chinook_depth/model.py
       - train_full.csv.gz
@@ -73,12 +73,12 @@ stages:
     params:
       - features
       - num_param_sets
-      - iterations
+      - tuning_iterations
     outs:
       - search_diagnostics.csv
       - param_sets.json
   train_model:
-    cmd: mirrorverse_chinook_depth --function train_model --input_files "train_full.csv.gz,test_full.csv.gz,param_sets.json,search_diagnostics.csv" --output_files "diagnostics.csv,model.pkl,test_preds.csv" --features "${features}" --iterations ${iterations}
+    cmd: mirrorverse_chinook_depth --function train_model --input_files "train_full.csv.gz,test_full.csv.gz,param_sets.json,search_diagnostics.csv" --output_files "diagnostics.csv,model.pkl,test_preds.csv" --features "${features}" --iterations ${training_iterations}
     deps:
       - ../../../mirrorverse/models/chinook_depth/model.py
       - train_full.csv.gz
@@ -87,7 +87,7 @@ stages:
       - param_sets.json
     params:
       - features
-      - iterations
+      - training_iterations
     outs:
       - diagnostics.csv
       - model.pkl
