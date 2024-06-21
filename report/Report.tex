@@ -67,7 +67,7 @@ These models will be known as log odds models as they predict the "log odds for"
 
 \end{objective}
 
-\subsection{Fitting a Log Odds Model}
+\subsection{Fitting an Odds Model}
 
 All standard Machine Learning (ML) pipelines assume that you have at least two things - targets and features. In our case we certainly have the latter but our target $\psi_k$ is both unknown to us and also unmeasureable. So how are we to fit ML models if we have no target? In short, through iteration. Let's see how this can be done.\newline
 
@@ -101,7 +101,7 @@ $$\partial_{\phi_{js_ji}}\ln{\mathcal{L}}
 =
 \frac{1}{P_i'(v_{js_j} | \eta_{js_j})}\frac{\sum_p e^{\phi_{jpi}}-e^{\phi_{js_ji}}}{\left( \sum_p e^{\phi_{jpi}} \right)^2} e^{\phi_{js_ji}}
 =
-1-P_i'(v_{js_j} | \eta_{js_j})$$ 
+1-P_i'(v_{js_j} | \eta_{js_j}) $$ 
 
 $$\partial_{\phi_{j\not{s_j}i}}\ln{\mathcal{L}}
 =
@@ -111,7 +111,7 @@ $$\partial_{\phi_{j\not{s_j}i}}\ln{\mathcal{L}}
 
 Next for point of illustration let's suppose that there are a set of $\psi_{jki}$ which we'll designate as $Z$ which share the same features $\eta$, i.e. our model has to give a single $\phi_{jki}$ for all such options. Our derivative then for that collection $Z$ is given by:
 
-$$\partial_Z \ln{\mathcal{L}}=\sum_{\phi_{js_ji} \in Z}\left( 1-P_i'(v_{js_j} | \eta_{js_j}) \right)-\sum_{\phi_{j\not{s_j}i}\in Z}P_i'(v_{j\not{s_j}} | \eta_{j\not{s_j}})$$
+$$\partial_Z \ln{\mathcal{L}}=\sum_{\phi_{js_ji} \in Z}\left(1-P_i'(v_{js_j} | \eta_{js_j}) \right)-\sum_{\phi_{j\not{s_j}i}\in Z}P_i'(v_{j\not{s_j}} | \eta_{j\not{s_j}})$$
 
 Given classic optimization tactics we know that our function will be maximized when these sums are $0$ (and technically we'd also want to know that the second derivative was negative but we'll assume that's the case given how our iterations will work). \newline
 
@@ -155,6 +155,28 @@ $$\partial_{\phi_{j\not{s_j}i}}\ln{\mathcal{L}}=-P_i'(v_{j\not{s_j}} | \eta_{j\n
 \end{enumerate}
 
 \end{procedure}
+
+There is however an issue with this approach. Recall that our gradient is:
+
+$$\partial_Z \ln{\mathcal{L}}=\sum_{\phi_{js_ji} \in Z}\left(1-P_i'(v_{js_j} | \eta_{js_j}) \right)-\sum_{\phi_{j\not{s_j}i}\in Z}P_i'(v_{j\not{s_j}} | \eta_{j\not{s_j}})$$
+
+Let's however look at the second derivative of $\ln{\mathcal{L}}$:
+
+$$\partial_{\phi_{jk}} P_i'(v_{jk} | \eta_{jk})=\partial_{\phi_{jk}} \frac{e^{\phi_{jk}}}{\sum_p e^{\phi_{jp}}}=(1-P_i'(v_{jk} | \eta_{jk}))P_i'(v_{jk} | \eta_{jk})$$
+
+
+$$\partial^2_Z \ln{\mathcal{L}}=-\sum_{\phi_{js_ji} \in Z}\left(1-P_i'(v_{js_j} | \eta_{js_j}) \right)P_i'(v_{js_j} | \eta_{js_j})-\sum_{\phi_{j\not{s_j}i}\in Z}\left(1-P_i'(v_{j\not{s_j}} | \eta_{j\not{s_j}}) \right)P_i'(v_{j\not{s_j}} | \eta_{j\not{s_j}})$$
+
+What's important to note is that this function will be near 0 at $P\approx 1$ or $P\approx 0$ and will have its largest magnitude near $P \approx 0.5$. Why is this an issue? Well we know that as we get close to our maximum value for $\ln{\mathcal{L}}$ that our steps towards that maximum will get smaller and smaller. This is just because our steps are based on a derivative and we are seeking where the derivative is zero. Put another way getting to our max gets harder the closer we get to that maximum. 
+
+Now normally one deals with this by using the second derivative (the curvature) as a kind of correction. As you get closer to your maximum, you can use your curvature to guide how quickly you can move. If the curvature is very small in magnitude you can move more quickly because the odds of you overshooting your maximum are smaller. If your curvature is very large you'll slow things down because you know only small steps are required to make big changes to the derivative (the thing we are ultimately trying to set to a specific value here). I.e. you can modulate your step size by the inverse of the curvature. 
+
+However, in our case we don't actually know what the curvature is because we don't know what $Z$ is! Therefore we have to plan for the most volatile case - the case where $P\approx 0.5$. And that means that for any of our $Z$'s where $P$ is approaching 1 or 0 we'll be moving at a snail's pace (convergence will take forever). 
+
+Now in case you're wondering whether we could solve the $P\approx 0.5$ case first and then move onto the others remember that anytime we change any of the $\phi$ all the other probabilities change. So we have to solve this problem all at once. Because of that and because we cannot depend on knowing the $Z$ (different $Z$ can give the same value $\phi$) we're stuffed with having to take extraordinarily long convergence times. And this more or less means we've got no shot of using this in practice. \newline
+
+Log odds modeling doesn't work in practice for non-parametric models. 
+
 
 
 \end{document}
