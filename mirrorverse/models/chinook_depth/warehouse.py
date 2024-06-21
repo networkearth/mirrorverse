@@ -126,9 +126,8 @@ def join_in_context_data(input_files, output_file):
         ]
     )
 
-    data['home_region'] = data['home_region'].fillna('UNKNOWN')
+    data["home_region"] = data["home_region"].fillna("UNKNOWN")
     for option in ["SEAK", "UNKNOWN", "WA/OR", "BC"]:
         data[option.lower()] = (data["home_region"] == option).astype(float)
-    data[['home_region', 'seak', 'unknown', 'wa/or', 'bc']]
 
     data.to_csv(output_file, index=False)
