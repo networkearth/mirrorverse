@@ -69,6 +69,47 @@ These models will be known as log odds models as they predict the "log odds for"
 
 \subsection{Fitting an Odds Model}
 
+Our objective in using machine learning (ML) is to reduce the time spent looking for the particular form of $G(\eta_k)$ by instead allowing that form to be fit given the data at hand. Deep Learning (DL) models are especially well suited to this problem as they are both parametric (see Section \ref{convergence issues} for why non-parametric models are not well suited to our problem) and have been shown to be able to represent just about any function given a large enough network \cite{LiquetMokaNazarathy2024DeepLearning}. There is also a robust field around probabilistic deep learning that, as we shall see in a moment, we can take advantage of \cite{durr}.
+\newline
+
+Taking a look at traditional probabilistic classifiers we can see that they have two things in common with our intended log odds modeling. 
+
+First, probabilistic classifiers use the categorical cross entropy cost function to optimize their weights. This cost function happens to be just another name for optimizing for the Log Likelihood of the data \cite{durr}. Therefore probabilistic DL shares the same objective function as we do.
+
+Second, the final layer in a probabilistic DL network is the one that produces a probability for each class. This layer uses the softmax function as it's activation function which if if $a_i=W_i x+b_i$ is given by - $\frac{e^{a_i}}{\sum_k e^{a_k}}$. This means that if we can get our $\psi_k$ to be the $a_i$ that we'll be, in effect, training a log odds model.
+
+We can do this by taking advantage of Keras' Functional API \cite{kerasfunctional} which allows us to split our network into a branches and also share layers between branches. Specifically we can follow the following steps:
+
+\begin{enumerate}
+\item Define a series of layers that represent our underlying log odds model (these layers should end in a layer of output size 1 which will represent our $\psi_k$).
+\item Split our training decisions into $N$ choices.
+\item Create a branch in our overall model for each of these $N$ choices.
+\item Converge the branches at a softmax layer where the weights are the identity matrix $I$ and the biases all 0 (this ensures we directly pass through our $\psi_k$ to the softmax function).
+\item Use categorical cross entropy as our fitness function.
+\end{enumerate}
+
+This architecture is illustrated by Fig. \ref{fig:logarch}.
+
+\begin{figure}[h!] 
+  \includegraphics[width=\linewidth]{logarch.png}
+  \caption{Overall Architecture}
+  \label{fig:logarch}
+\end{figure}
+
+The main advantage of this architecture as opposed to a more classic approach to probabilistic DL is the fact that the weights are shared on each of the branches. This has the effect of drastically reducing the number of parameters in our network meaning that we can use far less data to train this model then we'd need to train a full bore, fully connected, probabilistic model. Each of our columns in Fig. \ref{fig:logarch} is in fact the same model and therefore updates coming from each of the columns goes to all of the columns.
+
+This, then, solves one of our issues - reducing the variance in the model by switching to the log odds approach. But the other issue we're trying to solve is being able to predict on variable numbers of choices per decision. How does that work out here?\newline
+
+Well, in the case of training we know the maximum number of choices in any of our training decisions. Therefore we can set $N$ to this maximum and for decisions where we have fewer than $N$ choices we can simply provide some kind of default "do not choose" feature for the "missing" choices. 
+
+Later during inference on new data we can simply take our shared layers and use them to predict on each of the choices we're presented with. Just another demonstration that while we're using the architecture in Fig. \ref{fig:logarch} in order to \textit{train} the log odds model, the actual log odds model is simply the shared layers in a single column behind the softmax layer. 
+
+
+\newpage
+\section{Appendices}
+
+\subsection{Convergence Issue with Non-Parametric Log Odds Models} \label{convergence issues}
+
 All standard Machine Learning (ML) pipelines assume that you have at least two things - targets and features. In our case we certainly have the latter but our target $\psi_k$ is both unknown to us and also unmeasureable. So how are we to fit ML models if we have no target? In short, through iteration. Let's see how this can be done.\newline
 
 First some notation to help us. Our data is composed of a series of decisions $D_j=\lbrace v_{jk} \rbrace$ where $j$ indicates each of the specific decisions and $k$ the options within each decision. For each iteration we will build a model $\hat{G_i}(\eta_{jk})$ using the pairs $\psi_{jk(i-1)},\eta_{jk}$. We will designate the outcome of that model $\phi_{jki}$:
@@ -177,6 +218,13 @@ Now in case you're wondering whether we could solve the $P\approx 0.5$ case firs
 
 Log odds modeling doesn't work in practice for non-parametric models. 
 
+
+\newpage
+
+\section{Bibliography}
+
+\bibliographystyle{apalike}
+\bibliography{reference}
 
 
 \end{document}
