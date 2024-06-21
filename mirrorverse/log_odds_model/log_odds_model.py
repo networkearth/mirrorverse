@@ -52,15 +52,19 @@ def get_proposed_log_odds(dataframe, learning_rate):
     """
 
     # calculate the partial derivative of the probability with respect to the utility
-    dataframe["partial"] = (
-        1
-        / dataframe["sum_odds"]
-        * (
-            dataframe["_selected"]
-            * ((1 - dataframe["probability"]) / dataframe["probability"])
-            - (1 - dataframe["_selected"])
-        )
-        * dataframe["odds"]
+    # dataframe["partial"] = (
+    #    1
+    #    / dataframe["sum_odds"]
+    #    * (
+    #        dataframe["_selected"]
+    #        * ((1 - dataframe["probability"]) / dataframe["probability"])
+    #        - (1 - dataframe["_selected"])
+    #    )
+    #    * dataframe["odds"]
+    # )
+
+    dataframe["partial"] = dataframe["_selected"] * (1 - dataframe["probability"]) - (
+        (1 - dataframe["_selected"]) * dataframe["probability"]
     )
 
     dataframe["step"] = dataframe["partial"] * learning_rate

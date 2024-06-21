@@ -56,13 +56,40 @@ def add_time_features(input_file, output_file):
 
     data.loc[data["sunrise"] > data["sunset"], "daytime"] = (
         data["hour"] < data["sunset"]
-    ) | (data["hour"] > data["sunrise"])
+    ) | (data["hour"] >= data["sunrise"])
     data.loc[data["sunrise"] < data["sunset"], "daytime"] = (
-        data["hour"] > data["sunrise"]
+        data["hour"] >= data["sunrise"]
     ) & (data["hour"] < data["sunset"])
 
     data["month"] = data["datetime"].dt.month
-    data["interval"] = 24 - data["sunrise"] + data["sunset"]
     data["daytime"] = data["daytime"].astype(float)
+
+    data["hours_to_transition"] = (
+        (
+            (data["hour"] > data["sunrise"]) * (24 - data["hour"] + data["sunrise"])
+            + (data["hour"] <= data["sunrise"]) * (data["sunrise"] - data["hour"])
+        )
+        * (1 - data["daytime"])
+    ).astype(float) + (
+        (
+            (data["hour"] > data["sunset"]) * (24 - data["hour"] + data["sunset"])
+            + (data["hour"] <= data["sunset"]) * (data["sunset"] - data["hour"])
+        )
+        * (data["daytime"])
+    ).astype(
+        float
+    )
+
+    data["interval"] = (1 - data["daytime"]) * (
+        (data["sunrise"] >= data["sunset"]) * (data["sunrise"] - data["sunset"])
+        + (data["sunrise"] < data["sunset"]) * (24 - data["sunset"] + data["sunrise"])
+    ) + (data["daytime"]) * (
+        (data["sunset"] >= data["sunrise"]) * (data["sunset"] - data["sunrise"])
+        + (data["sunset"] < data["sunrise"]) * (24 - data["sunrise"] + data["sunset"])
+    )
+
+    data["period_progress"] = (
+        1 - data["hours_to_transition"] / data["interval"]
+    ).astype(float)
 
     data.to_csv(output_file, index=False)
