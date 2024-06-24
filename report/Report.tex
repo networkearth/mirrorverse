@@ -105,6 +105,67 @@ Well, in the case of training we know the maximum number of choices in any of ou
 Later during inference on new data we can simply take our shared layers and use them to predict on each of the choices we're presented with. Just another demonstration that while we're using the architecture in Fig. \ref{fig:logarch} in order to \textit{train} the log odds model, the actual log odds model is simply the shared layers in a single column behind the softmax layer. 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+\section{Simulation}
+
+\subsection{Dealing with Scale}
+
+\subsubsection{Dealing with Many-World}
+
+We're dealing with states in, states out, with associated relative abundances. Therefore a group by at the end keeps the many world constrained instead of having some $D^n$ problem.
+
+\subsubsection{Parallelism}
+
+Because each state determines it's own outcomes we can parallelize things dramatically. As the number of states we're working with gets bigger (as we add more detail to the sim) this will become more and more important. Furthermore it means we can deal with our simulation as a single step that gets repeated on itself. We'll use pyspark to make sure that when the parallelization is needed it is close at hand.
+
+\subsubsection{Exploring Data}
+There's a ridiculous amount of data that comes out of this and only with a DB can we have any hope of exploring it. The data can be stored away, what we want can be queried, and then that can be uploaded into standard tools for viewing. This keeps the memory requirements of the exploration application to a minimum while still having all the data at one's fingertips. 
+
+\subsubsection{Process to Make this Work}
+
+\begin{enumerate}
+\item Determine what will key your state
+\item Build feature functions
+\item Build a decision exploder
+\item Softmax
+\item Uploader (so we can get matrixed information)
+\item Aggregator (common across all sims although sometimes skippable)
+\end{enumerate}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \newpage
 \section{Appendices}
 
