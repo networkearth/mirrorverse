@@ -66,7 +66,7 @@ However if you are interested in the rationales behind these objectives or divin
 
 \section{Objectives}
 
-The ultimate objective of this research is to provide a new pathway by which collections of high resolution spatio-temporal movement data that are representative of a species can be used to make a direct impact on fisheries management. It is hoped that this will provide an incentive for creating/enlarging such datasets. 
+The ultimate goal of this research is to provide a new pathway by which collections of high resolution spatio-temporal movement data that are representative of a species can be used to make a direct impact on fisheries management. It is hoped that this will provide an incentive for creating/enlarging such datasets. 
 
 \begin{objective}
 To provide tooling that allows for using machine learning methods to fit models of the form
@@ -173,24 +173,37 @@ The outcome will be a package in Python for building, diagnosing, and running od
 
 Chapter 2 will be concerned with taking these models for Chinook in the Gulf of Alaska and building a spatio-temporal movement simulation that can be used to investigate a series of management questions. It is worth noting that we will use the simulation to ask questions that may come up in general management settings even if they may not be directly applicable to the issues currently faced by Chinook management in the GOA. This is just to demonstrate general applicability. \newline
 
-The overview of the components of this simulation are outlined in Fig. \ref{fig:simulation}. Boxes with rounded edges would be inputs specified by the user. The hexagons are functions provided by the simulation and the trapezoids are data generated during the main loop. 
+The overview of the components of this simulation are outlined in Fig. \ref{fig:simulation}. 
 
 \begin{figure}[h!] 
   \includegraphics[width=\linewidth]{simulation.png}
   \caption{Simulation Outline}
+  \medskip
+	\small
+	Boxes with rounded edges would be inputs specified by the user. The hexagons are functions 		provided by the simulation and the trapezoids are data generated during the main loop. 
   \label{fig:simulation}
 \end{figure}
 
 
-With this simulation we will attempt to demonstrate the following:
+Some specific use cases we want to demonstrate with this simulation are:
 
 \begin{enumerate}
-\item \textbf{Connectivity:} by looking at the vector flows of fish throughout the space we will be able to identify which areas are highly connected and which are more or less separated by environment, cohort, or other factors of fish behavior.
-\item \textbf{Vulnerability:} by especially looking at changes in depth occupancy and preference for habitat we will attempt to quantify the degree of vulnerability in different parts of the space. 
-\item \textbf{Cumulative Mortality:} we would like to demonstrate that we can model the effect of fishing the same cohorts through space as opposed to distributing the fishing mortality across more of the stock. 
-\item \textbf{Protected Areas/Times:} we will attempt to demonstrate that we can simulate the effects of MPA or other kinds of closures in space and time. 
-\item \textbf{Cohort Bias:} we will show (models willing) that we can understand and model differences in the above by cohort.
+\item \textbf{Understanding Connectivity:} by looking at the vector flows of fish throughout the space we will be able to identify which areas are highly connected and which are more or less separated by environment, cohort, or other factors of fish behavior.
+\item \textbf{Understanding Vulnerability:} by especially looking at changes in depth occupancy and preference for habitat we will attempt to quantify the degree of vulnerability to different kinds of fishing gear as a function of space and time. 
+\item \textbf{Cumulative Mortality:} by being able to follow cohorts through space and time we should be able to show how different fishing pressure scenarios affect the cumulative fishing mortality.
+\item \textbf{Protected Areas/Times:} Of those fishing pressure scenarios, one of especial interest is modeling Marine Protected Areas (MPAs) or other kinds of closures in space and time.
 \item \textbf{Uncertainty:} we will show that such a simulation can be run at scale, bootstrapping can be applied, and therefore uncertainty in simulation outcomes quantified. 
+\end{enumerate}
+
+To give a specific example of what this might look like in practice, if we were interested in understanding how to protect one specific genetic cohort by creating fishing closures we would:
+
+\begin{enumerate}
+\item Input a distribution of the cohort at some initial time point as relative abundance per spatial grid cell.
+\item Input a time period over which to run the simulation (perhaps the fishing season in the area under study).
+\item Collect and input any environmental data needed for the movement model indexed by space and time.
+\item Then we might run the simulation without any fishing pressure to understand how the cohort naturally distributes itself and generate hypotheses for closures from this.
+\item We could then input fishing pressure (as a mortality function) by space and time for a few different scenarios where some would include our closures.
+\item Run the simulation for each of these scenarios and compare resulting abundance trends. 
 \end{enumerate}
 
 The outcome will be a package in Python for deploying, running, and analyzing diffusion models. 
@@ -247,7 +260,7 @@ The outcome will be a package in Python for deploying, running, and analyzing di
 
 \section{Rationale}
 
-\subsection{Objective 1}
+\subsection{Objective 1} \label{objective1}
 
 \subsubsection{Value of Machine Learning in Model Building}
 
@@ -284,11 +297,14 @@ Therefore finding the "true" $F$ can be summarized with two steps:
 \item Find the $\hat{F}$ that maximizes the likelihood of that data.
 \end{enumerate}
 
-All of this, however, has been conditional on the form of $\theta$ having been chosen. Obviously, the information we choose to collect and build our model with has an impact on how good the model is from a purely predictive perspective. So how can we compare the predictive power of different $\theta$? Well as we find $\theta$ that are more predictive the corresponding $F$'s will have greater and greater likelihoods $\mathcal{L}$, given the data. But this presents us with a chicken and the egg style problem - to know the value of $\theta$ we must know $F$, but to know $F$ we must have fit $\hat{F}$ which requires a reasonable amount of data to have been collected. I.e. we cannot know in advance if the data we are collecting is going to be useful or not. Instead anyone doing modeling finds themselves in the cycle illustrated by Fig. \ref{fig:model_cycle}.
+All of this, however, has been conditional on the form of $\theta$ having been chosen. Obviously, the information we choose to collect and build our model with has an impact on how good the model is from a purely predictive perspective. So how can we compare the predictive power of different $\theta$? Well as we find $\theta$ that are more predictive the corresponding $F$s will have greater and greater likelihoods $\mathcal{L}$, given the data. But this presents us with a chicken and the egg style problem - to know the value of $\theta$ we must know $F$, but to know $F$ we must have fit $\hat{F}$ which requires a reasonable amount of data to have been collected. I.e., we cannot know in advance if the data we are collecting is going to be useful or not. Instead anyone doing modeling finds themselves in the cycle (Fig. \ref{fig:model_cycle}).
 
 \begin{figure}[h!] 
   \includegraphics[width=\linewidth]{model_cycle.png}
   \caption{Modeling Cycle}
+  \medskip
+	\small
+	The four major steps in building good models. Note that while one must always start at (1) this process is indeed a cycle.
   \label{fig:model_cycle}
 \end{figure}
 
@@ -304,10 +320,10 @@ Probabilistic machine classification \cite{durr} of the kind we were pointing to
 
 The first comes from the fact that such models predict on the same set of outcomes each time, regardless of $\theta$. For example, if we were trying to predict which drink a person will buy at their local cafe we would not only have to include everything currently on the menu but also everything that could be on the menu across all time points we are interested in predicting. If suddenly a new menu item appears that we have not trained on, our probabilistic classifier will be at a loss. 
 
-The second issue comes from the "curse of dimensionality". Basically this is an issue where as the dimensionality of $\theta$ increases, the amount of data required to find real relationships in that data increases exponentially. This is a particular problem for behavioral modeling because we in all likelihood need to include data on each of the possible decisions before us. So if I can choose between 5 different drinks I need to provide features on each of those five drinks. This leads to very high dimensional spaces very quickly. \newline
+The second issue comes from the "curse of dimensionality." Basically this is an issue where as the dimensionality of $\theta$ increases, the amount of data required to find real relationships in that data increases exponentially. This is a particular problem for behavioral modeling because we in all likelihood need to include data on each of the possible decisions before us. So if I can choose between five different drinks I need to provide features on each of those five drinks. This leads to very high dimensional spaces very quickly. \newline
 
 
-We can get around both of these problems by introducing what we will term an "odds model". Specifically if we imagine $\theta$ now as a variable length vector composed of vectors $\eta_k$ for each of our possible outcomes $v_k$ then the odds model is given by the function:
+We can get around both of these problems by introducing what we will term an "odds model." Specifically if we imagine $\theta$ now as a variable length vector composed of vectors $\eta_k$ for each of our possible outcomes $v_k$ then the odds model is given by the function:
 
 $$\psi_k=G(\eta_k)$$
 
@@ -354,7 +370,7 @@ $$P'(v_i|\eta_i) = \frac{\psi_i}{\sum_k \psi_k}$$\newline
 
 \subsection{Objective 2}
 
-From studies that started with Beverton and Holt's work on recruitment in fisheries, we know, with a reasonable degree of certainty, that as a general rule fish stocks operate according to a pattern as illustrated in Fig. \ref{fig:recruitment} \cite{waltersmartell}.
+From studies that started with Beverton and Holt's work on recruitment in fisheries, we know, with a reasonable degree of certainty, that as a general rule fish stocks operate according to an asymptotic relationship between spawning biomass and recruits \cite{waltersmartell} (Fig. \ref{fig:recruitment}). What we see is a clear pattern in recruitment verses spawners for low spawners and then eventually we reach a point where this curve asymptotes and large changes to the number of spawners creates little to no change (especially when considering the actual variability in this data) in the number of recruits. Obviously, given the real variability in nature, this pattern looks more like a scatter shot of points but plenty of studies over several species have shown this overall pattern in the mean borne out \cite{waltersmartell}. \newline
 
 \begin{figure}[h!] 
   \includegraphics[width=\linewidth]{recruitment.png}
@@ -362,21 +378,19 @@ From studies that started with Beverton and Holt's work on recruitment in fisher
   \label{fig:recruitment}
 \end{figure}
 
-What we see is a clear pattern in recruitment verses spawners for low spawners and then eventually we reach a point where this curve asymptotes and large changes to the number of spawners creates little to no change (especially when considering the actual variability in this data) in the number of recruits. Obviously, given the real variability in nature, this pattern looks more like a scatter shot of points but plenty of studies over several species have shown this overall pattern in the mean borne out \cite{waltersmartell}. \newline
+
 
 The implication for fisheries management is pretty clear - sustainable fishing is in large part driven by just maintaining the spawning stock biomass (SSB) above that knee in the curve \cite{waltersmartell} \cite{king}. Indeed this is well noted as the basis of why fisheries \textit{can} exist in the first place. If taking spawners always led to decreases in recruits, we'd quickly fish a stock out of existence. It is only through the compensation we get on the asymptote that sustainable fisheries are possible. \newline
 
 However, two very simple observations of fish biology will show how actually managing SSB can be made difficult.
 
-The first, and simplest, is age structure. Obviously we're talking here about maintaining a specific level of spawning stock biomass. But today's juveniles are tomorrow's SSB and as fish grow they typically become more fecund. This means that in order to maintain our SSB over time we have to be careful about how we target each age group. This gets even more complicated for fish like Pacific salmon or many species of groupers where life history is intimately entwined with spawning. The salmon obviously only breed once \cite{NOAA24} and some species of groupers are protogynous hermaphrodites \cite{RedGrouper} meaning that if you target a specific age group you are effectively targeting a specific sex. Clearly understanding and managing our age class selectivity matters when it comes to maintaining a healthy SSB for years to come. \newline
+The first, and simplest, is age structure. Obviously we're talking here about maintaining a specific level of spawning stock biomass. But today's juveniles are tomorrow's SSB and as fish grow they typically become more fecund. This means that in order to maintain our SSB over time we have to be careful about how we target each age group. This gets even more complicated for fish like Pacific salmon (\textit{Oncorhynchus}) or many species of groupers (\textit{Epinephelinae}) where life history is intimately entwined with spawning. The salmon obviously only breed once \cite{NOAA24} and some species of groupers are protogynous hermaphrodites \cite{RedGrouper} meaning that if you target a specific age group you are effectively targeting a specific sex. Clearly understanding and managing our age class selectivity matters when it comes to maintaining a healthy SSB for years to come. \newline
 
-The other observation is that many species of fish actually form multiple sub stocks within what we may consider a single fishery (or sometimes many fisheries distributed across different countries) \cite{lorenzen2010} \cite{salmonplan} \cite{prince2010}. Pacific salmon are once again a good example in that they home to specific streams and only breed with other salmon in those streams and many other species of fish form fish spawning aggregations as well \cite{erisman2017}. Research also indicates that even fish like Atlantic herring likely form distinct genetic groups due to differences in homing during breeding and school behavior \cite{armstrong2001}. 
+The other observation is that many species of fishes actually form multiple sub stocks within what we may consider a single fishery (or sometimes many fisheries distributed across different countries) \cite{lorenzen2010} \cite{salmonplan} \cite{prince2010}. Pacific salmon are once again a good example in that they home to specific streams and only breed with other salmon in those streams and many other species of fish form fish spawning aggregations as well \cite{erisman2017}. Research also indicates that even fish like Atlantic herring likely form distinct genetic groups due to differences in homing during breeding and school behavior \cite{armstrong2001}. 
 
-What does this mean? It means that if we trust our Beverton-Holt style model, instead of having a single SSB to manage we really have several SSB's - one for each sub stock. Obviously, if we set one global piece of management like an Allowable Biological Catch (ABC) that makes sense for a single SSB but then have biased fishing mortality where one sub stock is getting fished out far more than the others we may drop below the SSB for that one stock without actually exceeding our expected ABC for the whole fishery. And this can certainly happen as different sub stocks will often exhibit quite different spatial behaviors in movement \cite{tucker2019} \cite{punt2019} \cite{cadrin2020}. \newline
+What does this mean? It means that if we trust our Beverton-Holt style model, instead of having a single SSB to manage we really have several SSBs - one for each sub stock. Obviously, if we set one global piece of management like an Allowable Biological Catch (ABC) that makes sense for a single SSB but then have biased fishing mortality where one sub stock is getting fished out far more than the others we may drop below the SSB for that one stock without actually exceeding our expected ABC for the whole fishery. And this can certainly happen as different sub stocks will often exhibit quite different spatial behaviors in movement \cite{tucker2019} \cite{punt2019} \cite{cadrin2020}. \newline
 
-All of this to say that understanding heterogeneity in vulnerability by things like age class and sub stock is of the utmost importance for managing a fishery and truly ensuring an appropriate amount of SSB remains year over year. 
-
-It is also worth noting that this knowledge around changes in selectivity in space and time is not only useful for considerations around SSB but also for other management issues such as bycatch avoidance and growth overfishing. 
+All of this to say that understanding heterogeneity in vulnerability by things like age class and sub stock is of the utmost importance for managing a fishery and truly ensuring an appropriate amount of SSB remains year over year. It is also worth noting that this knowledge around changes in selectivity in space and time is not only useful for considerations around SSB but also for other management issues such as bycatch avoidance and growth overfishing. 
 
 What kind of tooling do we need in order to address these issues and test out ideas for "selectivity aware" fisheries management? Clearly we need some kind of reliable simulation. \newline
 
@@ -396,7 +410,7 @@ Pop-up Satellite Archival Tags (PSATs) are a great way of collecting behavior da
 \begin{enumerate}
 \item \textbf{Archival:} Transmitting data is only possible if animals come to the surface. Therefore these tags archive collected data for later transmission. 
 \item \textbf{Pop Up:} These tags are programmed to release from a fish at a specific time or under specific conditions to facilitate retrieval. 
-\item \textbf{Satellite:} On pop-up the tags then broadcast data (usually summarized) to Argos satellites which is then relayed to a database for retrieval. Such tags usually also broadcast some positioning information which allows for direct retrieval and access to the full archived dataset.
+\item \textbf{Satellite:} On pop-up the tags then broadcast data (usually summarized) to Argos satellites which is then relayed to a database for retrieval. Such tags usually also broadcast some information that can be used to deduce position as well which allows for direct retrieval and access to the full archived dataset.
 \end{enumerate}
 
 The normal lifecycle then is to catch an animal, attach the tag, allow the animal to go about its life all while collecting data, have the tag pop-up, transfer data to satellite or retrieve the tag, and then clean and analyze the data. \newline
@@ -418,7 +432,7 @@ Clearly then this kind of data suites our modeling and simulation purposes well 
 
 \subsection{Chinook in the GOA}
 
-At this point in time the main interest here is that Chinook present an interesting model species for testing out the efficacy of these models and simulations. Chinook are highly motile and undergo clear migration behaviors \cite{tucker2019} \cite{langan2024}. Therefore they should provide a good challenge to attempts at behavioral modeling and simulation. It is the author's hope that patterns useful to Chinook management issues may arise from this research but it is not a necessity as the intention here is to develop tools that justify additional data collection for species where spatial management is of interest. 
+At this point in time the main interest here is that Chinook present an interesting model species for testing out the efficacy of these models and simulations. Chinook are highly motile and undergo clear migration behaviors \cite{tucker2019} \cite{langan2024}. Therefore they should provide a good challenge to attempts at behavioral modeling and simulation. It is the author's hope that patterns useful to Chinook management issues may arise from this research but it is not a necessity as the intention here is to develop tools that justify additional data collection for species for which spatial management is of interest. 
 
 
 
@@ -466,11 +480,25 @@ At this point in time the main interest here is that Chinook present an interest
 
 \section{Related Context}
 
+\subsection{Summary}
+
+The sum outcome of the work proposed is the creation of a simulation that can be used to explore, propose, and (in simulation) test management options. The advantages of having such a simulation are many (as is described in the following situations) and therefore it comes as no surprise that the notion of using a simulation to drive understanding of management options is in no way novel. Indeed as is demonstrated in the following sections many different kinds of simulation (or analogs) already exist. Assessment paradigms are a form of simulation, movement models based on more traditional tagging methods can be used in simulation, and individual based models of several sorts have lent themselves to simulations used to assess changes to environment or management as well. Therefore the question is - what advantages come from the proposed direction? 
+
+\begin{enumerate}
+\item \textbf{Isolating the Study of Movement.} In machine learning there is a well known phenomenon where features that are even mildly correlated with one another can compensate for one another in model fitting. A simple example would be something like height representing the "feature impact" of sex in a model of human health. Therefore it is always dubious to treat the relationship between a feature and a target as an actual indication of the true relationship. Within the spatial assessment paradigms in use today many different parameters of life history are fit together - movement, spatial heterogeneity in recruitment or mortality, fishing pressure, and so on. Because these are all fit as one model it is possible if not likely that features are "compensating" for one another and obscuring the actual relationships between the underlying processes and the outcomes. The simulation proposed herein fits movement on its own which should lead to a greater confidence in its representation of actual fish movement patterns. It also makes the debugging and improvement of those models much more clear and straightforward. 
+\item \textbf{Generalized Strategy.} Individual based models (IBMs) also solve the problem mentioned above as they directly model movement as well. However IBMs are notoriously specific to the problem at hand. Furthermore most IBMs represent a specific hypothesis of behavior that has been coded up and as was mentioned in Section \ref{objective1} building models this way takes an enormous amount of time. The strategy proposed herein provides a generalized tool set for going from data, to a model, and then from there to a spatial simulation. And this means that researchers can contribute to building up a common tool set instead of having to start from ground zero each round.
+\item \textbf{Repeated Usefulness.} There are obviously more straightforward ways to answer specific spatial questions than by using the framework proposed here. For example if trying to understand the value of a Marine Protected Area (MPA) one could simply study general abundances changes over the course of a year or apply more traditional tagging methodologies. The purpose of this framework would be to provide a centralized datastore, model, and simulation that could be used across many different problems.
+\item \textbf{Interpretation and Communication.} Current standard spatial assessments depend on a movement matrix $X$ that defines how cohorts move between grids in the assessment at each time point. Such a matrix is ultimately an abstract mathematical concept that while useful in assessment makes the communication and interpretation of the underlying movement model difficult. Questions such as - what is driving the movement pattern seen - require actual parametrization of that movement matrix $X$. The strategy we are proposing provides this and therefore makes communication and feedback from stakeholders of the fishery far easier. Given engagement is such an important part of management this is paramount.  
+\end{enumerate}
+
+Obviously these each of these individual pros are not unique to the strategy proposed herein. IBMs, spatial assessment models, and more ad-hoc approaches all share some number of these advantages. However the strategy proposed herein presents an opportunity to gain all of these advantages at once which should make it a useful additional to the tools fisheries science already possesses. 
+\newpage
+
 
 
 \subsection{Spatial Management}
 
-Fisheries management is as diverse a subject as the species and cultures to which it is applied \cite{waltersmartell} \cite{king}. It simultaneously has to deal with creatures from Bluefin Tuna who make large oceanic migrations around the globe to various clams whose entire life cycles can be summarized within a few square meters \cite{prince2010}. There are species that school and species that consume those schools. Some live entirely at sea, some in inland rivers and lakes, and some, like Salmon and eels spend time in both. There are species whose lives last the span of a year to others that can live longer than any us human beings. 
+Fisheries management is as diverse a subject as the species and cultures to which it is applied \cite{waltersmartell} \cite{king}. It simultaneously has to deal with creatures from Bluefin Tuna (\textit{Thunnus thynnus}) who make large oceanic migrations around the globe to various clams whose entire life cycles can be summarized within a few square meters \cite{prince2010}. There are species that school and species that consume those schools. Some live entirely at sea, some in inland rivers and lakes, and some, like salmon and eels spend time in both. There are species whose lives last the span of a year to others that can live longer than any us human beings. 
 
 And to capture this vast array of diversity are similarly diverse strategies and gears. From hooks to gillnets, from small boats to at sea factories, from recreational fishers to roving commercial bands, and everything in between the variety in strategies that exist to catch fish are numerous \cite{waltersmartell} \cite{king}. 
 
@@ -514,7 +542,7 @@ While we've already noted that the creative solutions in fisheries management ar
 \item \textbf{Marine Protected Areas (MPAs)} - MPAs are usually permanent closures intended to reduce the fishing pressure in specific areas in the hope that those areas can become "sources" of larvae and stock to help build up the surrounding areas or to help scientists understand the "unfished" condition. Sometimes these areas are total no-go zones for all fishing activity, sometimes specific "low pressure" activities are allowed. In general it is clear that the efficacy of MPAs is largely dependent on the spatio-temporal behavior and spatio-temporal aspects of the species' life cycle as well as the same aspects of behavior and lifestyle of the species' predators and prey. Species that move about dramatically may not be helped by MPAs and species that are "too" sessile may not actually do much to contribute to stocks outside of the MPA itself. Therefore it is clear that a good understanding of movement is extremely important when both thinking about the overall efficacy of an MPA and also where to place them. 
 \item \textbf{Territorial Use Rights for Fisheries (TURFs)} - TURFs delineate a fishery into spatial regions and then give exclusive access rights to specific communities of fishers to each of the defined regions. The intention with exclusivity is to align the incentives of the fishers with that of sustainability and is a way to address "tragedy of the commons" style issues that arise with completely open access. However, as with MPAs, it is clear that understanding the spatio-temporal behavior of the species in question is of the utmost importance here because for species that exhibit considerable movement, small regions would mean that while spatial rights exist those rights don't really have anything to do with the underlying fish. 
 \item \textbf{Temporary Closures} - These kinds of closures are designed to deal with specific issues directly related to the target species (or related bycatch's) ecology. For example seasonal closures in specific areas might exist to protect spawning aggregations or other kinds of aggregations that create a particularly dangerous kind of vulnerability. Or these closures might protect against vulnerability by another species to fishing activities such as preventing hits on whales or bycatch of an endangered species. Here again, clear spatio-temporal understanding is necessary for defining and determining the efficacy of these kinds of measures. 
-\item \textbf{Real Time Management} - This is a particularly interesting kind of management as instead of trying to predict where closures are needed, in this strategy metrics from the fishers themselves help dictate where closures are needed temporarily. For example if bycatch avoidance is the goal then catch logs (that are usually reported with some frequency in these cases) are used to determine areas where bycatch abundance has spiked and then the fishery can call for a temporary closure last days to months in order to avoid that aggregation. In general this strategy is comprised of measuring some overall catch statistic and then responding to that statistic in real time as needs be. Here models of the kind we're proposing are arguably less relevant as prediction is not \textit{required} for this kind of strategy to work. However they could certainly help in both defining the extent of the closures in both space and time and potentially helping fishers avoid such closures in the first place by helping drive understanding of where things like high bycatch may occur. 
+\item \textbf{Real Time Management} - This is a particularly interesting kind of management as instead of trying to predict where closures are needed, in this strategy metrics from the fishers themselves help dictate where closures are needed temporarily. For example if bycatch avoidance is the goal then catch logs (that are usually reported with some frequency in these cases) are used to determine areas where bycatch abundance has spiked and then the fishery can call for a temporary closure lasting days to months in order to avoid that aggregation. In general this strategy is comprised of measuring some overall catch statistic and then responding to that statistic in real time as needs be. Here models of the kind we're proposing are arguably less relevant as prediction is not \textit{required} for this kind of strategy to work. However they could certainly help in both defining the extent of the closures in both space and time and potentially helping fishers avoid such closures in the first place by helping drive understanding of where things like high bycatch may occur. 
 \end{enumerate}
 
 Unsurprisingly then, for any kind of spatial management tool in use today, spatio-temporal understanding of the stock is key to both definition and efficacy \cite{selig2016} \cite{little2014}. Therefore it seems likely that bringing high resolution spatio-temporal data to the bear on the issue can only help make such techniques more nuanced, precise, and thereby effective. 
@@ -567,9 +595,9 @@ There are of course issues that arise in terms of how to weight one data type ag
 
 With the recency of their development and overall complexity it has been noted that diagnosing goodness of fit and relevance of spatial assessments is an art that is still in development (although several papers exist that give guidance on best practices in choosing and using spatial assessment paradigms \cite{goethel2023} \cite{punt2019}). 
 
-Every assessment paradigm is of course a simplification of reality but what's important to know is whether those simplifications are obscuring important structure of the stock and sub-stocks. I.e. are the simplifications introducing bias or errors that would lead to contradictory results from sound management based on the advice of the assessment \cite{cadrin2020}? 
+Every assessment paradigm is of course a simplification of reality but what's important to know is whether those simplifications are obscuring important structure of the stock and sub-stocks, i.e., are the simplifications introducing bias or errors that would lead to contradictory results from sound management based on the advice of the assessment \cite{cadrin2020}? 
 
-Given that ultimately we do \textit{not} know the underlying structure (models such as these are built specifically to elucidate such meaningful structure) we find ourselves with a "Catch-22". We need spatial components to understand spatial structure, but need to know the spatial structure in order to understand what simplifications are allowable. Note that it is not enough to simply design the most complicated spatial model possible given the data will likely not exist to fit that model with any degree of confidence. 
+Given that ultimately we do \textit{not} know the underlying structure (models such as these are built specifically to elucidate such meaningful structure) we find ourselves with a "Catch-22." We need spatial components to understand spatial structure, but need to know the spatial structure in order to understand what simplifications are allowable. Note that it is not enough to simply design the most complicated spatial model possible given the data will likely not exist to fit that model with any degree of confidence. 
 
 The way out of this hole, as many authors have noted, is to use simulations \cite{cadrin2020} \cite{goethel2023}. Specifically one can use simulations to do hypothesis testing of the form - if my stock had spatial structure of the form X would my specific assessment capture that at all or would it introduce biases and/or errors as a result? This is a very powerful technique that has been responsible for illustrating just how important spatial assessments are to management in the first place.\newline
 
@@ -634,14 +662,14 @@ IBM's can also capture much finer detail about \textit{why} specific movements o
 
 Finally it has been noted that one can derive Eulerian models from Lagrangian ones making the latter perhaps more general \cite{phillipsa2018}. \newline
 
-\subsubsection{Struggles in Building IBM's}
+\subsubsection{Struggles in Building IBMs}
 
 There are a series of key issues \cite{grimm} that have arisen in building IBM's of which we will note a few that relate to our proposal:
 
 \begin{enumerate}
-\item \textbf{High Precision as a Requirement} - IBM's typically predict what an animal \textit{will} do as opposed to the likelihoods of what it \textit{could} do. This creates the requirement for capturing \textit{all} the meaningful drivers of variability in the behavior of the animal. To see why this is consider the example of a creature that can either choose to stay put or move to another location. If the more likely of the two actions is to stay put a deterministic model \textit{must} predict that the animal will \textit{always} stay put. But this is obviously non-sensical. However because the model is deterministic in nature the modeler cannot depend on stochasticity to save the day - instead they must find whatever is driving the difference between staying put and moving on. And this can cascade into greater and greater requirements for modeling the "internal state" of an animal. 
-\item \textbf{Obscurity} - given the inherent complexity of IBM's that arises from the point above it gets increasingly difficult to make IBM's clear to new users or potential developers. There can often be many dozens of different parameters, functions, and "internal states" to keep track of without even considering all of the external modeling that has to go in place to provide for all of this. And this makes for not just complicated descriptions but equally if not more complicated code.
-\item \textbf{Hand Made} - almost all IBM's have been hand-coded in the sense that every functional relationship is specifically crafted and outlined by the modeler. This is obviously a very laborious process but it also means that no two IBM's are the same and that lack of generalization or abstraction makes exchanging lessons learned near difficult to impossible. 
+\item \textbf{High Precision as a Requirement} - IBMs typically predict what an animal \textit{will} do as opposed to the likelihoods of what it \textit{could} do. This creates the requirement for capturing \textit{all} the meaningful drivers of variability in the behavior of the animal. To see why this is consider the example of a creature that can either choose to stay put or move to another location. If the more likely of the two actions is to stay put a deterministic model \textit{must} predict that the animal will \textit{always} stay put. But this is obviously non-sensical. However because the model is deterministic in nature the modeler cannot depend on stochasticity to save the day - instead they must find whatever is driving the difference between staying put and moving on. And this can cascade into greater and greater requirements for modeling the "internal state" of an animal. 
+\item \textbf{Obscurity} - given the inherent complexity of IBMs that arises from the point above it gets increasingly difficult to make IBMs clear to new users or potential developers. There can often be many dozens of different parameters, functions, and "internal states" to keep track of without even considering all of the external modeling that has to go in place to provide for all of this. And this makes for not just complicated descriptions but equally if not more complicated code.
+\item \textbf{Hand Made} - almost all IBMs have been hand-coded in the sense that every functional relationship is specifically crafted and outlined by the modeler. This is obviously a very laborious process but it also means that no two IBMs are the same and that lack of generalization or abstraction makes exchanging lessons learned near difficult to impossible. 
 \item \textbf{No Generalization of Fitting or Diagnostics} - because each IBM is effectively unique the methods for fitting, the data used, and the diagnostics developed are all unique as well. This once again increases the workload of the modeler, makes exchanging lessons learned and best practices extremely difficult, and also makes starting a new model from scratch quite prohibitive. 
 \end{enumerate}
 
@@ -675,7 +703,7 @@ Our odds modeling approach looks to directly address these issues by:
 
 Chinook salmon (\textit{Oncorhynchus tshawytscha}) are the largest species of Pacific salmon \cite{oceanchinook}. Like other Pacific salmon the species is both anadromous and semelparous leading to a very interesting and distinct life history. 
 
-Juvenile Chinook are born in the rivers where their parents spawned. Sometime in their first or second year of life they transition to the marine environment where they will spend the rest of their life before maturation \cite{oceanchinook}. This leads to a specific system of enumerating age that includes both years in freshwater and years at sea. For example if a particular fish spends one winter in freshwater and so far 2 at sea it would be a 1.2 age fish. If it spent zero winters in freshwater and 3 at sea it would be a 0.3 age fish. Clearly both of these examples are the same overall age.
+Juvenile Chinook are generally born in the rivers where their parents spawned (although some genetic mixing does occur through straying). Sometime in their first or second year of life they transition to the marine environment where they will spend the rest of their life before maturation \cite{oceanchinook}. This leads to a specific system of enumerating age that includes both years in freshwater and years at sea. For example if a particular fish spends one winter in freshwater and so far 2 at sea it would be a 1.2 age fish. If it spent zero winters in freshwater and 3 at sea it would be a 0.3 age fish. Clearly both of these examples are the same overall age.
 
 The immature fish then spend time (up to five years) growing in the marine environment before maturing and then migrating back to the river where they were born to breed and subsequently die \cite{oceanchinook}. The timing of such homing behavior is clearly season dependent with species further north having to avoid ice build up during the cooler months \cite{oceanchinook}. The mechanism behind this homing ability is still a question under active research \cite{bracis2012}. \newline
 
@@ -697,7 +725,7 @@ Other drivers of natural mortality include a variety of known diseases, starvati
 
 Chinook have been the subject of hatchery programs since the 1950s with the past decade seeing hatchery releases of 254million individuals on average. The vast majority of these individuals (approx. 200million) have come from hatchery programs in the United States with the remaining significant portion from programs in Canada \cite{oceanchinook}. 
 
-Fish are released at weights of around 6-9 grams and a large number of these have a micro-wire with an identifiable code etched into them inserted into their snouts. These are the tags driving the Coded Wire Tag program in the Northeastern Pacific that has become a major source of demographic and movement data used in managing and understanding Chinook sub-populations \cite{shelton2019}. The etchings provide a unique label for each cohort from each hatchery. 
+Fish are released at weights of around 6-9g and a large number of these have a micro-wire with an identifiable code etched into them inserted into their snouts. These are the tags driving the Coded Wire Tag program in the Northeastern Pacific that has become a major source of demographic and movement data used in managing and understanding Chinook sub-populations \cite{shelton2019}. The etchings provide a unique label for each cohort from each hatchery. 
 
 The initial purpose of these hatcheries programs was to supplement losses in juveniles due to targeting of adult fish in river systems, however the programs have not created the kind of recovery that was intended and it is unclear how wild and hatchery populations interact. For example it is well known that there is quite a bit of genetic exchange between wild and hatchery types and concern that hatchery types are less suited to wild environments \cite{oceanchinook}. \newline
 
@@ -705,7 +733,7 @@ There are valuable tribal, commercial, and recreational fisheries of Chinook sal
 
 Given the highly mobile nature of Chinook independent management by sovereign nations is simply not possible and so management is the ultimate responsibility of the Pacific Fishery Management Council. Federal management councils (NOAA for the United States) then collaborate with the Pacific Fishery Management Council to set harvest quotas and other management objectives. The governments of Cananda and the United States then work with states, tribes, and industry to create and manage shared objectives based on these overall goals \cite{NOAA22}. 
 
-These management goals as well as designations of statuses such as "overfished" have to be stated on the sub-population level given the fact that Chinook form so many different genetic sub-populations \cite{salmonplan} - a fact that further complicates management. Indeed several sub populations are actually listed as endangered under the Endangered Species Act \cite{NOAA24}.
+These management goals as well as designations of statuses such as "overfished" have to be stated on the sub-population level given the fact that Chinook form so many different genetic sub-populations \cite{salmonplan} - a fact that further complicates management. Indeed several sub populations are actually listed as endangered and threatened under the Endangered Species Act \cite{NOAA24}.
 
 This combined with other threatened stocks \cite{NOAA24} means that bycatch avoidance is a serious issue for Chinook management and for other overlapping fisheries such as the Walleye Pollock fishery \cite{ianelli2015}. 
 
