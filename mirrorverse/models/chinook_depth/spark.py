@@ -3,6 +3,7 @@ import uuid
 import shutil
 import json
 
+import click
 import numpy as np
 import pandas as pd
 import tensorflow as tf
@@ -309,7 +310,7 @@ def serialize_example(depth_classes, features, row):
     for i, _ in enumerate(depth_classes):
         current_feature = {
             f"{feature}_{i}": tf.train.Feature(
-                float_list=tf.train.FloatList(value=[row.month])
+                float_list=tf.train.FloatList(value=[row[f"{feature}_{i}"]])
             )
             for feature in features
         }
@@ -346,10 +347,6 @@ def build_training_data(
     split,
     overwrite=False,
 ):
-    # Sanitize Inputs
-    depth_classes = np.array(eval(depth_classes))
-    features = eval(features)
-
     states = load_training_states(spark, connection)
     elevation = load_elevation(spark, connection)
 
