@@ -1,6 +1,7 @@
 import os
 import uuid
 import shutil
+import json
 
 import numpy as np
 import pandas as pd
@@ -15,7 +16,7 @@ from pyspark.sql.types import (
     IntegerType,
     TimestampType,
 )
-from pyspark.sql.functions import udf, pandas_udf, lit
+from pyspark.sql.functions import udf, pandas_udf, lit, avg, std
 from suntimes import SunTimes
 
 
@@ -225,7 +226,7 @@ def create_common_context(states, elevation, depth_classes):
         ["datetime", "sunrise", "sunset", "daytime"],
         "period_progress",
     )
-    # states = join(states, elevation, on="h3_level_4_key")
+    states = join(states, elevation, on="h3_level_4_key")
     return states
 
 
@@ -238,7 +239,8 @@ def create_choices(states, depth_classes):
 def create_features(states, depth_classes, features):
     for i, _ in enumerate(depth_classes):
         for feature in features:
-            states = states.withColumn(f"{feature}_{i}", states[feature])
+            if feature != "depth_class":
+                states = states.withColumn(f"{feature}_{i}", states[feature])
     return states
 
 
@@ -253,6 +255,47 @@ def train_test_split(states, split):
     train_states = states.filter(states["_individual"].isin(train_individuals))
     test_states = states.filter(states["_individual"].isin(test_individuals))
     return train_states, test_states
+
+
+def explode_func(N, features, iterator):
+    for dataframe in iterator:
+        for i in range(N):
+            sub_dataframe = dataframe[[f"{feature}_{i}" for feature in features]]
+            sub_dataframe = sub_dataframe.rename(
+                {f"{feature}_{i}": feature for feature in features}, axis=1
+            )
+            for feature in features:
+                sub_dataframe[feature] = sub_dataframe[feature].astype(float)
+            yield sub_dataframe
+
+
+def explode(states, N, features):
+    return states.mapInPandas(
+        partial(explode_func, N, features),
+        schema=StructType([StructField(feature, FloatType()) for feature in features]),
+    )
+
+
+def get_normalization_parameters(states, N, features):
+    states = explode(states, N, features)
+    avg_aggs = [avg(feature).alias(feature) for feature in features]
+    std_aggs = [std(feature).alias(feature) for feature in features]
+    return {
+        "avg": states.agg(*avg_aggs).collect()[0].asDict(),
+        "std": states.agg(*std_aggs).collect()[0].asDict(),
+    }
+
+
+def normalize(states, normalization_parameters, N, features):
+    avg = normalization_parameters["avg"]
+    std = normalization_parameters["std"]
+    for i in range(N):
+        for feature in features:
+            states = states.withColumn(
+                f"{feature}_{i}",
+                (states[f"{feature}_{i}"] - avg[feature]) / std[feature],
+            )
+    return states
 
 
 def serialize_example(depth_classes, features, row):
@@ -316,17 +359,17 @@ def build_training_data(
 
     train_states, test_states = train_test_split(states, split)
 
+    normalization_parameters = get_normalization_parameters(
+        train_states, len(depth_classes), features
+    )
+    train_states = normalize(
+        train_states, normalization_parameters, len(depth_classes), features
+    )
+    test_states = normalize(
+        test_states, normalization_parameters, len(depth_classes), features
+    )
+
     save_to_tfrecord(train_states, features, train_dir, depth_classes, overwrite)
     save_to_tfrecord(test_states, features, test_dir, depth_classes, overwrite)
-
-
-build_training_data(
-    spark,
-    ps_conn,
-    depth_classes="[25, 50, 75, 100, 150, 200, 250, 300, 400, 500]",
-    features='["month", "daytime", "period_progress"]',
-    train_dir="train",
-    test_dir="test",
-    split=0.8,
-    overwrite=True,
-)
+    with open(os.path.join(train_dir, "normalization_parameters.json"), "w") as f:
+        json.dump(normalization_parameters, f, sort_keys=True, indent=4)
