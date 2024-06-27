@@ -3,7 +3,6 @@ import uuid
 import shutil
 import json
 
-import click
 import numpy as np
 import pandas as pd
 import tensorflow as tf
@@ -16,6 +15,7 @@ from pyspark.sql.types import (
     FloatType,
     IntegerType,
     TimestampType,
+    LongType,
 )
 from pyspark.sql.functions import udf, pandas_udf, lit, avg, std
 from suntimes import SunTimes
@@ -83,6 +83,11 @@ def load_training_states(spark, connection):
         d.depth is not null
     """
     schema = "epoch INTEGER, h3_level_4_key BIGINT, depth FLOAT, _individual STRING, _decision INTEGER"
+    return load_from_database(spark, connection, sql, schema)
+
+
+def load_infer_states(spark, connection, sql):
+    schema = "epoch INTEGER, h3_level_4_key BIGINT"
     return load_from_database(spark, connection, sql, schema)
 
 
@@ -175,13 +180,7 @@ def get_period_progress(date, sunrise, sunset, daytime):
     return (1 - hours_to_transition / interval).astype(float)
 
 
-def create_common_context(states, elevation, depth_classes):
-    states = apply_to_create_columns(
-        states,
-        partial(get_depth_class, depth_classes),
-        ["depth"],
-        [StructField("_selected", FloatType())],
-    )
+def create_common_context(states, elevation):
     states = apply_to_create_columns(
         states,
         h3_to_geo,
@@ -337,6 +336,61 @@ def save_to_tfrecord(dataframe, features, output_dir, depth_classes, overwrite=F
     rdd.foreachPartition(partial(write_partition, output_dir))
 
 
+def infer_map(depth_classes, features, model, iterator):
+    for dataframe in iterator:
+        inputs = {}
+        for i, _ in enumerate(depth_classes):
+            sub_features = [f"{feature}_{i}" for feature in features]
+            inputs[f"input_{i}"] = dataframe[sub_features]
+        predictions = model.predict(inputs)
+        for i, _ in enumerate(depth_classes):
+            dataframe[f"probability_{i}"] = predictions[:, i]
+        yield dataframe
+
+
+def infer(states, depth_classes, features, model):
+    schema = StructType(
+        states.schema.fields
+        + [
+            StructField(f"probability_{i}", FloatType())
+            for i, _ in enumerate(depth_classes)
+        ]
+    )
+    states = states.mapInPandas(
+        partial(infer_map, depth_classes, features, model), schema=schema
+    )
+    return states
+
+
+def explode_to_new_states_func(depth_classes, iterator):
+    for dataframe in iterator:
+        for i, depth_class in enumerate(depth_classes):
+            columns = ["h3_level_4_key", "epoch", f"probability_{i}"]
+            new_state = dataframe[columns]
+            new_state = new_state.rename({f"probability_{i}": "probability"}, axis=1)
+            new_state["depth_class"] = depth_class
+            yield new_state
+
+
+def explode_to_new_states(states, depth_classes):
+    schema = StructType(
+        [
+            StructField("h3_level_4_key", LongType()),
+            StructField("epoch", IntegerType()),
+            StructField("depth_class", FloatType()),
+            StructField("probability", FloatType()),
+        ]
+    )
+    states = states.mapInPandas(
+        partial(explode_to_new_states_func, depth_classes), schema=schema
+    )
+    return states
+
+
+def write_to_database(states, connection, table, mode="overwrite"):
+    states.write.jdbc(url=connection, table=table, mode=mode)
+
+
 def build_training_data(
     spark,
     connection,
@@ -350,7 +404,14 @@ def build_training_data(
     states = load_training_states(spark, connection)
     elevation = load_elevation(spark, connection)
 
-    states = create_common_context(states, elevation, depth_classes)
+    states = apply_to_create_columns(
+        states,
+        partial(get_depth_class, depth_classes),
+        ["depth"],
+        [StructField("_selected", FloatType())],
+    )
+
+    states = create_common_context(states, elevation)
     states = create_choices(states, depth_classes)
     states = create_features(states, depth_classes, features)
 
@@ -370,3 +431,29 @@ def build_training_data(
     save_to_tfrecord(test_states, features, test_dir, depth_classes, overwrite)
     with open(os.path.join(train_dir, "normalization_parameters.json"), "w") as f:
         json.dump(normalization_parameters, f, sort_keys=True, indent=4)
+
+
+def run_inference(
+    spark,
+    connection,
+    depth_classes,
+    features,
+    query,
+    normalization_parameters_path,
+    model_path,
+    table,
+):
+    with open(normalization_parameters_path, "r") as f:
+        normalization_parameters = json.load(f)
+
+    model = tf.keras.models.load_model(model_path)
+
+    states = load_infer_states(spark, connection, query)
+    elevation = load_elevation(spark, connection)
+    states = create_common_context(states, elevation)
+    states = create_choices(states, depth_classes)
+    states = create_features(states, depth_classes, features)
+    states = normalize(states, normalization_parameters, len(depth_classes), features)
+    states = infer(states, depth_classes, features, model)
+    states = explode_to_new_states(states, depth_classes)
+    write_to_database(states, connection, table)
