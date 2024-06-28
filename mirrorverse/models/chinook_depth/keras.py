@@ -1,3 +1,9 @@
+"""
+Keras Code for Chinook Depth Model
+"""
+
+# pylint: disable=invalid-name, import-error, no-name-in-module
+
 import os
 
 from functools import partial
@@ -8,7 +14,16 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Dense, Input, concatenate
 
 
+# pylint: disable=redefined-builtin
 def split_data(N, features, data):
+    """
+    Inputs:
+    - N: int, number of choices
+    - features: list of strings, names of features
+    - data: dict, data loaded from tfrecord file
+
+    Splits the data into inputs and labels for the model
+    """
     inputs = {}
     for i in range(N):
         input = tf.stack(
@@ -20,6 +35,16 @@ def split_data(N, features, data):
 
 
 def load_data(data_dir, N, features, batch_size, shuffle_buffer_size):
+    """
+    Inputs:
+    - data_dir: str, path to directory containing tfrecord files
+    - N: int, number of choices
+    - features: list of strings, names of features
+    - batch_size: int, batch size
+    - shuffle_buffer_size: int, size of buffer for shuffling data
+
+    Returns a tf.data.Dataset object containing the data
+    """
     feature_description = {
         "_selected": tf.io.FixedLenFeature([], tf.int64),
     }
@@ -47,6 +72,15 @@ def load_data(data_dir, N, features, batch_size, shuffle_buffer_size):
 
 
 def build_model(N, features, layers, final_activation="linear"):
+    """
+    Inputs:
+    - N: int, number of choices
+    - features: list of strings, names of features
+    - layers: list of keras layers
+    - final_activation: str, activation function for final layer
+
+    Returns a keras model
+    """
     layers.append(Dense(1, activation=final_activation))
     inputs = [Input(shape=(len(features),), name=f"input_{i}") for i in range(N)]
     outcomes = []
