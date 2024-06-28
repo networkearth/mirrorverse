@@ -24,6 +24,8 @@ setup(
         "netCDF4==1.6.5",
         "earthengine-api==0.1.390",
         "suntimes==1.1.2",
+        "tensorflow==2.16.1",
+        "keras==3.4.0",
     ],
     entry_points={
         "console_scripts": [

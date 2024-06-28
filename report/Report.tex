@@ -105,6 +105,111 @@ Well, in the case of training we know the maximum number of choices in any of ou
 Later during inference on new data we can simply take our shared layers and use them to predict on each of the choices we're presented with. Just another demonstration that while we're using the architecture in Fig. \ref{fig:logarch} in order to \textit{train} the log odds model, the actual log odds model is simply the shared layers in a single column behind the softmax layer. 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+\section{Simulation}
+
+\subsection{Dealing with Scale}
+
+\subsubsection{Key Issues}
+
+There are a few key issues in trying to build spatio-temporal simulations using log odds models.
+
+\begin{enumerate}
+\item \textbf{Many World Problems.} \textit{Issue: Exponentially growing state space. Solution: Grouping abundance by state keys.} \newline If we took the our log odds model outcomes at face value we'd have a simulation that quickly (and exponentially) careened out of control. Why is this? Well if we started with $S$ distinct states and each of these generated $C$ choices, in the next step we'd have $SC$ states. Then in the next step $SC^2$ states. And so on until by step $n$ we have $SC^n$ states! Obviously this kind of exponential explosion of the state space is totally unmanageable. However we can get around this by recognizing that at the end of each step many of the states will overlap. For example if we are just predicting which new grid cells the fish are moving into, fish that start in nearby cells will move into the same grid cells as one another. Therefore we can group by the new resulting states, accumulate abundances from the various individual decisions, and keep our state space under control.
+\item \textbf{Combinatorics of State.} \textit{Issue: Problem scales by multiplying dimensions. Solution: Use cluster compute to take advantage of high parallelism in the problem.} \newline The size of each step in the simulation can get exceptionally large very quickly due to the number of dimensions that can be present in the state and the fact that these dimensions multiply on one another. So if I have 500 grid points, 50 distinct genetic cohorts, 10 different age groups, 3 size bins per age group, and 2 sexes that's a state space of $500 \bullet 50 \bullet 10 \bullet 3 \bullet 2 = 1,500,000$ distinct states to keep track of and model. And that would represent a relatively coarse description of the problem with no internal states present at all. Each additional dimension we add does not just add to this scale, it multiplies the scale. Very quickly then we will run into simulations that simply do not fit into a single machine's memory. However note that we can deal with each of these states independently which means that the parallelization opportunity is very high. Therefore if we take advantage of distributed compute paradigms like Spark we can parallelize the problems across as many machines as we like thereby preventing the bottleneck on single machine memory. 
+\item \textbf{Enormity of Results.} \textit{Issue: Adding time and context increases the scale of the data even further. Solution: Using DBMS, optimized file storage systems, and a clear dimension vs fact delineation.} \newline In our example above we have 1.5 million entries per timestamp. If we were interested in this over the course of a year and wanted to present results every 3 hours that would mean multiplying our 1.5 million states by approximately 3,000 different time points putting us at an easy 4.5 billion data points. Add into this the fact that useful exploration requires a lot of meta data (polygons, human readable timestamps, context like day/night, month of the year, country or state, etc.) and the sheer size of the data we would like to present and explore is quite daunting. We can do two things to make this data actually manageable. First is to take advantage of an actual database management system (DBMS). By writing there researchers can then interact with the data through queries, pull only what they need, and visualize just that. Then, in order to keep the data in simulation at a minimum we can separate our information into facts and dimensions \cite{datawarehouse}, facts being what is strictly needed for simulation and dimensions being repeated context that can be joined in later. 
+\end{enumerate}
+
+In summary then we want to ensure we obey the following design principles:
+
+\begin{enumerate}
+\item Collapse state at the end of each step.
+\item Keep our simulation parallelizable by state and use cluster compute paradigms to allow for multi-machine parallelization.
+\item Read from and write to databases or optimized file storage and retrieval systems.
+\item Keep clear distinctions between facts and dimensions to reduce bloat in simulation while allowing for easy human exploration in database. 
+\end{enumerate}
+
+\subsubsection{Kinds of Information}
+
+As we go through simulation there are a few key kinds of information each of which has specific implications for handling in simulation:
+
+\begin{enumerate}
+\item \textbf{Keys.} These are the information needed to identify a specific state. It includes spatial keys, temporal keys, demographic keys, and any internal state keys. We will parallelize along and group by these keys.
+\item \textbf{Abundance.} This is a single metric that lets us know how much of an individual state there is. 
+\item \textbf{Joined Context.} This is any information that will be joined to the spatial or temporal keys and cannot be generated from the information already given. Examples would be things like bathymetry or temperatures. Because this information has to be joined on special consideration must be given for the sake of performance. If the data is small enough broadcast joins are best as they don't require reshuffling of the state information. Otherwise it is important that the states are partitioned by the join keys for this information so that as little shuffling as possible needs to happen during the joins.
+\item \textbf{Built Context.} This is information that can be built from state keys or joined context. Examples would be sunset/sunrise times, season, etc. Whenever this kind of computation can be vectorized it should be for the sake of performance. 
+\item \textbf{Choice Independent Context.} This is information about the individual state itself that can be generated before choices are determined. This should obviously be computed before choices are generated. 
+\item \textbf{Choice Dependent Context.} This is any information specific to the choice in question and must be generated after choices have been built. 
+\item \textbf{Model Features.} This is information built from context that has to be normalized before being sent to the model.
+\end{enumerate}
+
+From this we get a specific series of steps to follow:
+
+\begin{enumerate}
+\item Select or receive initial states (from DBMS).
+\item Partition by state keys and join keys.
+\item Join context.
+\item Build choice independent context.
+\item Build choices.
+\item Build choice dependent context.
+\end{enumerate}
+
+At this point it is important to know whether we are building data for training or running inference. In the former case (training):
+
+\begin{enumerate}
+\item Split on individuals input to create train and validation data.
+\item Create and save normalization parameters from training data.
+\item Build and normalize model features.
+\item Capture choice selected.
+\item Serialize and write to TFRecord (an optimized file storage for building deep learning models)
+\end{enumerate}
+
+In the latter case (inference):
+
+\begin{enumerate}
+\item Build and normalize model features.
+\item Apply the model to produce probabilities of selection.
+\item Multiply probabilities by abundance.
+\item Group by new states.
+\item Write to DBMS.
+\end{enumerate}
+
+As a final note it is important to recognize that the choices must be kept together until after model application in order to ensure the same decision stays on the same partition all the way until inference. This leads to very broad (but no less massive) datasets. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \newpage
 \section{Appendices}
 
