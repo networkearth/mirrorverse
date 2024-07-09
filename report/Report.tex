@@ -45,9 +45,45 @@ University of Alaska Fairbanks
 \maketitle
 \newpage
 \tableofcontents
+
 \newpage
 
-\section{Log Odds Modeling}
+\section{Modeling Depth Occupancy}
+
+\subsection{Introduction}
+
+The ocean is ultimately a three dimensional world. As such understanding such things as vulnerability (the ease of making a catch) and selectivity (the specificity of that catch) require an understanding not just of the latitudinal and longitudinal distribution of fishes but of their depth occupancy as well. For example, if a standardized trawl always samples at a specific depth but depending on placement in space and time that depth is not always as occupied, then vulnerability and abundance become intertwined - i.e., lower or higher catch does not directly mean lower or higher abundance. 
+
+We can define depth occupancy as the proportions of fish, of a given species or group, within a series of depth bins at a given time and place. The question is how to measure or model depth occupancy. Clearly, catch per unit of effort (CPUE) already has both abundance and vulnerability folded into it and so while it can give us relative "catchable" abundance, it does not give us the information about true abundance that we would need to start constructing a notion of true "vulnerability". Besides, even if we could compute that vulnerability, vulnerability is itself a function of more than just depth occupancy. Sizes, temperature, and age are likely determinants of vulnerability as well. As such we must go looking for data elsewhere to fit depth occupancy models.
+
+One potential data source is electronic tagging data. These tags specifically measure depths for individual fish across the lifetime of the tag and then, either through retrieval or upload, make that data accessible to researchers. The issue here of course is that this data comes from individual fish whereas we are interested in overall group depth occupancy. However this limitation can be overcome if we simply are careful about our timescale of interest. \newline
+
+To see this consider a highly motile fish like Chinook salmon (\textit{Oncorhynchus tshawytscha}). Analysis of movements across different depth levels indicates that within a few short hours these fish can move from depths as shallow as a few meters to many hundreds of meters below the surface. This in turn means that from a practical perspective where the fish is now is not an absolute determinant of where it will be in three hours from a physical or energetics perspective. If the fish wishes to be at a different depth, in three hours it certainly can be. 
+
+However, if we instead were trying to look at an interval along the lines of a few minutes then certainly the fish are simply not fast enough to cover the hundreds of meters of depth available to them and therefore where the fish is now \textit{is} a necessary piece of information for knowing where the fish will be later. In other words, if we choose an interval of time large enough that the fish's current location in the water column is not necessary for predicting its upcoming position then we end up modeling depth occupancy preference. And across many different individuals this preference will be equivalent to proportion.  \newline
+
+\begin{objective}
+To model depth occupancy proportions using electronic tagging data by modeling depth occupancy preference at a large enough time scale that would allow full depth mixing. 
+\end{objective}
+
+We have, at this point, identified the data that we wish to use and the kind of model we wish to build. We have not yet described the kinds of information or features that we will attempt to use in this model. This is just as an important consideration because the potential applications of our model is dependent on what information we choose to include. For example, if we wanted to use this model to help inform multi-year management policy but the model required detailed information about primary productivity, unless we also have models of primary productivity that be forecast multiple years ahead, our model is useless to us. Therefore we must first determine what specific applications we want to apply this model too. 
+
+For now we will assume two applications:
+
+\begin{enumerate}
+\item \textbf{Selectivity/Bycatch Avoidance} - increases selectivity is a win-win outcome for any fishing operation. It can increase the likelihood of a catch while also reducing bycatch.
+\item \textbf{Abundance Estimation} - in order to go from catches to abundance across space and time it is important to understand the differing levels of vulnerability inherent in each of the catches. 
+\end{enumerate}
+
+This means that we will want to limit ourselves to information that would be present either to a fishing fleet or to those attempting to create an index of abundance. \newline
+
+Finally, it is obvious that such models would need to be built per species and therefore, if the data becomes available, there will be numerous such models to build. Therefore it is also our intention to provide a clear, easy to follow guide on how to organize and then execute on these kinds of models. It is the hope that, as with standardize machine learning workflows, this will increase the productivity and quality of the models build in the future. 
+
+\begin{objective}
+To provide a clear framework for building and organizing these models. 
+\end{objective}
+
+\subsection{Log Odds Modeling}
 
 \begin{objective}
 To provide tooling that allows for using machine learning methods to fit models of the form
@@ -67,7 +103,7 @@ These models will be known as log odds models as they predict the "log odds for"
 
 \end{objective}
 
-\subsection{Fitting an Odds Model}
+\subsubsection{Fitting an Odds Model}
 
 Our objective in using machine learning (ML) is to reduce the time spent looking for the particular form of $G(\eta_k)$ by instead allowing that form to be fit given the data at hand. Deep Learning (DL) models are especially well suited to this problem as they are both parametric (see Section \ref{convergence issues} for why non-parametric models are not well suited to our problem) and have been shown to be able to represent just about any function given a large enough network \cite{LiquetMokaNazarathy2024DeepLearning}. There is also a robust field around probabilistic deep learning that, as we shall see in a moment, we can take advantage of \cite{durr}.
 \newline
@@ -104,28 +140,6 @@ Well, in the case of training we know the maximum number of choices in any of ou
 
 Later during inference on new data we can simply take our shared layers and use them to predict on each of the choices we're presented with. Just another demonstration that while we're using the architecture in Fig. \ref{fig:logarch} in order to \textit{train} the log odds model, the actual log odds model is simply the shared layers in a single column behind the softmax layer. 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\newpage
-\section{Simulation}
 
 \subsection{Dealing with Scale}
 
@@ -195,7 +209,34 @@ In the latter case (inference):
 
 As a final note it is important to recognize that the choices must be kept together until after model application in order to ensure the same decision stays on the same partition all the way until inference. This leads to very broad (but no less massive) datasets. 
 
+\subsection{The Depth Model}
 
+With the context of how to build a log odds model out of the way we can now turn to a specific depth occupancy model - one for Chinook salmon (Oncorhynchus tshawytscha) in the Gulf of Alaska (GOA). \newline
+
+\textbf{The Data:} The data used were pop-up satellite archival tag (PSAT) data collected from 111 Chinook salmon caught and released in the GOA. These tags recorded depth, temperature and light levels before releasing from the fish and returning to the surface where they broadcast that data to the Argos satellite system. Finally proprietary software was then used to turn the light levels, temperature, and depth data into most likely paths (in longitude and latitude) for the fish in question \cite{PSAT}. As such the data we ended up with for each fish was, by epoch, likely position, depth and temperature. \newline
+
+\textbf{The Features:} We then used that data along with elevation data from the General Bathymetric Chart of the Oceans to compute the following features:
+
+\begin{enumerate}
+\item Month (integer from 1 - 12)
+\item Daytime (boolean indicating if it was between sunrise and sunset)
+\item Period Progress (float from 0 - 1 representing how far through day or night it currently was)
+\item Elevation (the average depth in meters in the H3 resolution 4 cell the fish was most likely in) 
+\item Depth Class (depth bin the fish was found in)
+\end{enumerate}
+
+The last feature is worth special note. The depth data used for all fish was the lower resolution aggregated data uploaded to the Argos satellite system. However we also had a few fish for which tags had been retrieved and the actual measurements themselves were accessible. In comparing the aggregations to the real time measurements it was found that the aggregation seemed to represent a binned, first measurement in the interval. That is to say that each tag seemed to have a set of aggregation bins (those bins were not necessarily the same per tag or over time for the same tag) and would bin the first measurement from each aggregation interval into each bin. The result was that aggregated depth measurements looked like the fish was follow a very jagged step function whereas the real time measurements had the kind of continuity you would expect from actual animal behavior. By plotting the measured values against the aggregated values it was found that in general one could expect the real measurements to be within $\pm10$\% of the aggregated value. Therefore when computing the depth class we modeled depth occupancy at a moment in time as a distribution and sampled the specific depth class used in training from that distribution. \newline
+
+\textbf{Training:}
+
+\begin{enumerate}
+\item Features were computed for all time steps for all fish.
+\item Training and Test sets were split by taking 80\% of the fish for training. Fish were binned exclusively into one or the other set. 
+\item All features were normalized to have a mean of 0 and a standard deviation of 1. 
+\item Hyperparameter tuning of batch size, model depth, and layer sizes was used to determine the best model given the performance on the test set. 
+\end{enumerate}
+
+\subsection{Results}
 
 
 
