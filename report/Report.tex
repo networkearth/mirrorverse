@@ -230,6 +230,7 @@ The last feature is worth special note. The depth data used for all fish was the
 \textbf{Training:}
 
 \begin{enumerate}
+\item We chose depth classes of 25, 50, 75, 100, 150, 200, 250, 300, 400, and 500 meters.
 \item Features were computed for all time steps for all fish.
 \item Training and Test sets were split by taking 80\% of the fish for training. Fish were binned exclusively into one or the other set. 
 \item All features were normalized to have a mean of 0 and a standard deviation of 1. 
@@ -237,6 +238,52 @@ The last feature is worth special note. The depth data used for all fish was the
 \end{enumerate}
 
 \subsection{Results}
+\begin{figure}[h] 
+\begin{center}
+  \includegraphics[width=85mm]{images/jan_prob_depth.png}
+ \end{center}
+  \caption{Probability at Depth for January}
+  \medskip
+	\small
+	The probability at depth by local hour for an H3 cell at 58N, 146W in the month of January. Note the movement away from the surface during the day.
+  \label{fig:jan_prob}
+\end{figure}
+
+\begin{figure}[h] 
+\begin{center}
+  \includegraphics[width=85mm]{images/jul_prob_depth.png}
+  
+\end{center}
+  \caption{Probability at Depth for July}
+  \medskip
+	\small
+	The probability at depth by local hour for an H3 cell at 58N, 146W in the month of July. Note that the probability near the surface is higher than in January \ref{fig:jan_prob} and that the shift downwards reflects the longer day during the summer.
+  \label{fig:jul_prob}
+\end{figure}
+
+\begin{figure}[h] 
+\begin{center}
+  \includegraphics[width=\linewidth]{images/jan_diurnal_map.png}
+  
+\end{center}
+  \caption{Map of Depth Occupancy (January)}
+  \medskip
+	\small
+	The cumulative probability for depth classes above and below 100m for January. Shows both during the day and at night.
+  \label{fig:jul_depth_map}
+\end{figure}
+
+After hyper parameter tuning we found that the best model had three layers of size 16, 8, and 16 and a batch size of 1,000. This model achieved a categorical cross entropy score on the test set of 1.32 and on the training set of 1.4 (suggesting more variability in the train than test set). A model with no predictive power would've gotten a cross entropy score of $\ln{0.1}=-2.3$ meaning that the model is a significant improvement over a random guess. 
+
+Interesting patterns emerged in the predicted results. First there are clear diurnal patterns in the predictions (Figs. \ref{fig:jan_prob}, \ref{fig:jul_prob}) with predictions showing a descent away from the surface during the day. Furthermore, as expected, the predictions show a tendency toward shallower depths as the predictions move towards the coast with the diurnal pattern becoming less obvious as one does so (Fig. \ref{fig:jul_depth_map}). 
+
+
+
+
+
+
+
+
 
 
 
