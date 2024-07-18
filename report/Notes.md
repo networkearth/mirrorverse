@@ -24,3 +24,7 @@ and then work backward to understand what's necessary for that value, understand
 and then look to find organisms who can play those roles. This can keep branching out until we believe we have a complete
 system in hand. From there it would come back to the cybernetics to understand how to make sure the whole system remains
 resilient. This all makes for a much more bounded and parallelizable problem to solve. 
+
+### July 18, 2024
+
+It's all just about feedback. And feedback connected systems can be understood on the basis of whether or not the response rates are "alike". I can't think of an example that doesn't fall under this. So management would then become (1) understanding the feedback loops "kind" (as opposed to being super precise about them) and then (2) adding in the human loops intelligently to ensure we are not destabilizing the system. This allows for some degree of heirarchical thinking as well where the problems can be separated in general and only interaction points being understood. 
