@@ -23,3 +23,5 @@ notebooks/
 *.bcf
 *.blg
 *.run.xml
+*.drawio.bkp
+*.jar

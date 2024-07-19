@@ -45,9 +45,45 @@ University of Alaska Fairbanks
 \maketitle
 \newpage
 \tableofcontents
+
 \newpage
 
-\section{Log Odds Modeling}
+\section{Modeling Depth Occupancy}
+
+\subsection{Introduction}
+
+The ocean is ultimately a three dimensional world. As such understanding such things as vulnerability (the ease of making a catch) and selectivity (the specificity of that catch) require an understanding not just of the latitudinal and longitudinal distribution of fishes but of their depth occupancy as well. For example, if a standardized trawl always samples at a specific depth but depending on placement in space and time that depth is not always as occupied, then vulnerability and abundance become intertwined - i.e., lower or higher catch does not directly mean lower or higher abundance. 
+
+We can define depth occupancy as the proportions of fish, of a given species or group, within a series of depth bins at a given time and place. The question is how to measure or model depth occupancy. Clearly, catch per unit of effort (CPUE) already has both abundance and vulnerability folded into it and so while it can give us relative "catchable" abundance, it does not give us the information about true abundance that we would need to start constructing a notion of true "vulnerability". Besides, even if we could compute that vulnerability, vulnerability is itself a function of more than just depth occupancy. Sizes, temperature, and age are likely determinants of vulnerability as well. As such we must go looking for data elsewhere to fit depth occupancy models.
+
+One potential data source is electronic tagging data. These tags specifically measure depths for individual fish across the lifetime of the tag and then, either through retrieval or upload, make that data accessible to researchers. The issue here of course is that this data comes from individual fish whereas we are interested in overall group depth occupancy. However this limitation can be overcome if we simply are careful about our timescale of interest. \newline
+
+To see this consider a highly motile fish like Chinook salmon (\textit{Oncorhynchus tshawytscha}). Analysis of movements across different depth levels indicates that within a few short hours these fish can move from depths as shallow as a few meters to many hundreds of meters below the surface. This in turn means that from a practical perspective where the fish is now is not an absolute determinant of where it will be in three hours from a physical or energetics perspective. If the fish wishes to be at a different depth, in three hours it certainly can be. 
+
+However, if we instead were trying to look at an interval along the lines of a few minutes then certainly the fish are simply not fast enough to cover the hundreds of meters of depth available to them and therefore where the fish is now \textit{is} a necessary piece of information for knowing where the fish will be later. In other words, if we choose an interval of time large enough that the fish's current location in the water column is not necessary for predicting its upcoming position then we end up modeling depth occupancy preference. And across many different individuals this preference will be equivalent to proportion.  \newline
+
+\begin{objective}
+To model depth occupancy proportions using electronic tagging data by modeling depth occupancy preference at a large enough time scale that would allow full depth mixing. 
+\end{objective}
+
+We have, at this point, identified the data that we wish to use and the kind of model we wish to build. We have not yet described the kinds of information or features that we will attempt to use in this model. This is just as an important consideration because the potential applications of our model is dependent on what information we choose to include. For example, if we wanted to use this model to help inform multi-year management policy but the model required detailed information about primary productivity, unless we also have models of primary productivity that be forecast multiple years ahead, our model is useless to us. Therefore we must first determine what specific applications we want to apply this model too. 
+
+For now we will assume two applications:
+
+\begin{enumerate}
+\item \textbf{Selectivity/Bycatch Avoidance} - increases selectivity is a win-win outcome for any fishing operation. It can increase the likelihood of a catch while also reducing bycatch.
+\item \textbf{Abundance Estimation} - in order to go from catches to abundance across space and time it is important to understand the differing levels of vulnerability inherent in each of the catches. 
+\end{enumerate}
+
+This means that we will want to limit ourselves to information that would be present either to a fishing fleet or to those attempting to create an index of abundance. \newline
+
+Finally, it is obvious that such models would need to be built per species and therefore, if the data becomes available, there will be numerous such models to build. Therefore it is also our intention to provide a clear, easy to follow guide on how to organize and then execute on these kinds of models. It is the hope that, as with standardize machine learning workflows, this will increase the productivity and quality of the models build in the future. 
+
+\begin{objective}
+To provide a clear framework for building and organizing these models. 
+\end{objective}
+
+\subsection{Log Odds Modeling}
 
 \begin{objective}
 To provide tooling that allows for using machine learning methods to fit models of the form
@@ -67,7 +103,205 @@ These models will be known as log odds models as they predict the "log odds for"
 
 \end{objective}
 
-\subsection{Fitting an Odds Model}
+\subsubsection{Fitting an Odds Model}
+
+Our objective in using machine learning (ML) is to reduce the time spent looking for the particular form of $G(\eta_k)$ by instead allowing that form to be fit given the data at hand. Deep Learning (DL) models are especially well suited to this problem as they are both parametric (see Section \ref{convergence issues} for why non-parametric models are not well suited to our problem) and have been shown to be able to represent just about any function given a large enough network \cite{LiquetMokaNazarathy2024DeepLearning}. There is also a robust field around probabilistic deep learning that, as we shall see in a moment, we can take advantage of \cite{durr}.
+\newline
+
+Taking a look at traditional probabilistic classifiers we can see that they have two things in common with our intended log odds modeling. 
+
+First, probabilistic classifiers use the categorical cross entropy cost function to optimize their weights. This cost function happens to be just another name for optimizing for the Log Likelihood of the data \cite{durr}. Therefore probabilistic DL shares the same objective function as we do.
+
+Second, the final layer in a probabilistic DL network is the one that produces a probability for each class. This layer uses the softmax function as it's activation function which if if $a_i=W_i x+b_i$ is given by - $\frac{e^{a_i}}{\sum_k e^{a_k}}$. This means that if we can get our $\psi_k$ to be the $a_i$ that we'll be, in effect, training a log odds model.
+
+We can do this by taking advantage of Keras' Functional API \cite{kerasfunctional} which allows us to split our network into a branches and also share layers between branches. Specifically we can follow the following steps:
+
+\begin{enumerate}
+\item Define a series of layers that represent our underlying log odds model (these layers should end in a layer of output size 1 which will represent our $\psi_k$).
+\item Split our training decisions into $N$ choices.
+\item Create a branch in our overall model for each of these $N$ choices.
+\item Converge the branches at a softmax layer where the weights are the identity matrix $I$ and the biases all 0 (this ensures we directly pass through our $\psi_k$ to the softmax function).
+\item Use categorical cross entropy as our fitness function.
+\end{enumerate}
+
+This architecture is illustrated by Fig. \ref{fig:logarch}.
+
+\begin{figure}[h!] 
+  \includegraphics[width=\linewidth]{logarch.png}
+  \caption{Overall Architecture}
+  \label{fig:logarch}
+\end{figure}
+
+The main advantage of this architecture as opposed to a more classic approach to probabilistic DL is the fact that the weights are shared on each of the branches. This has the effect of drastically reducing the number of parameters in our network meaning that we can use far less data to train this model then we'd need to train a full bore, fully connected, probabilistic model. Each of our columns in Fig. \ref{fig:logarch} is in fact the same model and therefore updates coming from each of the columns goes to all of the columns.
+
+This, then, solves one of our issues - reducing the variance in the model by switching to the log odds approach. But the other issue we're trying to solve is being able to predict on variable numbers of choices per decision. How does that work out here?\newline
+
+Well, in the case of training we know the maximum number of choices in any of our training decisions. Therefore we can set $N$ to this maximum and for decisions where we have fewer than $N$ choices we can simply provide some kind of default "do not choose" feature for the "missing" choices. 
+
+Later during inference on new data we can simply take our shared layers and use them to predict on each of the choices we're presented with. Just another demonstration that while we're using the architecture in Fig. \ref{fig:logarch} in order to \textit{train} the log odds model, the actual log odds model is simply the shared layers in a single column behind the softmax layer. 
+
+
+\subsection{Dealing with Scale}
+
+\subsubsection{Key Issues}
+
+There are a few key issues in trying to build spatio-temporal simulations using log odds models.
+
+\begin{enumerate}
+\item \textbf{Many World Problems.} \textit{Issue: Exponentially growing state space. Solution: Grouping abundance by state keys.} \newline If we took the our log odds model outcomes at face value we'd have a simulation that quickly (and exponentially) careened out of control. Why is this? Well if we started with $S$ distinct states and each of these generated $C$ choices, in the next step we'd have $SC$ states. Then in the next step $SC^2$ states. And so on until by step $n$ we have $SC^n$ states! Obviously this kind of exponential explosion of the state space is totally unmanageable. However we can get around this by recognizing that at the end of each step many of the states will overlap. For example if we are just predicting which new grid cells the fish are moving into, fish that start in nearby cells will move into the same grid cells as one another. Therefore we can group by the new resulting states, accumulate abundances from the various individual decisions, and keep our state space under control.
+\item \textbf{Combinatorics of State.} \textit{Issue: Problem scales by multiplying dimensions. Solution: Use cluster compute to take advantage of high parallelism in the problem.} \newline The size of each step in the simulation can get exceptionally large very quickly due to the number of dimensions that can be present in the state and the fact that these dimensions multiply on one another. So if I have 500 grid points, 50 distinct genetic cohorts, 10 different age groups, 3 size bins per age group, and 2 sexes that's a state space of $500 \bullet 50 \bullet 10 \bullet 3 \bullet 2 = 1,500,000$ distinct states to keep track of and model. And that would represent a relatively coarse description of the problem with no internal states present at all. Each additional dimension we add does not just add to this scale, it multiplies the scale. Very quickly then we will run into simulations that simply do not fit into a single machine's memory. However note that we can deal with each of these states independently which means that the parallelization opportunity is very high. Therefore if we take advantage of distributed compute paradigms like Spark we can parallelize the problems across as many machines as we like thereby preventing the bottleneck on single machine memory. 
+\item \textbf{Enormity of Results.} \textit{Issue: Adding time and context increases the scale of the data even further. Solution: Using DBMS, optimized file storage systems, and a clear dimension vs fact delineation.} \newline In our example above we have 1.5 million entries per timestamp. If we were interested in this over the course of a year and wanted to present results every 3 hours that would mean multiplying our 1.5 million states by approximately 3,000 different time points putting us at an easy 4.5 billion data points. Add into this the fact that useful exploration requires a lot of meta data (polygons, human readable timestamps, context like day/night, month of the year, country or state, etc.) and the sheer size of the data we would like to present and explore is quite daunting. We can do two things to make this data actually manageable. First is to take advantage of an actual database management system (DBMS). By writing there researchers can then interact with the data through queries, pull only what they need, and visualize just that. Then, in order to keep the data in simulation at a minimum we can separate our information into facts and dimensions \cite{datawarehouse}, facts being what is strictly needed for simulation and dimensions being repeated context that can be joined in later. 
+\end{enumerate}
+
+In summary then we want to ensure we obey the following design principles:
+
+\begin{enumerate}
+\item Collapse state at the end of each step.
+\item Keep our simulation parallelizable by state and use cluster compute paradigms to allow for multi-machine parallelization.
+\item Read from and write to databases or optimized file storage and retrieval systems.
+\item Keep clear distinctions between facts and dimensions to reduce bloat in simulation while allowing for easy human exploration in database. 
+\end{enumerate}
+
+\subsubsection{Kinds of Information}
+
+As we go through simulation there are a few key kinds of information each of which has specific implications for handling in simulation:
+
+\begin{enumerate}
+\item \textbf{Keys.} These are the information needed to identify a specific state. It includes spatial keys, temporal keys, demographic keys, and any internal state keys. We will parallelize along and group by these keys.
+\item \textbf{Abundance.} This is a single metric that lets us know how much of an individual state there is. 
+\item \textbf{Joined Context.} This is any information that will be joined to the spatial or temporal keys and cannot be generated from the information already given. Examples would be things like bathymetry or temperatures. Because this information has to be joined on special consideration must be given for the sake of performance. If the data is small enough broadcast joins are best as they don't require reshuffling of the state information. Otherwise it is important that the states are partitioned by the join keys for this information so that as little shuffling as possible needs to happen during the joins.
+\item \textbf{Built Context.} This is information that can be built from state keys or joined context. Examples would be sunset/sunrise times, season, etc. Whenever this kind of computation can be vectorized it should be for the sake of performance. 
+\item \textbf{Choice Independent Context.} This is information about the individual state itself that can be generated before choices are determined. This should obviously be computed before choices are generated. 
+\item \textbf{Choice Dependent Context.} This is any information specific to the choice in question and must be generated after choices have been built. 
+\item \textbf{Model Features.} This is information built from context that has to be normalized before being sent to the model.
+\end{enumerate}
+
+From this we get a specific series of steps to follow:
+
+\begin{enumerate}
+\item Select or receive initial states (from DBMS).
+\item Partition by state keys and join keys.
+\item Join context.
+\item Build choice independent context.
+\item Build choices.
+\item Build choice dependent context.
+\end{enumerate}
+
+At this point it is important to know whether we are building data for training or running inference. In the former case (training):
+
+\begin{enumerate}
+\item Split on individuals input to create train and validation data.
+\item Create and save normalization parameters from training data.
+\item Build and normalize model features.
+\item Capture choice selected.
+\item Serialize and write to TFRecord (an optimized file storage for building deep learning models)
+\end{enumerate}
+
+In the latter case (inference):
+
+\begin{enumerate}
+\item Build and normalize model features.
+\item Apply the model to produce probabilities of selection.
+\item Multiply probabilities by abundance.
+\item Group by new states.
+\item Write to DBMS.
+\end{enumerate}
+
+As a final note it is important to recognize that the choices must be kept together until after model application in order to ensure the same decision stays on the same partition all the way until inference. This leads to very broad (but no less massive) datasets. 
+
+\subsection{The Depth Model}
+
+With the context of how to build a log odds model out of the way we can now turn to a specific depth occupancy model - one for Chinook salmon (Oncorhynchus tshawytscha) in the Gulf of Alaska (GOA). \newline
+
+\textbf{The Data:} The data used were pop-up satellite archival tag (PSAT) data collected from 111 Chinook salmon caught and released in the GOA. These tags recorded depth, temperature and light levels before releasing from the fish and returning to the surface where they broadcast that data to the Argos satellite system. Finally proprietary software was then used to turn the light levels, temperature, and depth data into most likely paths (in longitude and latitude) for the fish in question \cite{PSAT}. As such the data we ended up with for each fish was, by epoch, likely position, depth and temperature. \newline
+
+\textbf{The Features:} We then used that data along with elevation data from the General Bathymetric Chart of the Oceans to compute the following features:
+
+\begin{enumerate}
+\item Month (integer from 1 - 12)
+\item Daytime (boolean indicating if it was between sunrise and sunset)
+\item Period Progress (float from 0 - 1 representing how far through day or night it currently was)
+\item Elevation (the average depth in meters in the H3 resolution 4 cell the fish was most likely in) 
+\item Depth Class (depth bin the fish was found in)
+\end{enumerate}
+
+The last feature is worth special note. The depth data used for all fish was the lower resolution aggregated data uploaded to the Argos satellite system. However we also had a few fish for which tags had been retrieved and the actual measurements themselves were accessible. In comparing the aggregations to the real time measurements it was found that the aggregation seemed to represent a binned, first measurement in the interval. That is to say that each tag seemed to have a set of aggregation bins (those bins were not necessarily the same per tag or over time for the same tag) and would bin the first measurement from each aggregation interval into each bin. The result was that aggregated depth measurements looked like the fish was follow a very jagged step function whereas the real time measurements had the kind of continuity you would expect from actual animal behavior. By plotting the measured values against the aggregated values it was found that in general one could expect the real measurements to be within $\pm10$\% of the aggregated value. Therefore when computing the depth class we modeled depth occupancy at a moment in time as a distribution and sampled the specific depth class used in training from that distribution. \newline
+
+\textbf{Training:}
+
+\begin{enumerate}
+\item We chose depth classes of 25, 50, 75, 100, 150, 200, 250, 300, 400, and 500 meters.
+\item Features were computed for all time steps for all fish.
+\item Training and Test sets were split by taking 80\% of the fish for training. Fish were binned exclusively into one or the other set. 
+\item All features were normalized to have a mean of 0 and a standard deviation of 1. 
+\item Hyperparameter tuning of batch size, model depth, and layer sizes was used to determine the best model given the performance on the test set. 
+\end{enumerate}
+
+\subsection{Results}
+\begin{figure}[h] 
+\begin{center}
+  \includegraphics[width=85mm]{images/jan_prob_depth.png}
+ \end{center}
+  \caption{Probability at Depth for January}
+  \medskip
+	\small
+	The probability at depth by local hour for an H3 cell at 58N, 146W in the month of January. Note the movement away from the surface during the day.
+  \label{fig:jan_prob}
+\end{figure}
+
+\begin{figure}[h] 
+\begin{center}
+  \includegraphics[width=85mm]{images/jul_prob_depth.png}
+  
+\end{center}
+  \caption{Probability at Depth for July}
+  \medskip
+	\small
+	The probability at depth by local hour for an H3 cell at 58N, 146W in the month of July. Note that the probability near the surface is higher than in January \ref{fig:jan_prob} and that the shift downwards reflects the longer day during the summer.
+  \label{fig:jul_prob}
+\end{figure}
+
+\begin{figure}[h] 
+\begin{center}
+  \includegraphics[width=\linewidth]{images/jan_diurnal_map.png}
+  
+\end{center}
+  \caption{Map of Depth Occupancy (January)}
+  \medskip
+	\small
+	The cumulative probability for depth classes above and below 100m for January. Shows both during the day and at night.
+  \label{fig:jul_depth_map}
+\end{figure}
+
+After hyper parameter tuning we found that the best model had three layers of size 16, 8, and 16 and a batch size of 1,000. This model achieved a categorical cross entropy score on the test set of 1.32 and on the training set of 1.4 (suggesting more variability in the train than test set). A model with no predictive power would've gotten a cross entropy score of $\ln{0.1}=-2.3$ meaning that the model is a significant improvement over a random guess. 
+
+Interesting patterns emerged in the predicted results. First there are clear diurnal patterns in the predictions (Figs. \ref{fig:jan_prob}, \ref{fig:jul_prob}) with predictions showing a descent away from the surface during the day. Furthermore, as expected, the predictions show a tendency toward shallower depths as the predictions move towards the coast with the diurnal pattern becoming less obvious as one does so (Fig. \ref{fig:jul_depth_map}). 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+\section{Appendices}
+
+\subsection{Convergence Issue with Non-Parametric Log Odds Models} \label{convergence issues}
 
 All standard Machine Learning (ML) pipelines assume that you have at least two things - targets and features. In our case we certainly have the latter but our target $\psi_k$ is both unknown to us and also unmeasureable. So how are we to fit ML models if we have no target? In short, through iteration. Let's see how this can be done.\newline
 
@@ -101,17 +335,17 @@ $$\partial_{\phi_{js_ji}}\ln{\mathcal{L}}
 =
 \frac{1}{P_i'(v_{js_j} | \eta_{js_j})}\frac{\sum_p e^{\phi_{jpi}}-e^{\phi_{js_ji}}}{\left( \sum_p e^{\phi_{jpi}} \right)^2} e^{\phi_{js_ji}}
 =
-\frac{1}{\sum_p e^{\phi_{jpi}}}\frac{\left(1-P_i'(v_{js_j} | \eta_{js_j}) \right)}{P_i'(v_{js_j} | \eta_{js_j})} e^{\phi_{js_ji}}$$ 
+1-P_i'(v_{js_j} | \eta_{js_j}) $$ 
 
 $$\partial_{\phi_{j\not{s_j}i}}\ln{\mathcal{L}}
 =
 \frac{1}{P_i'(v_{js_j} | \eta_{js_j})}\frac{-e^{\phi_{js_ji}}}{\left( \sum_p e^{\phi_{jpi}} \right)^2} e^{\phi_{j\not{s_j}i}}
 = 
-\frac{-1 }{\sum_p e^{\phi_{jpi}}}e^{\phi_{j\not{s_j}i}}$$ 
+-P_i'(v_{j\not{s_j}} | \eta_{j\not{s_j}})$$ 
 
 Next for point of illustration let's suppose that there are a set of $\psi_{jki}$ which we'll designate as $Z$ which share the same features $\eta$, i.e. our model has to give a single $\phi_{jki}$ for all such options. Our derivative then for that collection $Z$ is given by:
 
-$$\partial_Z \ln{\mathcal{L}}=\sum_{\phi_{js_ji} \in Z}\frac{1}{\sum_p \phi_{jpi}}\frac{\left(1-P_i'(v_{js_j} | \eta_{js_j}) \right)}{P_i'(v_{js_j} | \eta_{js_j})}e^{\phi_{js_ji}}-\sum_{\phi_{j\not{s_j}i}\in Z}\frac{1 }{\sum_p \phi_{jpi}}e^{\phi_{j\not{s_j}i}}$$
+$$\partial_Z \ln{\mathcal{L}}=\sum_{\phi_{js_ji} \in Z}\left(1-P_i'(v_{js_j} | \eta_{js_j}) \right)-\sum_{\phi_{j\not{s_j}i}\in Z}P_i'(v_{j\not{s_j}} | \eta_{j\not{s_j}})$$
 
 Given classic optimization tactics we know that our function will be maximized when these sums are $0$ (and technically we'd also want to know that the second derivative was negative but we'll assume that's the case given how our iterations will work). \newline
 
@@ -149,12 +383,41 @@ which means that in order for our partial derivative above to be zero (and there
 \item Generate the $u_{jki} = \alpha_i \partial_{\phi_{jki}} \ln{\mathcal{L}}$ and produce a new set of $\psi_{jki}$.
 \item Repeat 3 and 4 until, varying $\alpha_i$ until convergence. 
 
-$$\partial_{\phi_{js_ji}}\ln{\mathcal{L}}=\frac{1}{\sum_p e^{\phi_{jpi}}}\frac{\left(1-P_i'(v_{js_j} | \eta_{js_j}) \right)}{P_i'(v_{js_j} | \eta_{js_j})}e^{\phi_{js_ji}}$$ 
+$$\partial_{\phi_{js_ji}}\ln{\mathcal{L}}=1-P_i'(v_{js_j} | \eta_{js_j})$$ 
 
-$$\partial_{\phi_{j\not{s_j}i}}\ln{\mathcal{L}}=\frac{-1 }{\sum_p e^{\phi_{jpi}}}e^{\phi_{j\not{s_j}i}}$$ 
+$$\partial_{\phi_{j\not{s_j}i}}\ln{\mathcal{L}}=-P_i'(v_{j\not{s_j}} | \eta_{j\not{s_j}})$$ 
 \end{enumerate}
 
 \end{procedure}
+
+There is however an issue with this approach. Recall that our gradient is:
+
+$$\partial_Z \ln{\mathcal{L}}=\sum_{\phi_{js_ji} \in Z}\left(1-P_i'(v_{js_j} | \eta_{js_j}) \right)-\sum_{\phi_{j\not{s_j}i}\in Z}P_i'(v_{j\not{s_j}} | \eta_{j\not{s_j}})$$
+
+Let's however look at the second derivative of $\ln{\mathcal{L}}$:
+
+$$\partial_{\phi_{jk}} P_i'(v_{jk} | \eta_{jk})=\partial_{\phi_{jk}} \frac{e^{\phi_{jk}}}{\sum_p e^{\phi_{jp}}}=(1-P_i'(v_{jk} | \eta_{jk}))P_i'(v_{jk} | \eta_{jk})$$
+
+
+$$\partial^2_Z \ln{\mathcal{L}}=-\sum_{\phi_{js_ji} \in Z}\left(1-P_i'(v_{js_j} | \eta_{js_j}) \right)P_i'(v_{js_j} | \eta_{js_j})-\sum_{\phi_{j\not{s_j}i}\in Z}\left(1-P_i'(v_{j\not{s_j}} | \eta_{j\not{s_j}}) \right)P_i'(v_{j\not{s_j}} | \eta_{j\not{s_j}})$$
+
+What's important to note is that this function will be near 0 at $P\approx 1$ or $P\approx 0$ and will have its largest magnitude near $P \approx 0.5$. Why is this an issue? Well we know that as we get close to our maximum value for $\ln{\mathcal{L}}$ that our steps towards that maximum will get smaller and smaller. This is just because our steps are based on a derivative and we are seeking where the derivative is zero. Put another way getting to our max gets harder the closer we get to that maximum. 
+
+Now normally one deals with this by using the second derivative (the curvature) as a kind of correction. As you get closer to your maximum, you can use your curvature to guide how quickly you can move. If the curvature is very small in magnitude you can move more quickly because the odds of you overshooting your maximum are smaller. If your curvature is very large you'll slow things down because you know only small steps are required to make big changes to the derivative (the thing we are ultimately trying to set to a specific value here). I.e. you can modulate your step size by the inverse of the curvature. 
+
+However, in our case we don't actually know what the curvature is because we don't know what $Z$ is! Therefore we have to plan for the most volatile case - the case where $P\approx 0.5$. And that means that for any of our $Z$'s where $P$ is approaching 1 or 0 we'll be moving at a snail's pace (convergence will take forever). 
+
+Now in case you're wondering whether we could solve the $P\approx 0.5$ case first and then move onto the others remember that anytime we change any of the $\phi$ all the other probabilities change. So we have to solve this problem all at once. Because of that and because we cannot depend on knowing the $Z$ (different $Z$ can give the same value $\phi$) we're stuffed with having to take extraordinarily long convergence times. And this more or less means we've got no shot of using this in practice. \newline
+
+Log odds modeling doesn't work in practice for non-parametric models. 
+
+
+\newpage
+
+\section{Bibliography}
+
+\bibliographystyle{apalike}
+\bibliography{reference}
 
 
 \end{document}
