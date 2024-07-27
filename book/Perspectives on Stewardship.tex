@@ -56,9 +56,96 @@ In sum then management is about taking the mathematical fields outlined above to
 
 Our next step then in understanding what it means to manage is to find that operating abstraction that will allow us to avoid the proverbial boiling of the ocean. 
 
+\newpage
 
 
 
+\section{Stability and Control}
+
+What is a system? A system can be a lot of different things but fundamentally it is a set of states and how those states change. This allows us to define a pretty simple looking definition of a system. Suppose our state can be represented by a vector $x$. Following in the tradition of cybernetics\cite{cybernetics} we'll refer to this as our operand. Then our system simply transforms this operand into what we'll call a transform $x'$ which is just the new state of the system. The system therefore can be defined by $x'=T(x)$. Note here we're assuming that we're interested in our system as a set of discreet time steps. Also, for now we'll assume that $T$ is single valued which means that for each $x$ there is one and only one transform $x'$. Continuing in the language of cybernetics we call $T$ a transducer. So any system is simply a transducer. 
+
+Let's define a simple example transducer for ourselves. Suppose our $x$ is a vector of the number of fish at ages 0, 1, 2, and so on. That is:
+
+$$x=[n_0, n_1, ..., n_A]$$
+
+where $A$ is the maximum age of the species in question.
+
+Then suppose our transducer is given by:
+
+$$n_i'=T_i(n_{i-1})=n_{i-1}M \forall i > 0$$
+
+and 
+
+$$n_0'=R$$
+
+where $R > 0$ and $M < 1$.
+
+This represents a system where each age group experiences the same mortality $M$ and we have constant recruitment of baby fish each year. A simple system indeed but one that will give us something more concrete to work with as we go along. \newline
+
+Now our first question is - are there stable states within this system? What is a stable state? Well one situation that would be certainly stable is if there existed some $x$ such that $T(x)=x$ i.e. the system doesn't change the state. In our case this will be true if:
+
+$$n_i=RM^i$$
+
+This the represents an equilibrium point. We can however broaden this definition and ask whether there are sets of states $S=\{x\}$ such that for any $x\in S$ we also have that $T(x)\in S$. This would also be a kind of equilibrium in the sense that once the system enters $S$ it will never leave. Why broaden the definition like this? Well consider a system over three states $a$, $b$, and $c$ s.t. $T(a)=b$, $T(b)=a$ and $T(c)=a$. There is obviously no equilibrium point in this system as it will just volley back and forth between $a$ and $b$ but the set $S=\{a,b\}$ is still a smaller set than the whole domain of $T$ and clearly is stable within itself. In other words this definition allows us to still talk about stability even for oscillatory systems. 
+
+A set $S$ is therefore considered \textbf{stable} if for all $x\in S$ it follows that $T(x)\in S$. If your system enters a stable set it will never leave that set. \newline
+
+This however doesn't seem to really be enough to consider a system as a whole "stable". For example the transducer defined by $x'=T(x)=2x$ has a stable set $S=\{0\}$ but so long as $x\neq 0$ that system will never go to $S$. So what we want is not only a stable set $S$ but another set $U$ s.t. our system will tend towards $S$. 
+
+One way we could define this would be to ask if there is a set $U$ s.t. the under operation of our transducer the system state gets closer to $S$ and the new state is also in $U$. Then, by induction we would be able to say that asymptotically states in $U$ would go to $S$. To put it more precisely we'd be looking for another stable region $U$ (because we need points in $U$ to lead to other points in $U$ under transformation by our system) such that $d(x, S) > d(T(x), S) \forall x \in U$. Were $d(x, S)$ is the distance between $x$ and $S$. 
+
+Sometimes however $d$ is such a nasty function that evaluating that definition directly is quite difficult. When that is the case we can take advantage of an insight by Aleksandr Lyapunov\cite{stability}. Suppose that we have a function $V(x)$ defined on $U$ such that $V(x)=0$ when $x\in S$, $V(x)>0$ when $x\notin S$ and $V(x) > V(T(x)) \forall x\in U - S$. If these assumptions are true it also holds that the system tends toward $S$ while in $U$ and given $U$ is itself stable any point in $U$ \textit{will} asymptotically lead toward $S$. The $V$ are called Lyapunov Functions. 
+
+So in general we can now say that if there exists a stable set $U$ over which a lyapunov function can be defined relative to another stable set $S$ that $S$ is an \textbf{attractor} which is asymptotically stable. \newline
+
+So is our example system's equilibrium an attractor? Well if our equilibrium point is $s$, given some $x=[n_0, n_1, ..., n_A]$ we have:
+
+$$x_i-s_i=n_i-RM^i$$
+
+and 
+
+$$T_i(x_i) - s_i = n_{i-1}M-RM^i \forall i>0$$
+$$T_0(x_0) - s_0 = R - R = 0$$
+
+Effectively then the difference for each element where $i>0$ is getting multiplied by $M$ and $n_0$ is getting set precisely to $R$. Therefore the distance from equilibrium is certainly dropping under $T$ and so our $s$ is indeed an attractor. \newline
+
+At this point it seems our system is so simple it offers no interesting behavior. Surely if there were no fish to speak of we'd be in trouble! We can model this by creating a new piece-wise transducer where if the sum of $x$ is below some value $R$ begins to decrease with the sum of $x$. In other words if $\sum_i n_i < N$ then our $T_0$ becomes:
+
+$$T_0=R  \frac{\sum_i n_i}{N}$$
+
+In this case it will be noted we get a new stable set $x=0$. Our old stable set is also still there but now there is this "danger zone" as well. Indeed one can work out that there are sets $U$ and lyapunov functions for both of our equilibrium points that make both of them attractors. 
+
+This is really important to highlight because it shows that a system does not just exhibit one kind of behavior. One can in general have multiple attractors and so understanding our system means dividing up its domain into regions of attraction to specific attractors and regions that are either unattracted or just simply diverge. \newline
+
+Alright so far we've spoken of stable sets, attractors, and the fact that our system exhibits different behaviors based on the region it starts in. But we haven't yet talked about control. Control however is just the introduction of some new component to the system. I.e. rather than just having $T$ there is some second function $C$ which takes the output of $T$ and changes the states itself. However $C(T(x))=x'$ is itself just a new transducer. So everything we've talked about still applies. Where then is the control? Well usually $C$ will have "inputs". For example suppose that we've decided to apply a fishing mortality pressure $F$ to our earlier super simple system. I.e. we now have:
+
+$$n_i'=T_i(n_{i-1})=n_{i-1}M \forall i > 0$$
+
+and
+
+$$n_0'=RF$$
+
+Well we can see that as before we have an attractor now defined by:
+
+$$n_i=RM^iF^{i+1}$$
+
+The control here comes in the fact that we can \textit{choose} what $F$ should be. If $F$ is set to 0 then we arrive back at the old system, but as we vary $F$ the attractor will move. This is how we exert control. Note however that the set of attractors is simply a line through our state space. That is because we have a single control parameter. If we had two distinct parameters our set of equilibria would define a surface, if we had three a volume, and so on. I.e. the degrees of freedom in our control is limited by the degrees of freedom in our inputs. This is a restatement of the notion of Requisite Variety\cite{cybernetics}. Practically in our case it means that right now we can control how many fish we catch at equilibrium but not the age distribution of those fish. We'd need to add addition, independent control parameters to allow for that. \newline
+
+Alright let's summarize what we now know:
+
+\begin{enumerate}
+\item \textbf{Transducers:} Any system (including ones with regulators) can be defined as a transducer.
+\item \textbf{Stability:} A set $S$ is considered to be stable if for all $x\in S$ it is also true that $T(x)\in S$.
+\item \textbf{Attractors:} A set $S$ is an attractor if there exists a stable set $U$ and a lyapunov function of $x\in U$ relative to set $S$. 
+\item \textbf{Modes of Behavior:} In general a transducer $T$ may have multiple stable sets as well as regions that show no attraction. Therefore attraction is dependent both on the system and the starting state $x$. 
+\item \textbf{Control:} Control comes from the inclusion of input parameters to the system. The result of control is the movement of attractors and their regions of attraction. 
+\item \textbf{Requisite Variety:} The degrees of freedom in control is limited by the degrees of freedom in the input parameters. 
+\item \textbf{Laissez-Faire:} Given the above it should be clear now that control in a deterministic system is not about constantly grappling with that system. Instead it is about designing a system with input parameters that give the degrees of freedom and movement in attractors that's desired. Then, once those parameters have been set there is nothing left to do but allow the system to follow its course to stability. 
+\end{enumerate}
+
+That last point should feel like it stands in stark contrast to reality. Certainly life is not so simple that you can just design systems and never worry about them again. Yet if $T$ can be trusted it seems like that is the case. But what happens if $T$ can't be trusted? What happens if it changes under our feet? Well that brings us directly to the question of systems with noise.  
+
+\newpage
 
 \bibliographystyle{plain}
 \bibliography{reference}
