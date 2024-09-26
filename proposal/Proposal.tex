@@ -21,15 +21,18 @@
 \phantom{.}  %necessary to add space on top before the title
 \vspace{3cm}
 
-{\Huge \bf \@title\par}
+{\Large \bf \@title\par}
+\vspace{1cm}
+
+{\Large \bf (Proposal) \par}
 \vspace{2.5cm}
 
 {\LARGE Marcel Gietzmann-Sanders}\\[1cm]
 
 {\Large\@date}
 
-\vspace{2.5cm}
-{\Large Dr. Andrew Seitz}\hspace{2cm}{\Large Dr. Curry Cunningham}\\[2cm]{\Large Michael Courtney, M.S.}\\[2cm]
+\vspace{1cm}
+{\Large Dr. Andrew Seitz}\hspace{2cm}{\Large Dr. Curry Cunningham}\\[2cm]{\Large Michael Courtney, M.S.}\\[1cm]
 College of Fisheries and Ocean Sciences\\
 University of Alaska Fairbanks
 
@@ -38,7 +41,7 @@ University of Alaska Fairbanks
 }\makeatother
 
 
-\title{Master's Research Proposal (DRAFT)}
+\title{Demonstration of a Standardized Methodology for Building and Using Individual Movement Models using Chinook Salmon Pop-up Archival Tagging Data from the Gulf of Alaska}
 
 \date{2024}
 \setcounter{tocdepth}{2}
@@ -46,7 +49,7 @@ University of Alaska Fairbanks
 \maketitle
 \newpage
 
-\section{Summary}
+\section{Purpose}
 
 Vulnerability of fish stocks to various human and environmental impacts is tied to the spatio-temporal distribution and movement of those stocks. Therefore understanding these patterns is important to improving management practice today. Central to understanding these patterns is the creation of behavior models that can be used to test movement hypotheses and predict future and current movement behavior. Yet, as of today, there is no common methodology for building and using such models. The purpose of this study is to provide such a common methodology that takes advantage of modern computing solutions such as machine learning and the cloud. It is hoped that by providing such a strategy that (1) the barrier to producing movement models will be greatly reduced and (2) a common language for discussing, evaluating, and using these models will arise. 
 
@@ -74,14 +77,12 @@ However if you are interested in the rationales behind these objectives or divin
 
 \section{Objectives}
 
-The ultimate goal of this research is to provide a new pathway by which collections of high resolution spatio-temporal movement data that are representative of a species can be used to make a direct impact on fisheries management. It is hoped that this will provide an incentive for creating/enlarging such datasets. 
-
 \begin{objective}
-To provide tooling that allows for using machine learning methods to fit models of the form
+Movement modeling is fundamentally about modeling the selection of movement outcomes. So, given a set of choices $v_k$ and a set of features $n_k$ describing those choices, we want a standardized method to fit, evaluate, and use models of the form:
 
 $$\psi_k = G(\eta_k)$$
 
-that maximize the following objective:
+where $\psi_k$ is the "odds for" choice $v_k$. Such a model should maximize the following objective:
 
 
 $$\mathcal{L}=\prod_i P'(v_i | \eta_i)$$
@@ -90,7 +91,6 @@ where:
 
 $$P'(v_i|\eta_i) = \frac{\psi_i}{\sum_k \psi_k}$$
 
-These models will be known as odds models as they predict the "odds for" each outcome $v_k$ given the information contained in $\eta_k$. 
 
 \end{objective}
 
@@ -199,7 +199,7 @@ Some specific use cases we want to demonstrate with this simulation are:
 \item \textbf{Understanding Connectivity:} by looking at the vector flows of fish throughout the space we will be able to identify which areas are highly connected and which are more or less separated by environment, cohort, or other factors of fish behavior.
 \item \textbf{Understanding Vulnerability:} by especially looking at changes in depth occupancy and preference for habitat we will attempt to quantify the degree of vulnerability to different kinds of activities as a function of space and time. Specific vulnerabilities of interest might include: vulnerability to specific fishing fleets, vulnerability to naval training activities, vulnerability to marine mammals. 
 \item \textbf{Cumulative Mortality:} by being able to follow cohorts through space and time we should be able to show how different fishing pressure scenarios might affect the cumulative fishing mortality. Note that the data for specific fleets may be unavailable but that our interest here is to demonstrate that given data we can make these kinds of predictions.  
-\item \textbf{Protected Areas/Times:} Of those fishing pressure scenarios, one of especial interest is modeling Marine Protected Areas (MPAs) or other kinds of closures in space and time. Given the motility of Chinook, how effective would marine protected areas be? 
+\item \textbf{Protected Areas/Times:} Of those fishing pressure scenarios, one of especial interest is modeling Marine Protected Areas (MPAs) or other kinds of closures in space and time. Given the motility of Chinook, how must effective protected areas/times be designed? 
 \item \textbf{Uncertainty:} we will show that such a simulation can be run at scale, bootstrapping can be applied, and therefore uncertainty in simulation outcomes quantified. 
 \end{enumerate}
 
