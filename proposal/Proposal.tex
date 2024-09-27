@@ -21,15 +21,18 @@
 \phantom{.}  %necessary to add space on top before the title
 \vspace{3cm}
 
-{\Huge \bf \@title\par}
+{\Large \bf \@title\par}
+\vspace{1cm}
+
+{\Large \bf (Proposal) \par}
 \vspace{2.5cm}
 
 {\LARGE Marcel Gietzmann-Sanders}\\[1cm]
 
 {\Large\@date}
 
-\vspace{2.5cm}
-{\Large Dr. Andrew Seitz}\hspace{2cm}{\Large Dr. Curry Cunningham}\\[2cm]{\Large Michael Courtney, M.S.}\\[2cm]
+\vspace{1cm}
+{\Large Dr. Andrew Seitz}\hspace{2cm}{\Large Dr. Curry Cunningham}\\[2cm]{\Large Michael Courtney, M.S.}\\[1cm]
 College of Fisheries and Ocean Sciences\\
 University of Alaska Fairbanks
 
@@ -38,12 +41,18 @@ University of Alaska Fairbanks
 }\makeatother
 
 
-\title{Master's Research Proposal (DRAFT)}
+\title{Demonstrating a Standardized IBM Methodology using Chinook Salmon PSAT Data from the Gulf of Alaska}
 
 \date{2024}
 \setcounter{tocdepth}{2}
 \begin{document}
 \maketitle
+\newpage
+
+\section{Purpose}
+
+Vulnerability of fish stocks to various human and environmental impacts is tied to the spatio-temporal distribution and movement of those stocks. Therefore understanding these patterns is important to improving management practice today. Central to understanding these patterns is the creation of behavior models that can be used to test movement hypotheses and predict future and current movement behavior. Yet, as of today, there is no common methodology for building and using such models. The purpose of this study is to provide such a common methodology that takes advantage of modern computing solutions such as machine learning and the cloud. It is hoped that by providing such a strategy that (1) the barrier to producing movement models will be greatly reduced and (2) a common language for discussing, evaluating, and using these models will arise. 
+
 \newpage
 
 \section{Navigating This Document}
@@ -68,14 +77,12 @@ However if you are interested in the rationales behind these objectives or divin
 
 \section{Objectives}
 
-The ultimate goal of this research is to provide a new pathway by which collections of high resolution spatio-temporal movement data that are representative of a species can be used to make a direct impact on fisheries management. It is hoped that this will provide an incentive for creating/enlarging such datasets. 
-
 \begin{objective}
-To provide tooling that allows for using machine learning methods to fit models of the form
+\textbf{Standardized Decision Models} Movement (and more generally decision) modeling is fundamentally about modeling the selection of outcomes. So, given a set of choices $v_k$ and a set of features $n_k$ describing those choices, we want a standardized method to fit, evaluate, and use models of the form:
 
 $$\psi_k = G(\eta_k)$$
 
-that maximize the following objective:
+where $\psi_k$ is the "odds for" choice $v_k$. Such a model should maximize the following objective:
 
 
 $$\mathcal{L}=\prod_i P'(v_i | \eta_i)$$
@@ -84,25 +91,16 @@ where:
 
 $$P'(v_i|\eta_i) = \frac{\psi_i}{\sum_k \psi_k}$$
 
-These models will be known as odds models as they predict the "odds for" each outcome $v_k$ given the information contained in $\eta_k$. 
 
 \end{objective}
+
 
 \begin{objective}
-To provide tooling that allows for running spatio-temporal simulations of management strategies using movement models as defined above. Such simulations should allow for:
+\textbf{Standardized Decision Simulations} Given an individual in a specific situation, the decision models described above produce a set of probabilities for each potential next outcome $v_k$. However there is nothing preventing us from taking each of those outcomes, considering them each a new situation, and applying the models again. Carried out repeatedly we will end up with a probabilistic diffusion of the original individual across its decision space. Furthermore, if we can do this for one individual we can do it for an entire distribution of individuals. In sum, using this diffusion modeling approach we can simulate the movement through a decision space of an entire population. 
 
-\begin{enumerate}
-\item Flexible initial assumptions that capture heterogeneity in the stock.
-\item The ability to impose spatio-temporal mortality (both fishing and natural).
-\item The ability to capture heterogeneity in fishing vulnerability.
-\end{enumerate}
+Our second objective then is to build such a diffusion model. However, we would like to do it in such a way that life history, mortality, and environmental models can be provided as input as well. This diffusion model will then allow us to explore the spatio-temporal behavior of a stock under both nominal conditions as well as under various exploratory management strategies. 
 
-Likewise these simulations need to be quick enough to allow for capturing uncertainty in initial conditions through bootstrapping.\newline
-
-These simulations will be known as diffusion models as they model the probabilistic behavior of cohorts as opposed to individual fish or schools. 
 \end{objective}
-
-
 
 \newpage
 
@@ -134,7 +132,7 @@ Chapter 1 will be concerned with demonstrating the tooling for creating odds mod
 \begin{model}
 A depth occupancy model for Chinook salmon in the Gulf of Alaska (GOA). \newline
 
-\textbf{Target:} Depth range. \newline
+\textbf{Choices:} Discrete depth ranges. \newline
 
 \textbf{Features:} Environmental data derived either from environmental simulations or from remote sensing such as Google Earth, cohort data about the fish themselves, and temporal features such as month, season, or time of day. \newline
 
@@ -146,7 +144,7 @@ A depth occupancy model for Chinook salmon in the Gulf of Alaska (GOA). \newline
 \begin{model}
 A movement model for Chinook salmon in the Gulf of Alaska (GOA). \newline
 
-\textbf{Target:} Spatial grid cell selection as movement. Any state feature updates needed to capture internal states of a cohort. \newline
+\textbf{Choices:} Spatial grid cell selection as movement. Also if clearly different modes of movement are found (migration vs foraging for example) we'll predict the mode as well. \newline
 
 \textbf{Features:} Environmental data derived either from environmental simulations or from remote sensing such as Google Earth, cohort data about the fish themselves, temporal features such as month, season, or time of day, and internal state information about the cohort. \newline
 
@@ -156,63 +154,51 @@ A movement model for Chinook salmon in the Gulf of Alaska (GOA). \newline
 
 \end{model}
 
-In building these models our primary purpose is to demonstrate the tooling exists to prudently build odds models. We can frame this goal in terms of a "standard" machine learning pipeline and work-flow. 
+In building these models our primary purpose is to demonstrate the tooling exists to prudently build movement models. We can frame this goal in terms of a "standard" machine learning pipeline and work-flow. 
 
 \begin{enumerate}
 \item Formatting Data for Odds Modeling 
 \item Class Balancing
 \item Splitting Data into Train, Validation, Test
-\item Training and Hyperparameter Tuning Using Standard Model Types
-\item Diagnoses of Fit and Comparison of Different Model Types
+\item Training and Hyperparameter Tuning Using Standard Neural Net Architectures
+\item Diagnoses of Fit and Comparison of Different Models
 \item Identifying Sample Groups that are More or Less Fit
+\item Exploring Discovered Patterns
 \end{enumerate}
 
 We will want to explicitly demonstrate each of these processes, provide guidance on using the tools for them, and use them to build the models listed above. \newline
 
-The outcome will be a package in Python for building, diagnosing, and running odds models. Note that at this point the purpose is to demonstrate how to build odds models for the purpose of building simulations. It will be in the next chapter that specific research outcomes directly relevant to management will manifest themselves. The models' sole purpose will be in powering the simulations. 
+The outcome will be a package in Python for building, diagnosing, and running movement models. Note that at this point the purpose is to demonstrate how to build movement models for the purpose of building simulations. It will be in the next chapter that specific research outcomes directly relevant to management will manifest themselves. 
 
 \subsection{Chapter 2}
 
-Chapter 2 will be concerned with taking these models for Chinook salmon in the Gulf of Alaska and building a spatio-temporal movement simulation that can be used to investigate a series of management questions. It is worth noting that we will use the simulation to ask questions that may come up in general management settings even if they may not be directly applicable to the issues currently faced by Chinook salmon management in the GOA. This is just to demonstrate general applicability. \newline
+Chapter 2 will be concerned with taking these movement models for Chinook salmon in the Gulf of Alaska and building a diffusion model. We will then demonstrate its capabilities by exploring a series of management questions. It is worth noting that these questions have been chosen based on their facility in demonstrating the aspects of the simulation as opposed to their priority to current Chinook salmon management in the GOA.  \newline
 
-The overview of the components of this simulation are outlined in Fig. \ref{fig:simulation}. 
+The overview of the components of this diffusion model are outlined in Fig. \ref{fig:simulation}. 
 
 \begin{figure}[h!] 
   \includegraphics[width=\linewidth]{simulation.png}
   \caption{Simulation Outline}
   \medskip
 	\small
-	Boxes with rounded edges would be inputs specified by the user. The hexagons are functions 		provided by the simulation and the trapezoids are data generated during the main loop. 
+	Boxes with rounded edges would be inputs specified by the user. The hexagons are functions 		provided by the diffusion model and the trapezoids are data generated during the main loop. It is important to note that in this design we are planning for the most data rich case. However, depending on the application, mortality or environmental data may in fact have quite limited availability.
   \label{fig:simulation}
 \end{figure}
 
 
-Some specific use cases we want to demonstrate with this simulation are:
+The specific questions we would like to answer with this simulation are:
 
 \begin{enumerate}
 \item \textbf{Understanding Connectivity:} by looking at the vector flows of fish throughout the space we will be able to identify which areas are highly connected and which are more or less separated by environment, cohort, or other factors of fish behavior.
-\item \textbf{Understanding Vulnerability:} by especially looking at changes in depth occupancy and preference for habitat we will attempt to quantify the degree of vulnerability to different kinds of fishing gear as a function of space and time. 
-\item \textbf{Cumulative Mortality:} by being able to follow cohorts through space and time we should be able to show how different fishing pressure scenarios affect the cumulative fishing mortality.
-\item \textbf{Protected Areas/Times:} Of those fishing pressure scenarios, one of especial interest is modeling Marine Protected Areas (MPAs) or other kinds of closures in space and time.
+\item \textbf{Understanding Vulnerability:} by especially looking at changes in depth occupancy and preference for habitat we will attempt to quantify the degree of vulnerability to different kinds of activities as a function of space and time. Specific vulnerabilities of interest might include: vulnerability to specific fishing fleets, vulnerability to naval training activities, vulnerability to marine mammals. 
+\item \textbf{Cumulative Mortality:} by being able to follow cohorts through space and time we should be able to show how different fishing pressure scenarios might affect the cumulative fishing mortality. Note that the data for specific fleets may be unavailable but that our interest here is to demonstrate that given data we can make these kinds of predictions.  
+\item \textbf{Protected Areas/Times:} Of those fishing pressure scenarios, one of especial interest is modeling Marine Protected Areas (MPAs) or other kinds of closures in space and time. Given the motility of Chinook, how must effective protected areas/times be designed? 
 \item \textbf{Uncertainty:} we will show that such a simulation can be run at scale, bootstrapping can be applied, and therefore uncertainty in simulation outcomes quantified. 
 \end{enumerate}
 
 To give a specific example of what this might look like in practice, if we were interested in understanding how to protect one specific genetic cohort by creating fishing closures we would:
 
-\begin{enumerate}
-\item Input a distribution of the cohort at some initial time point as relative abundance per spatial grid cell.
-\item Input a time period over which to run the simulation (perhaps the fishing season in the area under study).
-\item Collect and input any environmental data needed for the movement model indexed by space and time.
-\item Then we might run the simulation without any fishing pressure to understand how the cohort naturally distributes itself and generate hypotheses for closures from this.
-\item We could then input fishing pressure (as a mortality function) by space and time for a few different scenarios where some would include our closures.
-\item Run the simulation for each of these scenarios and compare resulting abundance trends. 
-\end{enumerate}
-
 The outcome will be a package in Python for deploying, running, and analyzing diffusion models. 
-
-
-
-
 
 \newpage
 
@@ -372,7 +358,7 @@ $$P'(v_i|\eta_i) = \frac{\psi_i}{\sum_k \psi_k}$$\newline
 
 \subsection{Objective 2}
 
-From studies that started with Beverton and Holt's work on recruitment in fisheries, we know, with a reasonable degree of certainty, that as a general rule fish stocks operate according to an asymptotic relationship between spawning biomass and recruits \citep{waltersmartell} (Fig. \ref{fig:recruitment}). What we see is a clear pattern in recruitment verses spawners for low spawners and then eventually we reach a point where this curve asymptotes and large changes to the number of spawners creates little to no change (especially when considering the actual variability in this data) in the number of recruits. Obviously, given the real variability in nature, this pattern looks more like a scatter shot of points but plenty of studies over several species have shown this overall pattern in the mean borne out \citep{waltersmartell}. \newline
+From studies that started with Beverton and Holt's work on recruitment in fisheries, we know, with a reasonable degree of certainty, that as a general rule fish stocks operate according to an asymptotic relationship between spawning biomass and recruits \citep{waltersmartell} (Fig. \ref{fig:recruitment}). What we see is a clear pattern in recruitment verses spawners for low spawners and then eventually we reach a point where this curve asymptotes and large changes to the number of spawners creates little to no change (especially when considering the actual variability in this data) in the number of recruits (there is some variation on this theme depending on the precise stock recruitment model used). Given the real variability in nature, this pattern looks more like a scatter shot of points but plenty of studies over several species have shown this overall pattern in the mean borne out \citep{waltersmartell}. \newline
 
 \begin{figure}[h!] 
   \includegraphics[width=\linewidth]{recruitment.png}
@@ -382,19 +368,17 @@ From studies that started with Beverton and Holt's work on recruitment in fisher
 
 
 
-The implication for fisheries management is pretty clear - sustainable fishing is in large part driven by just maintaining the spawning stock biomass (SSB) above that knee in the curve \citep{waltersmartell} \citep{king}. Indeed this is well noted as the basis of why fisheries \textit{can} exist in the first place. If taking spawners always led to decreases in recruits, we'd quickly fish a stock out of existence. It is only through the compensation we get on the asymptote that sustainable fisheries are possible. \newline
+The implication for fisheries management is pretty clear - sustainable fishing is in large part driven by just maintaining the spawning stock biomass (SSB) above that knee in the curve \citep{waltersmartell} \citep{king}. Indeed this is well noted as the basis of why fisheries \textit{can} exist in the first place. If taking spawners always led to significant decreases in recruits, we'd quickly fish a stock out of existence. It is only through the compensation we get on the asymptote that sustainable fisheries are possible. However, two very simple observations of fish biology will show how actually managing SSB can be made difficult. \newline
 
-However, two very simple observations of fish biology will show how actually managing SSB can be made difficult.
+The first, and simplest, is age structure. Obviously we're talking here about maintaining a specific level of spawning stock biomass. But today's juveniles are tomorrow's SSB and as fish grow they typically become more fecund. This means that in order to maintain our SSB over time we have to be careful about how we target each age group. This gets even more complicated for fish like Pacific salmon (\textit{Oncorhynchus}) or many species of groupers (\textit{Epinephelinae}) where life history is intimately entwined with spawning. The salmon only breed once \citep{NOAA24} and some species of groupers are protogynous hermaphrodites \citep{RedGrouper} meaning that if you target a specific age group you are effectively targeting a specific sex. Clearly understanding and managing our age class selectivity matters when it comes to maintaining a healthy SSB for years to come. \newline
 
-The first, and simplest, is age structure. Obviously we're talking here about maintaining a specific level of spawning stock biomass. But today's juveniles are tomorrow's SSB and as fish grow they typically become more fecund. This means that in order to maintain our SSB over time we have to be careful about how we target each age group. This gets even more complicated for fish like Pacific salmon (\textit{Oncorhynchus}) or many species of groupers (\textit{Epinephelinae}) where life history is intimately entwined with spawning. The salmon obviously only breed once \citep{NOAA24} and some species of groupers are protogynous hermaphrodites \citep{RedGrouper} meaning that if you target a specific age group you are effectively targeting a specific sex. Clearly understanding and managing our age class selectivity matters when it comes to maintaining a healthy SSB for years to come. \newline
-
-The other observation is that many species of fishes actually form multiple sub stocks within what we may consider a single fishery (or sometimes many fisheries distributed across different countries) \citep{lorenzen2010} \citep{salmonplan} \citep{prince2010}. Pacific salmon are once again a good example in that they home to specific streams and only breed with other salmon in those streams and many other species of fish form fish spawning aggregations as well \citep{erisman2017}. Research also indicates that even fish like Atlantic herring likely form distinct genetic groups due to differences in homing during breeding and school behavior \citep{armstrong2001}. 
+The other observation is that many species of fishes actually form multiple sub stocks within what we may consider a single fishery (or sometimes many fisheries distributed across different countries) \citep{lorenzen2010} \citep{salmonplan} \citep{prince2010}. Pacific salmon are once again a good example in that they home to specific streams and only breed with other salmon in those streams and many other species of fish form fish spawning aggregations as well \citep{erisman2017}. Research also indicates that even fish like Atlantic herring likely form distinct genetic stocks due to differences in homing during breeding and school behavior \citep{armstrong2001}. 
 
 What does this mean? It means that if we trust our Beverton-Holt style model, instead of having a single SSB to manage we really have several SSBs - one for each sub stock. Obviously, if we set one global piece of management like an Allowable Biological Catch (ABC) that makes sense for a single SSB but then have biased fishing mortality where one sub stock is getting fished out far more than the others we may drop below the SSB for that one stock without actually exceeding our expected ABC for the whole fishery. And this can certainly happen as different sub stocks will often exhibit quite different spatial behaviors in movement \citep{tucker2019} \citep{punt2019} \citep{cadrin2020}. \newline
 
-All of this to say that understanding heterogeneity in vulnerability by things like age class and sub stock is of the utmost importance for managing a fishery and truly ensuring an appropriate amount of SSB remains year over year. It is also worth noting that this knowledge around changes in selectivity in space and time is not only useful for considerations around SSB but also for other management issues such as bycatch avoidance and growth overfishing. 
+All of this to say that understanding heterogeneity in selectivity by things like age class and sub stock is of the utmost importance for managing a fishery and truly ensuring an appropriate amount of SSB remains year over year. It is also worth noting that this knowledge around changes in selectivity in space and time is not only useful for considerations around SSB but also for other management issues such as bycatch avoidance and growth overfishing. 
 
-What kind of tooling do we need in order to address these issues and test out ideas for "selectivity aware" fisheries management? Clearly we need some kind of reliable simulation. \newline
+What kind of tooling do we need in order to address these issues and test out ideas for fisheries management? Clearly we need some kind of reliable simulation. \newline
 
 Suppose we built models of spatio-temporal behavior (specifically movement) as expressed in Objective 1. These models we know can be fed information that captures both environmental variables but also factors we'd like to categorize by in order to understand heterogeneity in selectivity. Such variables could include features like the age and genetic cohorts that we just described. Then we could take some baseline assumptions about abundance in space at a given time (say providing recruits at spawning grounds or taking a spatio-temporal assessment as a starting point) and use our behavioral models to simulate time-steps forward. As we do, we could account for natural mortality as well to complete the "environment" portion of our simulation. 
 
@@ -430,7 +414,7 @@ The latter two are then used along with tag release location to predict animal m
 We will look at movements on a day by day basis and depths at the transmitted resolution (2-5 minutes). For those tags retrieved, a much higher resolution is available (1-3 seconds) however most data is only guaranteed from transmission and not from retrieval \citep{PSAT}. 
 \newline
 
-Clearly then this kind of data suites our modeling and simulation purposes well as we get behavior outcomes directly. 
+Clearly then this kind of data suits our modeling and simulation purposes well as we get behavior outcomes directly. 
 
 \subsection{Chinook salmon in the GOA}
 
@@ -500,9 +484,9 @@ Obviously each of these individual pros are not unique to the strategy proposed 
 
 \subsection{Spatial Management}\label{spatial_management}
 
-Fisheries management is as diverse a subject as the species and cultures to which it is applied \citep{waltersmartell} \citep{king}. It simultaneously has to deal with creatures from Bluefin Tuna (\textit{Thunnus thynnus}) who make large oceanic migrations around the globe to various clams whose entire life cycles can be summarized within a few square meters \citep{prince2010}. There are species that school and species that consume those schools. Some live entirely at sea, some in inland rivers and lakes, and some, like salmon and eels spend time in both. There are species whose lives last the span of a year to others that can live longer than any us human beings. 
+Fisheries management is as diverse a subject as the species and contexts to which it is applied \citep{waltersmartell} \citep{king}. It simultaneously has to deal with creatures from Bluefin Tuna (\textit{Thunnus thynnus}) who make large oceanic migrations around the globe to various clams whose entire life cycles can be summarized within a few square meters \citep{prince2010}. There are species that school and species that consume those schools. Some live entirely at sea, some in inland rivers and lakes, and some, like salmon and eels spend time in both. There are species whose lives last the span of a year to others that can live longer than any us human beings. 
 
-And to capture this vast array of diversity are similarly diverse strategies and gears. From hooks to gillnets, from small boats to at sea factories, from recreational fishers to roving commercial bands, and everything in between the variety in strategies that exist to catch fish are numerous \citep{waltersmartell} \citep{king}. 
+And to capture this vast array of diversity are similarly diverse strategies and gears. From hooks to gillnets, from small boats to at sea factories, from recreational fishers to roving commercial fleets, and everything in between the variety in strategies that exist to catch fish are numerous \citep{waltersmartell} \citep{king}. 
 
 And then there are the stakeholders of these fisheries and their multitude of objectives. What kinds of fish sell the best? Is selling fish even the point or is subsistence a big concern? Is this a primary source of livelihood or are fishers also fishing for other things, or occupied with entirely different forms of work during other parts of the year? Where do conservation groups fit in? What about the natural predators and prey lodged nearby in the food web? Is the stock in need of rebuilding? What requirements of management are there? \citep{waltersmartell} \citep{king}
 
@@ -524,12 +508,12 @@ To this end simulations and models of the kind that we are proposing should be h
 
 \subsubsection{Driving Engagement}
 
-First, it is clear that engagement is best facilitated by presentations of knowledge or data that are visual and relevant to the ways in which people normally think about their world \citep{prince2010} \citep{lorenzen2010}. By having simulations that can simply be shown and laid down on a map that places the spatio-temporal modeling in familiar context, one should be able to make objections or confirmation much easier. Rather than having to attempt to condense down loads of parameters, summary statistics, and the like in a model, one can simply show a map and folks can point at things that line up or are in disagreement with their intuition and experience. In this way mapped out views of the simulation work to be a useful device for consensus building among multiple groups of stakeholders. Not everyone may be familiar with the nuances of a specific kind of model but everyone in the problem can point to a map and understand what's going on. 
+First, it is clear that engagement is best facilitated by presentations of knowledge or data that are visual and relevant to the ways in which people normally think about their world \citep{prince2010} \citep{lorenzen2010}. By having simulations that can simply be shown and laid down on a map that places the spatio-temporal modeling in familiar context, one should be able to make objections or confirmation much easier. Rather than having to attempt to condense down loads of parameters, summary statistics, and the like in a model, one can simply show a map and folks can point at things that line up or are in disagreement with their intuition and experience. In this way mapped out views of the simulation work to be a useful device for consensus building among multiple groups of stakeholders. Not everyone may be familiar with the nuances of a specific kind of model but everyone with an interest can point to a map and understand what's going on. 
 \newline
 
 With the simulation providing an easier to understand jumping off point to create feedback around a model, the models themselves provide a reasonably straightforward method for taking that feedback and working it into the model itself. This is because these models rely only on the information input as opposed to requiring modelers to determine the relationship between the information and the outcomes. 
 
-For example, suppose that we have a more standard model that has been hand crafted by a scientist familiar with the species in question. They may have included specific reactions to, say, oceanic currents, temperatures, and primary productivity. But then if someone looking at the simulation points out that they think the species' behavior is also being driven by day/night patterns the scientist then has to go back to the drawing board, figure out how to add this into their overall model, code it up, tune parameters, and then return - all without any real guarantee that whoever provided the feedback is right. And this would be for one piece of feedback. If there is a lot of feedback this only gets more difficult. 
+For example, suppose that we have a more standard model that has been hand crafted by a scientist familiar with the species in question. They may have included specific associations with, say, oceanic currents, temperatures, and primary productivity. But then if someone looking at the simulation points out that they think the species' behavior is also being driven by day/night patterns the scientist then has to go back to the drawing board, figure out how to add this into their overall model, code it up, tune parameters, and then return - all without any real guarantee that whoever provided the feedback is right. And this would be for one piece of feedback. If there is a lot of feedback this only gets more difficult. 
 
 Instead, by using machine learning as proposed here, such feedback would amount to playing around with a few day light features, pushing those to the model, retraining using the same automation as for any of the other feature combinations, and then just reporting if that information helped or not. Feedback can be incorporated much more easily, allowing for direct contribution to the model on the part of those who may have no modeling experience but have lots of practical experience that could suggest forms of information that would improve how targeted the model is.
 \newline
@@ -551,7 +535,7 @@ Unsurprisingly then, for any kind of spatial management tool in use today, spati
 
 \subsubsection{"Weather" Forecasting}
 
-Finally it is worth noting that the potential in combining this modeling with fisheries dependent information is quite interesting on its own. Any forecasting model is always going to have issues predicting farther and farther into the future but fisheries dependent data could provide a means for making corrections to keep the model in line. This would amount to something like weather forecast where for the next few days the forecast is accurate enough to precisely predict specific kinds of movement helpful to fishers themselves. 
+Finally it is worth noting that the potential in combining this modeling with fishery dependent information is quite interesting on its own. Any forecasting model is always going to have issues predicting farther and farther into the future but fisheries dependent data could provide a means for making corrections to keep the model in line. This would amount to something like weather forecast where for the next few days the forecast is accurate enough to precisely predict specific kinds of movement helpful to fishers themselves. 
 
 For example it could help them predict where to go to avoid high levels of bycatch, help optimize their use of fuel and labor when searching for fish, or, depending on the degree of subtlety in the model, might even be able to help them target catches that are more or less valuable on the market itself. 
 
@@ -564,15 +548,15 @@ With such direct incentives to fishers this might provide a jumping off point to
 
 \subsubsection{Assessments in Short}
 
-Fisheries assessments are one way in which unknown parameters important to management are estimated. By and large they are comprised of two models - (1) a state model that represents the underlying stock and contains such things as growth, age composition, recruitment, abundance, and so on and (2) an observation model that represents how data such as catch rates, fishery independent indices, and so on arise from the state model \citep{king}. Depending on how the assessment is being done the parameters in the state model will either be estimated independently or left as parameters in the model to be fit. The observation model on the other hand is encoded as a set of distributions dependent on those parameters (and including some parameters of its own) thus allowing for a likelihood to be computed against known data for any given set of parameters \citep{sippel2014}. This, in turn, allows for maximum likelihood estimation (MLE) routines to then fit the likely parameters of the assessment. \newline
+Fisheries assessments are one way in which unknown parameters important to management are estimated. By and large they are comprised of two models - (1) a state model that represents the underlying stock and contains such things as growth, age composition, recruitment, abundance, and so on and (2) an observation model that represents how data such as catch rates, fishery independent indices, and so on arise from the state model \citep{king}. Depending on how the assessment is being done the parameters in the state model will either be estimated independently or left as parameters in the model to be fit. The observation model on the other hand is encoded as a set of distributions dependent on those parameters (and including some parameters of its own) thus allowing for the likelihood of the parameters given the data to be computed \citep{sippel2014}. This, in turn, allows for maximum likelihood estimation (MLE) routines to then fit the likely parameters of the assessment. \newline
 
 So, as an example, you might have your state model be comprised of age cohorts that have a specific growth pattern (fit externally) and then you leave as parameters natural mortality and recruitment. Vulnerability might then be modeled to capture a couple different kinds of gear, provide an expected distribution for catches given your underlying abundance by cohort, and then "simulate" a few years. Matching this back to real catch data would then allow you to estimate your natural mortality and recruitment by year \citep{king} \citep{ASAP}. \newline
 
-In short the pattern is (1) design a sim that has your unknown statistics as parameters, (2) specify how data is drawn from the sim, (3) fit your parameters using MLE. Then those desired statistics are extracted from the assessment (usually with some notion of uncertainty attached to them) and used to inform management. 
+In short the pattern is (1) design a simulation that has your unknown statistics as parameters, (2) specify how data is drawn from the simulation, (3) fit your parameters to your data using MLE. Then those desired statistics are extracted from the assessment (usually with some notion of uncertainty attached to them) and used to inform management. 
 
 \subsubsection{Features of Spatial Assessments}
 
-As has been noted by several authors, most standard assessments have typically assumed in their state model (or simulation) that the stock they are working with is bounded by the area under assessment, is well mixed, and constitutes a single unit \citep{sippel2014} \citep{punt2019} \citep{goethel2023}. However from studies of fish behavior and the fact that fish obviously don't obey national or state defined boundaries, these assumptions are rarely true and indeed simulation studies have shown that assuming them can lead to significant errors and biases \citep{lorenzen2010}. 
+As has been noted by several authors, most standard assessments have typically assumed in their state model (or simulation) that the stock of interest is bounded by the area under assessment, is well mixed, and constitutes a single unit \citep{sippel2014} \citep{punt2019} \citep{goethel2023}. However from studies of fish behavior and the fact that fish obviously don't obey national or state defined boundaries, these assumptions are rarely true and indeed simulation studies have shown that assuming them can lead to significant errors and biases \citep{lorenzen2010}. 
 
 Therefore in recent years there has been work in creating new assessments that are able to capture spatial heterogeneity and movement \citep{punt2019} \citep{cadrin2020}. There are effectively two different kinds of heterogeneity that such models have to capture - that in recruitment and that in post recruitment movement and connectivity (or lack thereof). As such these models are usually structured as having multiple sub regions within the overall assessment region and then model the following:
 
@@ -603,7 +587,7 @@ Given that ultimately we do \textit{not} know the underlying structure (models s
 
 The way out of this hole, as many authors have noted, is to use simulations \citep{cadrin2020} \citep{goethel2023}. Specifically one can use simulations to do hypothesis testing of the form - if my stock had spatial structure of the form X would my specific assessment capture that at all or would it introduce biases and/or errors as a result? This is a very powerful technique that has been responsible for illustrating just how important spatial assessments are to management in the first place.\newline
 
-Here then is another potential application of the kind of model proposed in this document. As we mentioned earlier these assessments are trying to model at least three things - recruitment, local population dynamics parameters such as growth or natural mortality, and then movement. By having a movement simulation based on real observations of the species in question we would be able to help build a high quality simulation of at least the last of those three. Rather than having to assume one form of a movement or another we'd instead be able to see whether the assessment paradigm in question can capture the relevant aspects of structure in the \textit{real} movement of our stocks and sub-stocks. And this in turn would help in selecting the assessments best suited to the job (as well as illustrate what uncertainties exist if a lack of specific kinds of data requires us to use an over-simplified assessment paradigm). 
+Here then is another potential application of the kind of model proposed in this document. As we mentioned earlier these assessments are trying to model at least three things - recruitment, local population dynamics parameters such as growth or natural mortality, and then movement. By having a movement simulation based on real observations of the species in question we would be able to help build a high quality simulation of at least the last of those three. Rather than having to assume one form of movement or another we'd instead be able to see whether the assessment paradigm in question can capture the relevant aspects of structure in the \textit{real} movement of our stocks and sub-stocks. And this in turn would help in selecting the assessments best suited to the job (as well as illustrate what uncertainties exist if a lack of specific kinds of data requires us to use an over-simplified assessment paradigm). 
 
 \subsubsection{Comments on Interpretation}
 
@@ -669,7 +653,7 @@ Finally it has been noted that one can derive Eulerian models from Lagrangian on
 There are a series of key issues \citep{grimm} that have arisen in building IBM's of which we will note a few that relate to our proposal:
 
 \begin{enumerate}
-\item \textbf{High Precision as a Requirement} - IBMs typically predict what an animal \textit{will} do as opposed to the likelihoods of what it \textit{could} do. This creates the requirement for capturing \textit{all} the meaningful drivers of variability in the behavior of the animal. To see why this is consider the example of a creature that can either choose to stay put or move to another location. If the more likely of the two actions is to stay put a deterministic model \textit{must} predict that the animal will \textit{always} stay put. But this is obviously non-sensical. However because the model is deterministic in nature the modeler cannot depend on stochasticity to save the day - instead they must find whatever is driving the difference between staying put and moving on. And this can cascade into greater and greater requirements for modeling the "internal state" of an animal. 
+\item \textbf{High Precision as a Requirement} - IBMs typically predict what an animal \textit{will} do as opposed to the likelihoods of what it \textit{could} do. This creates the requirement for capturing \textit{all} the meaningful drivers of variability in the behavior of the animal. To see why this is consider the example of a creature that can either choose to stay put or move to another location. If the more likely of the two actions is to stay put a deterministic model \textit{must} predict that the animal will \textit{always} stay put. But this is obviously non-sensical. However, because the model is deterministic in nature the modeler cannot depend on stochasticity to save the day - instead they must find whatever is driving the difference between staying put and moving on. And this can cascade into greater and greater requirements for modeling the "internal state" of an animal. 
 \item \textbf{Obscurity} - given the inherent complexity of IBMs that arises from the point above it gets increasingly difficult to make IBMs clear to new users or potential developers. There can often be many dozens of different parameters, functions, and "internal states" to keep track of without even considering all of the external modeling that has to go in place to provide for all of this. And this makes for not just complicated descriptions but equally if not more complicated code.
 \item \textbf{Hand Made} - almost all IBMs have been hand-coded in the sense that every functional relationship is specifically crafted and outlined by the modeler. This is obviously a very laborious process but it also means that no two IBMs are the same and that lack of generalization or abstraction makes exchanging lessons learned near difficult to impossible. 
 \item \textbf{No Generalization of Fitting or Diagnostics} - because each IBM is effectively unique the methods for fitting, the data used, and the diagnostics developed are all unique as well. This once again increases the workload of the modeler, makes exchanging lessons learned and best practices extremely difficult, and also makes starting a new model from scratch quite prohibitive. 
@@ -707,9 +691,9 @@ Chinook salmon (\textit{Oncorhynchus tshawytscha}) are the largest species of Pa
 
 Juvenile Chinook salmon are generally born in the rivers where their parents spawned (although some genetic mixing does occur through straying). Sometime in their first or second year of life they transition to the marine environment where they will spend the rest of their life before maturation \citep{oceanchinook}. This leads to a specific system of enumerating age that includes both years in freshwater and years at sea. For example if a particular fish spends one winter in freshwater and so far 2 at sea it would be a 1.2 age fish. If it spent zero winters in freshwater and 3 at sea it would be a 0.3 age fish. Clearly both of these examples are the same overall age.
 
-The immature fish then spend time (up to five years) growing in the marine environment before maturing and then migrating back to the river where they were born to breed and subsequently die \citep{oceanchinook}. The timing of such homing behavior is clearly season dependent with species further north having to avoid ice build up during the cooler months \citep{oceanchinook}. The mechanism behind this homing ability is still a question under active research \citep{bracis2012}. \newline
+The immature fish then spend time (up to five years) growing in the marine environment before maturing and then migrating back to the river where they were born to breed and subsequently die \citep{oceanchinook}. The timing of such homing behavior is clearly season dependent with species further north having to avoid ice build up during the cooler months \citep{oceanchinook}. The mechanism behind this natal homing ability is still a question under active research \citep{bracis2012}. \newline
 
-Given this homing behavior, Chinook salmon populations are in fact a series of reasonably separated genetic sub-populations each of which can have its own life history strategies. Indeed using tagging data it has been demonstrated that both the initial and later marine distributions of Chinook salmon is highly dependent on the region of origin for the fish in question \citep{shelton2019} \citep{tucker2019}. 
+Given this homing behavior, Chinook salmon populations are in fact a series of reasonably separated genetic sub-populations each of which can have its own life history strategy. Indeed using tagging data it has been demonstrated that both the initial and later marine distributions of Chinook salmon is highly dependent on the region of origin for the fish in question \citep{shelton2019} \citep{tucker2019}. 
 
 Beyond this, large scale analysis of fisheries dependent data has also demonstrated some of the likely migration patterns the species exhibits during its rearing phase at sea \citep{langan2024}. 
 
@@ -729,11 +713,9 @@ Chinook salmon have been the subject of hatchery programs since the 1950s with t
 
 Fish are released at weights of around 6-9g and a large number of these have a micro-wire with an identifiable code etched into them inserted into their snouts. These are the tags driving the Coded Wire Tag program in the Northeastern Pacific that has become a major source of demographic and movement data used in managing and understanding Chinook salmon sub-populations \citep{shelton2019}. The etchings provide a unique label for each cohort from each hatchery. 
 
-The initial purpose of these hatcheries programs was to supplement losses in juveniles due to targeting of adult fish in river systems, however the programs have not created the kind of recovery that was intended and it is unclear how wild and hatchery populations interact. For example it is well known that there is quite a bit of genetic exchange between wild and hatchery types and concern that hatchery types are less suited to wild environments \citep{oceanchinook}. \newline
+The initial purpose of these hatchery programs was to supplement losses in juveniles due to targeting of adult fish in river systems, however the programs have not created the kind of recovery that was intended and it is unclear how wild and hatchery populations interact. For example it is well known that there is quite a bit of genetic exchange between wild and hatchery types and concern that hatchery types are less suited to wild environments \citep{oceanchinook}. \newline
 
-There are valuable tribal, commercial, and recreational fisheries of Chinook salmon throughout the Pacific \citep{salmonplan}.
-
-Given the highly mobile nature of Chinook salmon independent management by sovereign nations is simply not possible and so management is the ultimate responsibility of the Pacific Fishery Management Council. Federal management councils (NOAA for the United States) then collaborate with the Pacific Fishery Management Council to set harvest quotas and other management objectives. The governments of Cananda and the United States then work with states, tribes, and industry to create and manage shared objectives based on these overall goals \citep{NOAA22}. 
+There are valuable tribal, commercial, and recreational fisheries of Chinook salmon throughout the Pacific \citep{salmonplan} yet given the highly mobile nature of Chinook salmon independent management by sovereign nations is simply not possible and so management is the ultimate responsibility of the Pacific Salmon Commission. Federal management councils (NOAA for the United States) then collaborate with the Pacific Salmon Commission to set harvest quotas and other management objectives. The governments of Cananda and the United States then work with states, tribes, and industry to create and manage shared objectives based on these overall goals \citep{NOAA22}. 
 
 These management goals as well as designations of statuses such as "overfished" have to be stated on the sub-population level given the fact that Chinook salmon form so many different genetic sub-populations \citep{salmonplan} - a fact that further complicates management. Indeed several sub populations are actually listed as endangered and threatened under the Endangered Species Act \citep{NOAA24}.
 
@@ -818,122 +800,7 @@ All in all then, given their ecology, data availability, and the corresponding c
 
 
 
-\section{Appendices}
 
-
-\subsection{Value of Log Likelihood Maximization}
-
-\begin{theorem}
-Suppose we have a set of possible outcomes $V=\lbrace v_k \rbrace$ with probabilities $P_k$. Such that:
-
-$$\sum_k P_k = P$$
-
-Next suppose we concoct a new series of probabilities $U_k = P_k \alpha_k$ s.t. 
-
-$$\sum_k U_k = P-\epsilon$$
-
-where $\epsilon \geq 0$. There does not exist a set of $\alpha_k$ s.t.
-
-$$\prod_k \left(\frac{P_k\alpha_k}{P_k}\right)^{P_kN}>1$$
-
-\end{theorem}
-
-\begin{proof}
-
-We proceed by induction. \newline
-
-First note that from the equation above we get:
-
-$$\sum_k P_k \ln \alpha_k > 0$$
-
-and subtracting $\sum_k U_k$ we arrive at:
-
-$$\sum_k P_k \left( \ln \alpha_k - \alpha_k \right) > -P+\epsilon$$
-
-Now suppose for $k$ outcomes we know no such $\alpha_k$ exist as to satisfy the above. Suppose we incorporate a new $k+1$ term s.t:
-
-$$P_{k+1} + \sum_k {P_k} = P_{k+1} + P$$ 
-
-and:
-
-$$P_{k+1}\alpha_{k+1} + \sum_k {P_k}\alpha_k = P_{k+1} + P - \epsilon = P_{k+1}\alpha_{k+1} + \left(P - P_{k+1}(\alpha_{k+1}-1) \right) - \epsilon$$ 
-
-Now we need:
-
-$$P_{k+1}\left(\ln \alpha_{k+1} - \alpha_{k+1}\right) + \sum_k P_k \left( \ln \alpha_k - \alpha_k \right) > -P_{k+1}-P+\epsilon$$
-
-However given our inductive assumption we know that at best, 
-
-$$\sum_k P_k \left( \ln \alpha_k - \alpha_k \right)=-P$$
-
-therefore at best:
-
-$$P_{k+1}\left(\ln \alpha_{k+1} - \alpha_{k+1}\right) - P > -P - P_{k+1} + \epsilon$$
-
-Furthermore the easiest case for us is if $\epsilon=0$. If it cannot be satisfied than this certainly doesn't work for $\epsilon>0$. So let's consider:
-
-$$P_{k+1}\left(\ln \alpha_{k+1} - \alpha_{k+1}\right) - P > -P - P_{k+1}$$
-
-or equivalently:
-
-$$\ln \alpha_{k+1}> \alpha_{k+1}-1$$
-
-Now if $\alpha_{k+1}=1$ we have:
-
-$$\ln 1 = 1-1$$
-
-Further consider the derivatives of each side:
-
-$$\partial_{\alpha}\ln \alpha_{k+1}=\frac{1}{\alpha_{k+1}}$$
-
-$$\partial_{\alpha}(\alpha_{k+1}-1) = 1$$
-
-If $\alpha_{k+1}> 1$ then the log component rises more slowly than the constant component. I.e. our left side will be larger than the right. Likewise if $\alpha_{k+1}<1$ the log component will shrink faster that the constant component which means it will also be less than the constant component. Therefore given our assumptions:
-
-$$\ln \alpha_{k+1} \not\ge \alpha_{k+1}-1$$
-
-and so:
-
-$$P_{k+1}\left(\ln \alpha_{k+1} - \alpha_{k+1}\right) - P \not\ge -P - P_{k+1} + \epsilon$$
-
-So much for the $k+1$th case. What about $k=1$. This is trivial because any $\alpha_1$ that satisfies:
-
-$$\sum_k U_k = P-\epsilon$$
-
-must be less than or equal to $1$ and therefore our product of quotients:
-
-$$\prod_k \left(\frac{P_k\alpha_k}{P_k}\right)^{P_kN}>1$$
-
-must be less than or equal to one. 
-
-\end{proof}
-
-
-With this proof in hand we can now show how in the limit as the number of samples taken $N$ goes to infinity our likelihood is only maximized if $\hat{F} \rightarrow F$. \newline
-
-For some given information $\theta$ and outcomes $V=\lbrace v_k \rbrace$ we have, in gathering our data, observed $v_k$ $N_k$ times. Therefore our overall likelihood is:
-
-$$\mathcal{L} = \prod_k \hat{F}(v_k, \theta)^{N_k}$$
-
-Now suppose that we represent:
-
-$$\hat{F}(v_k, \theta)=F(v_k, \theta)\alpha_k$$
-
-That is the ratio of our likelihoods between $\hat{F}$ and $F$ is given by:
-
-$$\prod_k \left(\frac{F(v_k, \theta)\alpha_k}{F(v_k, \theta)}\right)^{N_k}$$
-
-but we also know that:
-
-$$\sum_k F(v_k, \theta) = \sum_k F(v_k, \theta)\alpha_k = 1$$
-
-and that $\lim_{N\rightarrow \inf}N_k = F(v_k, \theta)N$ so that we have:
-
-$$\prod_k \left(\frac{F(v_k, \theta)\alpha_k}{F(v_k, \theta)}\right)^{F(v_k, \theta)N}$$
-
-which is now in the exact same form as our theorem above. And we now know that this ratio is maximized when $\alpha_k\equiv 1$. So as $N\rightarrow \inf$ a higher $\mathcal{L}$ means we are closer to approximating $F$. 
-
-\newpage
 
 
 
