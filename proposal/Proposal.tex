@@ -41,7 +41,7 @@ University of Alaska Fairbanks
 }\makeatother
 
 
-\title{Demonstration of a Standardized Methodology for Building and Using Individual Movement Models using Chinook Salmon Pop-up Archival Tagging Data from the Gulf of Alaska}
+\title{Demonstrating a Standardized IBM Methodology using Chinook Salmon PSAT Data from the Gulf of Alaska}
 
 \date{2024}
 \setcounter{tocdepth}{2}
@@ -78,7 +78,7 @@ However if you are interested in the rationales behind these objectives or divin
 \section{Objectives}
 
 \begin{objective}
-Movement modeling is fundamentally about modeling the selection of movement outcomes. So, given a set of choices $v_k$ and a set of features $n_k$ describing those choices, we want a standardized method to fit, evaluate, and use models of the form:
+\textbf{Standardized Decision Models} Movement (and more generally decision) modeling is fundamentally about modeling the selection of outcomes. So, given a set of choices $v_k$ and a set of features $n_k$ describing those choices, we want a standardized method to fit, evaluate, and use models of the form:
 
 $$\psi_k = G(\eta_k)$$
 
@@ -94,21 +94,13 @@ $$P'(v_i|\eta_i) = \frac{\psi_i}{\sum_k \psi_k}$$
 
 \end{objective}
 
+
 \begin{objective}
-To provide tooling that allows for running spatio-temporal simulations of management strategies using movement models as defined above. Such simulations should allow for:
+\textbf{Standardized Decision Simulations} Given an individual in a specific situation, the decision models described above produce a set of probabilities for each potential next outcome $v_k$. However there is nothing preventing us from taking each of those outcomes, considering them each a new situation, and applying the models again. Carried out repeatedly we will end up with a probabilistic diffusion of the original individual across its decision space. Furthermore, if we can do this for one individual we can do it for an entire distribution of individuals. In sum, using this diffusion modeling approach we can simulate the movement through a decision space of an entire population. 
 
-\begin{enumerate}
-\item Flexible initial assumptions that capture heterogeneity in the stock.
-\item The ability to impose spatio-temporal mortality (both fishing and natural).
-\item The ability to capture heterogeneity in fishing vulnerability.
-\end{enumerate}
+Our second objective then is to build such a diffusion model. However, we would like to do it in such a way that life history, mortality, and environmental models can be provided as input as well. This diffusion model will then allow us to explore the spatio-temporal behavior of a stock under both nominal conditions as well as under various exploratory management strategies. 
 
-Likewise these simulations need to be quick enough to allow for capturing uncertainty in initial conditions through bootstrapping.\newline
-
-These simulations will be known as diffusion models as they model the probabilistic behavior of cohorts as opposed to individual fish or schools. 
 \end{objective}
-
-
 
 \newpage
 
@@ -140,7 +132,7 @@ Chapter 1 will be concerned with demonstrating the tooling for creating odds mod
 \begin{model}
 A depth occupancy model for Chinook salmon in the Gulf of Alaska (GOA). \newline
 
-\textbf{Target:} Discrete depth ranges. \newline
+\textbf{Choices:} Discrete depth ranges. \newline
 
 \textbf{Features:} Environmental data derived either from environmental simulations or from remote sensing such as Google Earth, cohort data about the fish themselves, and temporal features such as month, season, or time of day. \newline
 
@@ -152,7 +144,7 @@ A depth occupancy model for Chinook salmon in the Gulf of Alaska (GOA). \newline
 \begin{model}
 A movement model for Chinook salmon in the Gulf of Alaska (GOA). \newline
 
-\textbf{Target:} Spatial grid cell selection as movement. Also if clearly different modes of movement are found (migration vs foraging for example) we'll predict the mode as well. \newline
+\textbf{Choices:} Spatial grid cell selection as movement. Also if clearly different modes of movement are found (migration vs foraging for example) we'll predict the mode as well. \newline
 
 \textbf{Features:} Environmental data derived either from environmental simulations or from remote sensing such as Google Earth, cohort data about the fish themselves, temporal features such as month, season, or time of day, and internal state information about the cohort. \newline
 
@@ -162,38 +154,39 @@ A movement model for Chinook salmon in the Gulf of Alaska (GOA). \newline
 
 \end{model}
 
-In building these models our primary purpose is to demonstrate the tooling exists to prudently build odds models. We can frame this goal in terms of a "standard" machine learning pipeline and work-flow. 
+In building these models our primary purpose is to demonstrate the tooling exists to prudently build movement models. We can frame this goal in terms of a "standard" machine learning pipeline and work-flow. 
 
 \begin{enumerate}
 \item Formatting Data for Odds Modeling 
 \item Class Balancing
 \item Splitting Data into Train, Validation, Test
 \item Training and Hyperparameter Tuning Using Standard Neural Net Architectures
-\item Diagnoses of Fit and Comparison of Different Model Types
+\item Diagnoses of Fit and Comparison of Different Models
 \item Identifying Sample Groups that are More or Less Fit
+\item Exploring Discovered Patterns
 \end{enumerate}
 
 We will want to explicitly demonstrate each of these processes, provide guidance on using the tools for them, and use them to build the models listed above. \newline
 
-The outcome will be a package in Python for building, diagnosing, and running odds models. Note that at this point the purpose is to demonstrate how to build odds models for the purpose of building simulations. It will be in the next chapter that specific research outcomes directly relevant to management will manifest themselves. The models' sole purpose will be in powering the simulations. 
+The outcome will be a package in Python for building, diagnosing, and running movement models. Note that at this point the purpose is to demonstrate how to build movement models for the purpose of building simulations. It will be in the next chapter that specific research outcomes directly relevant to management will manifest themselves. 
 
 \subsection{Chapter 2}
 
-Chapter 2 will be concerned with taking these models for Chinook salmon in the Gulf of Alaska and building a spatio-temporal movement simulation that can be used to investigate a series of management questions. It is worth noting that we will use the simulation to ask questions that may come up in general management settings even if they may not be directly applicable to the issues currently faced by Chinook salmon management in the GOA. This is just to demonstrate general applicability. \newline
+Chapter 2 will be concerned with taking these movement models for Chinook salmon in the Gulf of Alaska and building a diffusion model. We will then demonstrate its capabilities by exploring a series of management questions. It is worth noting that these questions have been chosen based on their facility in demonstrating the aspects of the simulation as opposed to their priority to current Chinook salmon management in the GOA.  \newline
 
-The overview of the components of this simulation are outlined in Fig. \ref{fig:simulation}. 
+The overview of the components of this diffusion model are outlined in Fig. \ref{fig:simulation}. 
 
 \begin{figure}[h!] 
   \includegraphics[width=\linewidth]{simulation.png}
   \caption{Simulation Outline}
   \medskip
 	\small
-	Boxes with rounded edges would be inputs specified by the user. The hexagons are functions 		provided by the simulation and the trapezoids are data generated during the main loop. It is important to note that this design is anticipatory, not all mortality or environmental data may be available at this time in which case spatially homogeneous inputs would be provided.  
+	Boxes with rounded edges would be inputs specified by the user. The hexagons are functions 		provided by the diffusion model and the trapezoids are data generated during the main loop. It is important to note that in this design we are planning for the most data rich case. However, depending on the application, mortality or environmental data may in fact have quite limited availability.
   \label{fig:simulation}
 \end{figure}
 
 
-Some specific use cases we want to demonstrate with this simulation are:
+The specific questions we would like to answer with this simulation are:
 
 \begin{enumerate}
 \item \textbf{Understanding Connectivity:} by looking at the vector flows of fish throughout the space we will be able to identify which areas are highly connected and which are more or less separated by environment, cohort, or other factors of fish behavior.
@@ -205,20 +198,7 @@ Some specific use cases we want to demonstrate with this simulation are:
 
 To give a specific example of what this might look like in practice, if we were interested in understanding how to protect one specific genetic cohort by creating fishing closures we would:
 
-\begin{enumerate}
-\item Input a distribution of the cohort at some initial time point as relative abundance per spatial grid cell.
-\item Input a time period over which to run the simulation (perhaps the fishing season in the area under study).
-\item Collect and input any environmental data needed for the movement model indexed by space and time.
-\item Then we might run the simulation without any fishing pressure to understand how the cohort naturally distributes itself and generate hypotheses for closures from this.
-\item We could then input fishing pressure (as a mortality function) by space and time for a few different scenarios where some would include our closures.
-\item Run the simulation for each of these scenarios and compare resulting abundance trends. 
-\end{enumerate}
-
 The outcome will be a package in Python for deploying, running, and analyzing diffusion models. 
-
-
-
-
 
 \newpage
 
