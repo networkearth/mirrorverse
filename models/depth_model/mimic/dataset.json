@@ -1,0 +1,17 @@
+{
+    "database": "haven",
+    "table": "depth_model_features_mk3",
+    "train_partitions": 40,
+    "test_partitions": 20,
+    "max_choices": 10,
+    "features": ["depth_class", "daytime", "month", "period_progress", "elevation"],
+    "missing_values_map": {
+        "depth_class": -1000,
+        "daytime": -1000,
+        "month": -1000,
+        "period_progress": -1000,
+        "elevation": -1000
+    },
+    "space": "mimic-log-odds",
+    "dataset": "depth-model-mk3"
+}

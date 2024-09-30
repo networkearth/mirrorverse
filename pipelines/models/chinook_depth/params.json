@@ -1,8 +1,0 @@
-{
-    "bootstrap": [false],
-    "n_jobs": [6],
-    "n_estimators": [1],
-    "min_weight_fraction_leaf": [0.00005],
-    "max_features": [2],
-    "learning_rate": [0.1]
-}

@@ -1,0 +1,19 @@
+{
+    "database": "haven",
+    "table": "depth_model_hypercube_mk3",
+    "train_partitions": 0,
+    "test_partitions": 4,
+    "max_choices": 10,
+    "features": ["depth_class", "daytime", "month", "period_progress", "elevation"],
+    "missing_values_map": {
+        "depth_class": -1000,
+        "daytime": -1000,
+        "month": -1000,
+        "period_progress": -1000,
+        "elevation": -1000
+    },
+    "space": "mimic-log-odds",
+    "experiment_name": "depth-model-mk3-session1",
+    "run_id": "697dc29ac80163163d968ef8dfb892878c84a650772949282d6e9b70cc06b5df",
+    "upload_table": "depth-model-mk3-hypercube-inference"
+}

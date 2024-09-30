@@ -1,0 +1,29 @@
+{
+    "experiment_name": "depth-model-mk3-session1",
+    "space": "mimic-log-odds",
+    "dataset": "depth-model-mk3",
+    "max_choices": 10,
+    "features": ["depth_class", "daytime", "month", "period_progress", "elevation"],
+    "database": "haven",
+    "table": "depth_model_mk3_session1",
+    "models": [
+        {
+            "batch_size": 5000,
+            "epochs": 15,
+            "layers": [
+                "D64",
+                "D32",
+                "D16"
+            ]
+        },
+        {
+            "batch_size": 10000,
+            "epochs": 15,
+            "layers": [
+                "D16",
+                "D8",
+                "D4"
+            ]
+        }
+    ]
+}
