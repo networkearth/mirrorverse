@@ -91,4 +91,41 @@ where the `region` must correspond to an entry in the `REGIONS` dict in `prepare
 
 The data will be dropped as a `.snappy.parquet` file for each date in the `output-directory`.
 
+## Uploading the Data to Haven
+
+This bit is easy! Just point to the folder you already created in the last step with a command like this:
+
+```bash
+python upload_data.py \
+    --input-directory physics \
+    --table copernicus_physics \
+    --num_workers 7
+```
+
+Note that the table will be partitioned by `h3_resolution`, `region`, and `date`.
+
+## Running from a Container
+
+If you want to run all of this from a VSCode container you'll just need to update the `devcontainer.json`
+to include something like the following:
+
+```json
+{
+    "mounts": [
+        "source=/Volumes/Copernicus1,target=/workspaces/ExternalDrive,type=bind,consistency=cached"
+    ],
+	"name": "Mirrorverse Dockerfile",
+	"build": {
+		// Sets the run context to one level up instead of the .devcontainer folder.
+		"context": "..",
+		// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
+		"dockerfile": "../Dockerfile"
+	}
+}
+```
+
+where the important piece is the mounts section. Once you are done you'll want to unmount the drive 
+as well by commenting out that section and rebuilding the container. Otherwise you won't be able
+to open VSCode without the external drive attached. 
+
 
