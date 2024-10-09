@@ -25,3 +25,4 @@ notebooks/
 *.run.xml
 *.drawio.bkp
 *.jar
+*.snappy.parquet

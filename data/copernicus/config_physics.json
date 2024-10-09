@@ -1,0 +1,11 @@
+{
+    "vars_to_drop": ["bottomT", "siconc", "sithick", "usi", "vsi", "zos"],
+    "region": "chinook_study",
+    "col_map": {
+        "mlotst": "mixed_layer_thickness",
+        "thetao": "temperature",
+        "uo": "velocity_east",
+        "vo": "velocity_north",
+        "so": "salinity"
+    }
+}

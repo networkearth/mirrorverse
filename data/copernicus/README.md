@@ -48,12 +48,47 @@ python nicolaus.py \
 
 ```bash
 python nicolaus.py \
-    --start-date 2020-01-01 \
-    --end-date 2022-12-31 \
+    --start-date 2021-07-01 \
+    --end-date 2021-8-31 \
     --local-output-dir test_input \
     --external-output-dir /Volumes/Copernicus1  \
     --dataset-id cmems_mod_glo_phy_myint_0.083deg_P1D-m  \
     --num-workers 7 \
     --pattern ".*_{year}{month}{day}_.*"
 ```
+
+## Preparing the Data
+
+There is a `prepare_data.py` script in this directory that will take the data that has been
+downloaded and subset, bin (by depth and h3), and take means per bin. This takes our data 
+which is 1.34GB/day to 5.5MB/day snappy compressed. This is data we can then go ahead and use
+in Athena to build features, do analysis, and so on. Here's an example of running the script:
+
+```bash
+python prepare_data.py \
+    --input-directory /workspaces/ExternalDrive/GLOBAL_MULTIYEAR_PHY_001_030/ \
+    --output-directory physics \
+    --config config_physics.json
+```
+
+The config needs to look like:
+
+```json
+{
+    "vars_to_drop": ["bottomT", "siconc", "sithick", "usi", "vsi", "zos"],
+    "region": "chinook_study",
+    "col_map": {
+        "mlotst": "mixed_layer_thickness",
+        "thetao": "temperature",
+        "uo": "velocity_east",
+        "vo": "velocity_north",
+        "so": "salinity"
+    }
+}
+```
+
+where the `region` must correspond to an entry in the `REGIONS` dict in `prepare_data.py`.
+
+The data will be dropped as a `.snappy.parquet` file for each date in the `output-directory`.
+
 
