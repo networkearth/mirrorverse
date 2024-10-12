@@ -104,6 +104,15 @@ python upload_data.py \
 
 Note that the table will be partitioned by `h3_resolution`, `region`, and `date`.
 
+Another example:
+
+```bash
+python upload_data.py \
+    --input-directory chemistry \
+    --table copernicus_biochemistry \
+    --num_workers 7
+```
+
 ## Running from a Container
 
 If you want to run all of this from a VSCode container you'll just need to update the `devcontainer.json`

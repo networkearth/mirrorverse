@@ -1,0 +1,12 @@
+{
+    "vars_to_drop": [],
+    "region": "chinook_study",
+    "col_map": {
+        "chl": "chlorophyll",
+        "no3": "nitrate",
+        "nppv": "net_primary_production",
+        "o2": "oxygen",
+        "po4": "phosphate",
+        "si": "silicate"
+    }
+}
