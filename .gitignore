@@ -26,3 +26,4 @@ notebooks/
 *.drawio.bkp
 *.jar
 *.snappy.parquet
+models/movement_model/*.html
