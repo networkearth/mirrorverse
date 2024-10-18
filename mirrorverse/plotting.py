@@ -111,9 +111,9 @@ def plot_h3_slider(df, value_col, h3_col, slider_col, line_color_col=None, bold_
     return fig
 
 
-def plot_h3_animation(df, value_col, h3_col, slider_col, line_color_col=None, bold_colors=None, zoom=2, center={"lat": 60, "lon": -180}):
-    zmin = df[value_col].min()
-    zmax = df[value_col].max()
+def plot_h3_animation(df, value_col, h3_col, slider_col, line_color_col=None, bold_colors=None, zoom=2, center={"lat": 60, "lon": -180}, duration=500, zmin=None, zmax=None):
+    zmin = zmin if zmin is not None else df[value_col].min()
+    zmax = zmax if zmax is not None else df[value_col].max()
 
     geojson = build_geojson(df, h3_col)
     fig = go.Figure()
@@ -178,7 +178,7 @@ def plot_h3_animation(df, value_col, h3_col, slider_col, line_color_col=None, bo
             showactive=True,
             buttons=[dict(label="Play",
                           method="animate",
-                          args=[None, {"frame": {"duration": 500, "redraw": True}, "fromcurrent": True, "mode": "immediate"}]),
+                          args=[None, {"frame": {"duration": duration, "redraw": True}, "fromcurrent": True, "mode": "immediate"}]),
                      dict(label="Pause",
                           method="animate",
                           args=[[None], {"frame": {"duration": 0, "redraw": False}, "mode": "immediate"}])]
