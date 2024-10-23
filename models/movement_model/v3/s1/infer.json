@@ -1,0 +1,14 @@
+{
+    "database": "haven",
+    "table": "movement_model_features_v3",
+    "train_partitions": 1,
+    "test_partitions": 1,
+    "features": [
+        "normed_log_mlt", "normed_log_npp", "normed_distance", 
+        "water_heading", "movement_heading"
+    ],
+    "space": "mimic-log-odds",
+    "experiment_name": "movement-model-experiment-v3-s1",
+    "run_id": "e864f08e675a8bd39b0764be4827adf827b49064ed473695c4509cf0cabda693",
+    "upload_table": "movement_model_inference_v3_s1"
+}

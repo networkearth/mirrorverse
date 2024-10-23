@@ -49,9 +49,9 @@ def plot_h3(df, value_col, h3_col='h3_index'):
     ))
     return fig
 
-def plot_h3_slider(df, value_col, h3_col, slider_col, line_color_col=None, bold_colors=None, zoom=2, center={"lat": 60, "lon": -180}):
-    zmin = df[value_col].min()
-    zmax = df[value_col].max()
+def plot_h3_slider(df, value_col, h3_col, slider_col, line_color_col=None, bold_colors=None, zoom=2, center={"lat": 60, "lon": -180}, zmin=None, zmax=None):
+    zmin = zmin if zmin is not None else df[value_col].min()
+    zmax = zmax if zmax is not None else df[value_col].max()
 
     geojson = build_geojson(df, h3_col)
     fig = go.Figure()
