@@ -1,0 +1,6 @@
+{
+    "data_path": "cached_hypercube.snappy.parquet",
+    "features": [
+        "normed_log_npp", "normed_log_mlt", "normed_distance"
+    ] 
+}
