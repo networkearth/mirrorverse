@@ -13,4 +13,9 @@ setup(
         "plotly==5.24.1",
         "nbformat==5.10.4",
     ],
+    entry_points={
+        "console_scripts": [
+            "mirrorverse = mirrorverse.cli:cli",
+        ]
+    },
 )
