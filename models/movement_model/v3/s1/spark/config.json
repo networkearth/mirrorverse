@@ -1,0 +1,12 @@
+{
+    "account": "575101084097",
+    "application_name": "mirrorverse",
+    "space": "mirrorverse",
+    "execution_role": "role",
+    "bucket": "emr",
+    
+    "name": "trial-spark-job-athena",
+    "entrypoint": "test.py",
+    "arguments": [],
+    "venv": "mirrorverse-venv"
+}

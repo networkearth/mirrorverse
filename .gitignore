@@ -27,3 +27,6 @@ notebooks/
 *.jar
 *.snappy.parquet
 models/movement_model/*.html
+*.keras
+cdk.out
+*.tar.gz

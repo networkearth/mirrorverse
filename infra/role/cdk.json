@@ -1,0 +1,15 @@
+{
+    "app": "watercycle synth execution-role",
+    "context": {
+        "config": {
+            "account": "575101084097",
+            "region": "us-east-1",
+            "space": "mirrorverse",
+            "execution_role": "role",
+            "databases": ["haven"],
+            "buckets": ["emr"],
+            "run_batch": true,
+            "run_emr": true
+        }
+    }
+}
