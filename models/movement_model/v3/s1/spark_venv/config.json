@@ -1,0 +1,6 @@
+{
+    "application_name": "mirrorverse",
+    "space": "mirrorverse",
+    "bucket": "emr",
+    "name": "mirrorverse-venv"
+}

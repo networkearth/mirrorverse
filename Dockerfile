@@ -31,3 +31,5 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv
 RUN unzip awscliv2.zip
 RUN ./aws/install
 RUN rm -rf awscliv2.zip aws
+
+RUN apt-get install -y default-jre
