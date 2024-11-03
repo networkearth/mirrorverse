@@ -5,8 +5,8 @@
     "execution_role": "role",
     "bucket": "emr",
     
-    "name": "trial-spark-job-athena",
-    "entrypoint": "test.py",
+    "name": "simulation-job",
+    "entrypoint": "simulation.py",
     "arguments": [],
     "venv": "mirrorverse-venv"
 }
