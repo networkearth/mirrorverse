@@ -1,3 +1,7 @@
+from sys import version as python_formatted_version
+
+print(python_formatted_version)
+
 import os
 from datetime import datetime
 from functools import partial
@@ -11,7 +15,7 @@ import tensorflow.keras as keras
 
 import haven.spark as db 
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import udf, pandas_udf, lit, avg, std, explode, row_number, log, exp, sum
+from pyspark.sql.functions import udf, pandas_udf, explode, row_number, log, exp, sum
 from pyspark.sql.window import Window
 from pyspark.sql.types import (
     StructType,
@@ -147,6 +151,9 @@ def load_model(space, experiment_name, run_id):
     s3 = boto3.client("s3")
     s3.download_file(bucket_name, model_key, "model.keras")
 
+    print('Hello:', os.path.exists('model.keras'))
+    print(keras.__version__)
+
     return keras.models.load_model("model.keras")
 
 
@@ -234,6 +241,8 @@ if __name__ == "__main__":
 
     grouped = predictions.groupby(CONTEXT["essential"]).agg(sum("_quanta").alias("_quanta"))
 
-    grouped.write.mode("overwrite").partitionBy('date').parquet('output')
+    db.write_partitions(
+        grouped, 'spark_test_7', ['date']
+    )
 
     spark.stop()
