@@ -1,9 +1,9 @@
 # TODO 
-# [ ] Select Columns at End of Build
-# [ ] Clean Up Pulls and Joins
-# [ ] Check Results
+# [x] Select Columns at End of Build
+# [x] Clean Up Pulls and Joins
+# [x] Check Results
 # [ ] Fully Expand Joins
-# [ ] Iterate Sim
+# [x] Iterate Sim
 # [ ] Try in EMR
 
 import sys
@@ -22,8 +22,8 @@ import tensorflow.keras as keras
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import (
     udf, pandas_udf, explode,
-    row_number, dense_rank,
-    lead, log, exp, sum
+    row_number, lead, log, 
+    exp, sum
 )
 from pyspark.sql.types import (
     StructType,
@@ -100,6 +100,14 @@ def load_model(space, experiment_name, run_id):
 
     return keras.models.load_model("model.keras")
 
+def read_from_partitioned_table(table_path, sub_path):
+    assert table_path.endswith('/') and not sub_path.startswith('/')
+    return (
+        spark.read
+        .option("basePath", table_path) # let's it recognize all of the partitions
+        .parquet(''.join([table_path, sub_path]))
+    )
+
 # APPLY FUNCTIONS -----------------------------------------
 
 def get_h3_index(lat, lon):
@@ -139,10 +147,6 @@ def add_distance(origin_lat, origin_lon, lat, lon):
 
 # VECTORIZED UDFs -----------------------------------------
 
-@pandas_udf(StringType())
-def strftime(time):
-    return time.dt.strftime('%Y-%m-%d')
-
 @pandas_udf(TimestampType())
 def get_time(epoch):
     return pd.to_datetime(epoch, unit='s')
@@ -154,6 +158,10 @@ def add_water_heading(velocity_north, velocity_east):
 @pandas_udf(FloatType())
 def add_movement_heading(origin_lat, origin_lon, lat, lon):
     return np.arctan2(lat - origin_lat, lon - origin_lon)
+
+@pandas_udf(TimestampType())
+def step_forward(date):
+    return date + pd.DateOffset(days=1)
 
 # OTHER -----------------------------------------
 
@@ -213,6 +221,21 @@ def derive_features(dataframe, CONTEXT):
     )
     return derived
 
+def pull_environment(sub_path, CONTEXT):
+    physics = read_from_partitioned_table(
+        "s3a://haven-database/copernicus-physics/",
+        sub_path
+    )
+    physics = physics.filter(physics.depth_bin == 25.0).select("h3_index", "mixed_layer_thickness", "velocity_east", "velocity_north", "date")
+    physics = physics.withColumn("time", physics["date"])
+    biochemistry = read_from_partitioned_table(
+        "s3a://haven-database/copernicus-biochemistry/",
+        sub_path
+    )
+    biochemistry = biochemistry.withColumn("time", biochemistry["date"])
+    biochemistry = biochemistry.filter(biochemistry.depth_bin == 25.0).select("h3_index", "net_primary_production", "time")
+    return physics, biochemistry
+
 # MAIN FUNCTIONS -----------------------------------------
 
 def simulate(spark, model, CONTEXT):
@@ -223,49 +246,54 @@ def simulate(spark, model, CONTEXT):
         {'_quanta': 10.0, 'h3_index': '840c9ebffffffff', 'time': datetime(2020, 4, 17)},
         {'_quanta': 10.0, 'h3_index': '840c699ffffffff', 'time': datetime(2020, 4, 17)}
     ])
-    distribution = spark.createDataFrame(INPUT).withColumnRenamed("h3_index", "origin_h3_index")
-
-    # Add Individual and Decision Columns
-    distribution = distribution.withColumn("_individual", distribution["origin_h3_index"])
-    distribution = distribution.withColumn("_decision", distribution["_individual"])
-
-    # Create Choices
-    choices = create_choices(distribution, CONTEXT)
-
-    # Pull Environment Data
-    # TODO don't need to do this over the whole column
-    choices = vectorized_create_column(choices, strftime, ["time"], "date")
-    date = choices.head(1)[0]["date"]
-
-    physics = spark.read.parquet(f"s3a://haven-database/copernicus-physics/h3_resolution=4/region=chinook_study/date={date}/")
-    physics = physics.filter(physics.depth_bin == 25.0).select("h3_index", "mixed_layer_thickness", "velocity_east", "velocity_north", "date")
-    biochemistry = spark.read.parquet(f"s3a://haven-database/copernicus-biochemistry/h3_resolution=4/region=chinook_study/date={date}/")
-    biochemistry = biochemistry.filter(biochemistry.depth_bin == 25.0).select("h3_index", "net_primary_production", "date")
-
-    # Join to Choices
-    environment = join_environment(choices, physics, biochemistry, CONTEXT)
-
-    # Derive Features
-    derived = derive_features(environment, CONTEXT)
-
-    # Normalize
-    normed = derived.withColumn("normed_distance", derived["distance"] / CONTEXT['max_km'])
-    normed = normed.withColumn("normed_log_npp", log(normed["net_primary_production"]) - CONTEXT["mean_log_npp"])
-    normed = normed.withColumn("normed_log_mlt", log(normed["mixed_layer_thickness"]) - CONTEXT["mean_log_mlt"])
-
-    # Predict and Distribute Quanta
-    predictions = infer(normed, model, CONTEXT["features"])
-    predictions = predictions.withColumn("odds", exp(predictions["log_odds"]))
-    predictions = predictions.withColumn("sum_odds", sum("odds").over(Window.partitionBy("origin_h3_index")))
-    predictions = predictions.withColumn("probability", predictions["odds"] / predictions["sum_odds"])
-    predictions = predictions.withColumn("_quanta", predictions["_quanta"] * predictions["probability"])
-
-    # Group and Write
-    grouped = predictions.groupby(CONTEXT["essential"]).agg(sum("_quanta").alias("_quanta"))
+    grouped = spark.createDataFrame(INPUT)
 
     db.write_partitions(
-        grouped, CONTEXT["simulate_table"], ['date']
+        grouped, CONTEXT["simulate_table"], ['time']
     )
+
+    for _ in range(CONTEXT["steps"]):
+        # Add Individual and Decision Columns
+        grouped = grouped.withColumnRenamed("h3_index", "origin_h3_index")
+        grouped = grouped.withColumn("_individual", grouped["origin_h3_index"])
+        grouped = grouped.withColumn("_decision", grouped["_individual"])
+
+        # Create Choices
+        choices = create_choices(grouped, CONTEXT)
+
+        # Pull Environment Data
+        date = choices.head(1)[0]["time"].strftime("%Y-%m-%d")
+        physics, biochemistry = pull_environment(
+            f"h3_resolution=4/region=chinook_study/date={date}/",
+            CONTEXT
+        )
+
+        # Join to Choices
+        environment = join_environment(choices, physics, biochemistry, CONTEXT)
+
+        # Derive Features
+        derived = derive_features(environment, CONTEXT)
+
+        # Normalize
+        normed = derived.withColumn("normed_distance", derived["distance"] / CONTEXT['max_km'])
+        normed = normed.withColumn("normed_log_npp", log(normed["net_primary_production"]) - CONTEXT["mean_log_npp"])
+        normed = normed.withColumn("normed_log_mlt", log(normed["mixed_layer_thickness"]) - CONTEXT["mean_log_mlt"])
+
+        # Predict and Distribute Quanta
+        predictions = infer(normed, model, CONTEXT["features"])
+        predictions = predictions.withColumn("odds", exp(predictions["log_odds"]))
+        predictions = predictions.withColumn("sum_odds", sum("odds").over(Window.partitionBy("origin_h3_index")))
+        predictions = predictions.withColumn("probability", predictions["odds"] / predictions["sum_odds"])
+        predictions = predictions.withColumn("_quanta", predictions["_quanta"] * predictions["probability"])
+
+        # Group, Update Timestamps, and Write
+        grouped = predictions.groupby(CONTEXT["essential"]).agg(sum("_quanta").alias("_quanta"))
+        grouped = vectorized_create_column(
+            grouped, step_forward, ['time'], 'time'
+        )
+        db.write_partitions(
+            grouped, CONTEXT["simulate_table"], ['time']
+        )
 
 def build(spark, CONTEXT):
     # Pull and Format Inputs
@@ -282,48 +310,37 @@ def build(spark, CONTEXT):
     tag_tracks = tag_tracks.withColumn("_individual", tag_tracks["tag_key"])
     tag_tracks = tag_tracks.withColumn("_decision", row_number().over(Window.partitionBy("_individual").orderBy("time")))
 
+    # Determine Next
+    tag_tracks = tag_tracks.withColumn("next_h3_index", lead("origin_h3_index").over(Window.partitionBy("_individual").orderBy("time")))
+
     # Create Choices
     choices = create_choices(tag_tracks, CONTEXT)
 
-    print("Choices:", choices.count())
-    print(choices.head())
-
     # Pull Environment Data
-    physics = (
-        spark.read
-        .option("basePath", "s3a://haven-database/copernicus-physics/") # let's it recognize all of the partitions
-        .parquet("s3a://haven-database/copernicus-physics/h3_resolution=4/region=chinook_study/date=2013-*")
+    physics, biochemistry = pull_environment(
+        "h3_resolution=4/region=chinook_study/date=2013-*",
+        CONTEXT
     )
-    physics = physics.filter(physics.depth_bin == 25.0).select("h3_index", "mixed_layer_thickness", "velocity_east", "velocity_north", "date")
-    physics = physics.withColumn("time", physics["date"])
-    print(physics.head())
-    biochemistry = (
-        spark.read
-        .option("basePath", "s3a://haven-database/copernicus-biochemistry/")
-        .parquet("s3a://haven-database/copernicus-biochemistry/h3_resolution=4/region=chinook_study/date=2013-*")
-    )
-    biochemistry = biochemistry.withColumn("time", biochemistry["date"])
-    biochemistry = biochemistry.filter(biochemistry.depth_bin == 25.0).select("h3_index", "net_primary_production", "time")
 
     # Join to Choices
     environment = join_environment(choices, physics, biochemistry, CONTEXT)
 
-    print("Environment:", environment.count())
-
     # Derive Features
     derived = derive_features(environment, CONTEXT)
 
-    print(derived.head())
-    print(derived.count())
-
 
     # Determine Selected
-    derived = derived.withColumn("next_h3_index", lead("origin_h3_index").over(Window.partitionBy("_individual").orderBy("time")))
     derived = derived.withColumn("_selected", derived["next_h3_index"] == derived["h3_index"])
+
+    # Filter Columns
+    results = derived.select(
+        "tag_key", "_decision", "_choice", "_selected", "mixed_layer_thickness", "net_primary_production",
+        "water_heading", "movement_heading", "distance", "origin_h3_index", "next_h3_index", "h3_index", "time"
+    )
 
     # Write it Back
     db.write_partitions(
-        derived, CONTEXT["build_table"], ["tag_key"]
+        results, CONTEXT["build_table"], ["tag_key"]
     )
 
 
@@ -333,8 +350,8 @@ if __name__ == '__main__':
 
     CONTEXT = {
         "max_km": 100,
-        "simulate_table": "spark_test_7",
-        "build_table": "spark_test_8",
+        "simulate_table": "spark_test_9",
+        "build_table": "spark_test_10",
     }
     SIM_CONTEXT = {
         "mean_log_npp": 1.9670798, 
@@ -344,9 +361,9 @@ if __name__ == '__main__':
             "water_heading", "movement_heading"
         ],
         "essential": [
-            "date", "h3_index", "time"
+            "h3_index", "time"
         ],
-        "steps": 10,
+        "steps": 2,
     }
 
     spark = SparkSession.builder
