@@ -7,6 +7,6 @@
     
     "name": "movement-model-v4-engine",
     "entrypoint": "run.py",
-    "arguments": ["simulation"],
+    "arguments": ["build"],
     "venv": "mirrorverse-movement-model-v4"
 }
