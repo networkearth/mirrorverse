@@ -5,8 +5,8 @@
     "execution_role": "role",
     "bucket": "emr",
     
-    "name": "simulation-job",
-    "entrypoint": "simulation.py",
-    "arguments": [],
-    "venv": "mirrorverse-venv"
+    "name": "movement-model-v4-engine",
+    "entrypoint": "run.py",
+    "arguments": ["build"],
+    "venv": "mirrorverse-movement-model-v4"
 }
