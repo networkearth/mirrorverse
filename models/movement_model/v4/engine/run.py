@@ -1,11 +1,3 @@
-# TODO 
-# [x] Select Columns at End of Build
-# [x] Clean Up Pulls and Joins
-# [x] Check Results
-# [ ] Fully Expand Joins
-# [x] Iterate Sim
-# [ ] Try in EMR
-
 import sys
 import os
 from functools import partial
@@ -318,7 +310,7 @@ def build(spark, CONTEXT):
 
     # Pull Environment Data
     physics, biochemistry = pull_environment(
-        "h3_resolution=4/region=chinook_study/date=2013-*",
+        "h3_resolution=4/region=chinook_study/",
         CONTEXT
     )
 

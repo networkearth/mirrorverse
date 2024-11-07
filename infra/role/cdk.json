@@ -8,6 +8,7 @@
             "execution_role": "role",
             "databases": ["haven"],
             "buckets": ["emr"],
+            "bucket_arns": ["arn:aws:s3:::mimic-log-odds-models"],
             "run_batch": true,
             "run_emr": true
         }
