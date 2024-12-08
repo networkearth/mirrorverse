@@ -35,6 +35,10 @@ def label_and_collect(header, dataframes):
     # the last collection so we have to collect 
     # to add our header
     for dataframe in dataframes:
+        # if we don't cache then each time we set a new 
+        # label and collect, every preceding stage will 
+        # have to be run again 
+        dataframe.cache()
         dataframe.count()
 
 def label(header):
@@ -183,6 +187,7 @@ def infer(dataframe, model, features, prefix):
     dataframe = dataframe.mapInPandas(
         partial(infer_map,  model, features), schema=schema
     )
+    dataframe.cache()
     label_and_collect(" ".join([prefix, "Running Inference"]), [dataframe])
     return dataframe
 
@@ -193,8 +198,16 @@ def create_choices(dataframe, CONTEXT, prefix):
         dataframe, partial(find_neighbors, CONTEXT["max_km"]),
         ['origin_h3_index'], [StructField("h3_index", ArrayType(StringType()))]
     )
+    label(" ".join([prefix, "Creating Choices"]))
+
+    # somehow the following "limit" makes the explode work
+    # remove it and the explode just blocks... 
+    count = choices.count()
+    choices = choices.limit(count)
     choices = choices.withColumn("h3_index", explode(choices.h3_index))
+
     choices = choices.withColumn("_choice", row_number().over(Window.partitionBy(["_individual", "_decision"]).orderBy("h3_index")))
+
     label_and_collect(" ".join([prefix, "Creating Choices"]), [choices])
     return choices
 
@@ -251,18 +264,19 @@ def simulate(spark, model, CONTEXT):
     # TODO Temporary for testing this should be an S3 bucket
 
     from datetime import datetime
-    INPUT = pd.DataFrame([
-        {'_quanta': 10.0, 'h3_index': '840c9ebffffffff', 'time': datetime(2020, 4, 17)},
-        {'_quanta': 10.0, 'h3_index': '840c699ffffffff', 'time': datetime(2020, 4, 17)}
-    ])
+    #INPUT = pd.DataFrame([
+    #    {'_quanta': 10.0, 'h3_index': '840c9ebffffffff', 'time': datetime(2020, 4, 17)},
+    #    {'_quanta': 10.0, 'h3_index': '840c699ffffffff', 'time': datetime(2020, 4, 17)}
+    #])
 
-    grouped = spark.createDataFrame(INPUT)
+    #grouped = spark.createDataFrame(INPUT)
+
+    grouped = spark.read.parquet("s3a://haven-database/copernicus-physics/h3_resolution=4/region=chinook_study/date=2020-01-01/")
+    grouped = grouped.select("h3_index").dropDuplicates()
+    grouped = grouped.withColumn("time", lit(datetime(2020, 3, 15)))
+    grouped = grouped.withColumn("_quanta", lit(10.0))
+
     label_and_collect("Pulling Inputs", [grouped])
-
-    #grouped = spark.read.parquet("s3a://haven-database/copernicus-physics/h3_resolution=4/region=chinook_study/date=2020-01-01/")
-    #grouped = grouped.select("h3_index").dropDuplicates()
-    #grouped = grouped.withColumn("time", lit(datetime(2020, 1, 1)))
-    #grouped = grouped.withColumn("_quanta", lit(10.0))
 
     label("Writing Inputs")
     db.write_partitions(
@@ -376,7 +390,7 @@ if __name__ == '__main__':
 
     CONTEXT = {
         "max_km": 100,
-        "simulate_table": "spark_test_9",
+        "simulate_table": "movement_model_simulation_v3_s1",
         "build_table": "spark_test_10",
     }
     SIM_CONTEXT = {
@@ -389,7 +403,7 @@ if __name__ == '__main__':
         "essential": [
             "h3_index", "time"
         ],
-        "steps": 2,
+        "steps": 62,
     }
 
     spark = SparkSession.builder
