@@ -263,7 +263,7 @@ def simulate(spark, model, CONTEXT):
     # Pull and Format Inputs
     # TODO Temporary for testing this should be an S3 bucket
 
-    from datetime import datetime
+    from datetime import datetime, timedelta
     #INPUT = pd.DataFrame([
     #    {'_quanta': 10.0, 'h3_index': '840c9ebffffffff', 'time': datetime(2020, 4, 17)},
     #    {'_quanta': 10.0, 'h3_index': '840c699ffffffff', 'time': datetime(2020, 4, 17)}
@@ -271,19 +271,28 @@ def simulate(spark, model, CONTEXT):
 
     #grouped = spark.createDataFrame(INPUT)
 
+    date = datetime(2020, 4, 9)
     grouped = spark.read.parquet("s3a://haven-database/copernicus-physics/h3_resolution=4/region=chinook_study/date=2020-01-01/")
     grouped = grouped.select("h3_index").dropDuplicates()
-    grouped = grouped.withColumn("time", lit(datetime(2020, 3, 15)))
+    grouped = grouped.withColumn("time", lit(date))
     grouped = grouped.withColumn("_quanta", lit(10.0))
+    grouped = grouped.withColumn("date", lit(date.strftime("%Y-%m-%d")))
 
     label_and_collect("Pulling Inputs", [grouped])
 
     label("Writing Inputs")
     db.write_partitions(
-        grouped, CONTEXT["simulate_table"], ['time']
+        grouped, CONTEXT["simulate_table"], ['date']
     )
 
+    table_folder = CONTEXT["simulate_table"].replace('_', '-')
+
     for i in range(CONTEXT["steps"]):
+        # read the last written output in order to ensure we don't end up
+        # with an unordinately long chain of operations
+        date_str = date.strftime("%Y-%m-%d")
+        grouped = spark.read.parquet(f"s3a://haven-database/{table_folder}/date={date_str}/")
+
         # Add Individual and Decision Columns
         grouped = grouped.withColumnRenamed("h3_index", "origin_h3_index")
         grouped = grouped.withColumn("_individual", grouped["origin_h3_index"])
@@ -293,10 +302,10 @@ def simulate(spark, model, CONTEXT):
         choices = create_choices(grouped, CONTEXT, prefix=f"{i}")
 
         # Pull Environment Data
-        label(f"{i} Pulling Current Date")
-        date = choices.head(1)[0]["time"].strftime("%Y-%m-%d")
+        #label(f"{i} Pulling Current Date")
+        #date = choices.head(1)[0]["time"].strftime("%Y-%m-%d")
         physics, biochemistry = pull_environment(
-            f"h3_resolution=4/region=chinook_study/date={date}/",
+            f"h3_resolution=4/region=chinook_study/date={date_str}/",
             CONTEXT, prefix=f"{i}"
         )
 
@@ -325,11 +334,13 @@ def simulate(spark, model, CONTEXT):
         grouped = vectorized_create_column(
             grouped, step_forward, ['time'], 'time'
         )
+        date = date + timedelta(days=1)
+        grouped = grouped.withColumn('date', lit(date.strftime("%Y-%m-%d")))
         label_and_collect(f"{i} Grouping by H3", [grouped])
 
         label(f"{i} Writing Step")
         db.write_partitions(
-            grouped, CONTEXT["simulate_table"], ['time']
+            grouped, CONTEXT["simulate_table"], ['date']
         )
 
 def build(spark, CONTEXT):
@@ -390,7 +401,7 @@ if __name__ == '__main__':
 
     CONTEXT = {
         "max_km": 100,
-        "simulate_table": "movement_model_simulation_v3_s1",
+        "simulate_table": "movement_model_simulation_v3_s4",
         "build_table": "spark_test_10",
     }
     SIM_CONTEXT = {
