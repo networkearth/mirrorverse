@@ -15,7 +15,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import (
     udf, pandas_udf, explode,
     row_number, lead, log, 
-    exp, sum
+    exp, sum, lit,
 )
 from pyspark.sql.types import (
     StructType,
@@ -28,6 +28,21 @@ from pyspark.sql.types import (
 from pyspark.sql.window import Window
 
 # GLOBAL FUNCTIONS -----------------------------------------
+
+def label_and_collect(header, dataframes):
+    spark.sparkContext.setJobGroup(header, header)
+    # headers are added to everything run since 
+    # the last collection so we have to collect 
+    # to add our header
+    for dataframe in dataframes:
+        # if we don't cache then each time we set a new 
+        # label and collect, every preceding stage will 
+        # have to be run again 
+        dataframe.cache()
+        dataframe.count()
+
+def label(header):
+    spark.sparkContext.setJobGroup(header, header)
 
 def apply_to_create_columns(dataframe, func, input_cols, new_fields):
     """
@@ -162,7 +177,7 @@ def infer_map(model, features, iterator):
         dataframe["log_odds"] = model.predict(dataframe[features])
         yield dataframe
 
-def infer(dataframe, model, features):
+def infer(dataframe, model, features, prefix):
     schema = StructType(
         dataframe.schema.fields
         + [
@@ -172,25 +187,37 @@ def infer(dataframe, model, features):
     dataframe = dataframe.mapInPandas(
         partial(infer_map,  model, features), schema=schema
     )
+    dataframe.cache()
+    label_and_collect(" ".join([prefix, "Running Inference"]), [dataframe])
     return dataframe
 
 # COMMON STEPS -----------------------------------------
 
-def create_choices(dataframe, CONTEXT):
+def create_choices(dataframe, CONTEXT, prefix):
     choices = apply_to_create_columns(
         dataframe, partial(find_neighbors, CONTEXT["max_km"]),
         ['origin_h3_index'], [StructField("h3_index", ArrayType(StringType()))]
     )
+    label(" ".join([prefix, "Creating Choices"]))
+
+    # somehow the following "limit" makes the explode work
+    # remove it and the explode just blocks... 
+    count = choices.count()
+    choices = choices.limit(count)
     choices = choices.withColumn("h3_index", explode(choices.h3_index))
+
     choices = choices.withColumn("_choice", row_number().over(Window.partitionBy(["_individual", "_decision"]).orderBy("h3_index")))
+
+    label_and_collect(" ".join([prefix, "Creating Choices"]), [choices])
     return choices
 
-def join_environment(dataframe, physics, biochemistry, CONTEXT):
+def join_environment(dataframe, physics, biochemistry, CONTEXT, prefix):
     environment = join(dataframe, physics, on=['h3_index', 'time'], how='inner')
     environment = join(environment, biochemistry, on=['h3_index', 'time'], how='inner')
+    label_and_collect(" ".join([prefix, "Joining Environment"]), [environment])
     return environment
 
-def derive_features(dataframe, CONTEXT):
+def derive_features(dataframe, CONTEXT, prefix):
     derived = apply_to_create_columns(
         dataframe, h3.h3_to_geo,
         ["h3_index"], [StructField("lat", FloatType()), StructField("lon", FloatType())],
@@ -211,9 +238,10 @@ def derive_features(dataframe, CONTEXT):
         derived, add_movement_heading, ["origin_lat", "origin_lon", "lat", "lon"],
         "movement_heading"
     )
+    label_and_collect(" ".join([prefix, "Deriving Features"]), [derived])
     return derived
 
-def pull_environment(sub_path, CONTEXT):
+def pull_environment(sub_path, CONTEXT, prefix):
     physics = read_from_partitioned_table(
         "s3a://haven-database/copernicus-physics/",
         sub_path
@@ -226,6 +254,7 @@ def pull_environment(sub_path, CONTEXT):
     )
     biochemistry = biochemistry.withColumn("time", biochemistry["date"])
     biochemistry = biochemistry.filter(biochemistry.depth_bin == 25.0).select("h3_index", "net_primary_production", "time")
+    label_and_collect(" ".join([prefix, "Pulling Environment"]), [physics, biochemistry])
     return physics, biochemistry
 
 # MAIN FUNCTIONS -----------------------------------------
@@ -233,63 +262,91 @@ def pull_environment(sub_path, CONTEXT):
 def simulate(spark, model, CONTEXT):
     # Pull and Format Inputs
     # TODO Temporary for testing this should be an S3 bucket
-    from datetime import datetime
-    INPUT = pd.DataFrame([
-        {'_quanta': 10.0, 'h3_index': '840c9ebffffffff', 'time': datetime(2020, 4, 17)},
-        {'_quanta': 10.0, 'h3_index': '840c699ffffffff', 'time': datetime(2020, 4, 17)}
-    ])
-    grouped = spark.createDataFrame(INPUT)
 
+    from datetime import datetime, timedelta
+    #INPUT = pd.DataFrame([
+    #    {'_quanta': 10.0, 'h3_index': '840c9ebffffffff', 'time': datetime(2020, 4, 17)},
+    #    {'_quanta': 10.0, 'h3_index': '840c699ffffffff', 'time': datetime(2020, 4, 17)}
+    #])
+
+    #grouped = spark.createDataFrame(INPUT)
+
+    date = datetime(2020, 4, 9)
+    grouped = spark.read.parquet("s3a://haven-database/copernicus-physics/h3_resolution=4/region=chinook_study/date=2020-01-01/")
+    grouped = grouped.select("h3_index").dropDuplicates()
+    grouped = grouped.withColumn("time", lit(date))
+    grouped = grouped.withColumn("_quanta", lit(10.0))
+    grouped = grouped.withColumn("date", lit(date.strftime("%Y-%m-%d")))
+
+    label_and_collect("Pulling Inputs", [grouped])
+
+    label("Writing Inputs")
     db.write_partitions(
-        grouped, CONTEXT["simulate_table"], ['time']
+        grouped, CONTEXT["simulate_table"], ['date']
     )
 
-    for _ in range(CONTEXT["steps"]):
+    table_folder = CONTEXT["simulate_table"].replace('_', '-')
+
+    for i in range(CONTEXT["steps"]):
+        # read the last written output in order to ensure we don't end up
+        # with an unordinately long chain of operations
+        date_str = date.strftime("%Y-%m-%d")
+        grouped = spark.read.parquet(f"s3a://haven-database/{table_folder}/date={date_str}/")
+
         # Add Individual and Decision Columns
         grouped = grouped.withColumnRenamed("h3_index", "origin_h3_index")
         grouped = grouped.withColumn("_individual", grouped["origin_h3_index"])
         grouped = grouped.withColumn("_decision", grouped["_individual"])
 
         # Create Choices
-        choices = create_choices(grouped, CONTEXT)
+        choices = create_choices(grouped, CONTEXT, prefix=f"{i}")
 
         # Pull Environment Data
-        date = choices.head(1)[0]["time"].strftime("%Y-%m-%d")
+        #label(f"{i} Pulling Current Date")
+        #date = choices.head(1)[0]["time"].strftime("%Y-%m-%d")
         physics, biochemistry = pull_environment(
-            f"h3_resolution=4/region=chinook_study/date={date}/",
-            CONTEXT
+            f"h3_resolution=4/region=chinook_study/date={date_str}/",
+            CONTEXT, prefix=f"{i}"
         )
 
         # Join to Choices
-        environment = join_environment(choices, physics, biochemistry, CONTEXT)
+        environment = join_environment(choices, physics, biochemistry, CONTEXT, prefix=f"{i}")
 
         # Derive Features
-        derived = derive_features(environment, CONTEXT)
+        derived = derive_features(environment, CONTEXT, prefix=f"{i}")
 
         # Normalize
         normed = derived.withColumn("normed_distance", derived["distance"] / CONTEXT['max_km'])
         normed = normed.withColumn("normed_log_npp", log(normed["net_primary_production"]) - CONTEXT["mean_log_npp"])
         normed = normed.withColumn("normed_log_mlt", log(normed["mixed_layer_thickness"]) - CONTEXT["mean_log_mlt"])
+        label_and_collect(f"{i} Normalizing Data", [normed])
 
         # Predict and Distribute Quanta
-        predictions = infer(normed, model, CONTEXT["features"])
+        predictions = infer(normed, model, CONTEXT["features"], prefix=f"{i}")
         predictions = predictions.withColumn("odds", exp(predictions["log_odds"]))
         predictions = predictions.withColumn("sum_odds", sum("odds").over(Window.partitionBy("origin_h3_index")))
         predictions = predictions.withColumn("probability", predictions["odds"] / predictions["sum_odds"])
         predictions = predictions.withColumn("_quanta", predictions["_quanta"] * predictions["probability"])
+        label_and_collect(f"{i} Building Probabilities", [predictions])
 
         # Group, Update Timestamps, and Write
         grouped = predictions.groupby(CONTEXT["essential"]).agg(sum("_quanta").alias("_quanta"))
         grouped = vectorized_create_column(
             grouped, step_forward, ['time'], 'time'
         )
+        date = date + timedelta(days=1)
+        grouped = grouped.withColumn('date', lit(date.strftime("%Y-%m-%d")))
+        label_and_collect(f"{i} Grouping by H3", [grouped])
+
+        label(f"{i} Writing Step")
         db.write_partitions(
-            grouped, CONTEXT["simulate_table"], ['time']
+            grouped, CONTEXT["simulate_table"], ['date']
         )
 
 def build(spark, CONTEXT):
     # Pull and Format Inputs
     tag_tracks = spark.read.parquet("s3a://haven-database/mgietzmann-tag-tracks/").drop("upload_key")
+    label_and_collect("Pulling Tag Tracks", [tag_tracks])
     tag_tracks = apply_to_create_columns(
         tag_tracks, get_h3_index, ["latitude", "longitude"],
         [StructField("origin_h3_index", StringType())]
@@ -304,6 +361,7 @@ def build(spark, CONTEXT):
 
     # Determine Next
     tag_tracks = tag_tracks.withColumn("next_h3_index", lead("origin_h3_index").over(Window.partitionBy("_individual").orderBy("time")))
+    label_and_collect("Prepping Tag Tracks")
 
     # Create Choices
     choices = create_choices(tag_tracks, CONTEXT)
@@ -331,6 +389,7 @@ def build(spark, CONTEXT):
     )
 
     # Write it Back
+    label("Writing")
     db.write_partitions(
         results, CONTEXT["build_table"], ["tag_key"]
     )
@@ -342,7 +401,7 @@ if __name__ == '__main__':
 
     CONTEXT = {
         "max_km": 100,
-        "simulate_table": "spark_test_9",
+        "simulate_table": "movement_model_simulation_v3_s4",
         "build_table": "spark_test_10",
     }
     SIM_CONTEXT = {
@@ -355,7 +414,7 @@ if __name__ == '__main__':
         "essential": [
             "h3_index", "time"
         ],
-        "steps": 2,
+        "steps": 62,
     }
 
     spark = SparkSession.builder
