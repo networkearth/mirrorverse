@@ -1,0 +1,15 @@
+{
+    "database": "haven",
+    "table": "movement_model_contrasts_m1_a1",
+    "train_partitions": 1,
+    "test_partitions": 1,
+    "max_choices": 2,
+    "features": [
+        "normed_distance"
+    ],
+    "missing_values_map": {
+        "normed_distance": -1
+    },
+    "space": "mimic-log-odds",
+    "dataset": "movement-model-contrasts-m1-a1"
+}
