@@ -1,0 +1,20 @@
+{
+    "database": "haven",
+    "table": "movement_model_contrasts_m2_a1",
+    "train_partitions": 1,
+    "test_partitions": 1,
+    "max_choices": 2,
+    "features": [
+        "normed_log_mlt", "normed_log_npp", "normed_distance", 
+        "water_heading", "movement_heading"
+    ],
+    "missing_values_map": {
+        "normed_log_mlt": 0,
+        "normed_log_npp": 0,
+        "normed_distance": -1,
+        "water_heading": -1,
+        "movement_heading": -1
+    },
+    "space": "mimic-log-odds",
+    "dataset": "movement-model-contrasts-m2-a1"
+}

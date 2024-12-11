@@ -1,0 +1,13 @@
+{
+    "database": "haven",
+    "table": "movement_model_features_m1_a1_test",
+    "train_partitions": 0,
+    "test_partitions": 1,
+    "features": [
+        "normed_distance"
+    ],
+    "space": "mimic-log-odds",
+    "experiment_name": "movement-model-experiment-m1-a1",
+    "run_id": "c0c9fb46b49fe2652741fb6d3d692ab71b3181d97aef4c2ec0158e27a67885e4",
+    "upload_table": "movement_model_inference_m1_a1_test"
+}
