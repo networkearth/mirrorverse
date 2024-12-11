@@ -18,6 +18,8 @@ RUN rm Miniconda3-latest-Linux-aarch64.sh
 # Needed for Tensorflow to work
 RUN root/miniconda3/bin/conda install -y h5py
 
+RUN root/miniconda3/bin/conda install geopandas geoplot rasterio
+
 RUN apt-get -y update
 RUN apt-get install -y npm
 RUN npm install -g aws-cdk
