@@ -265,7 +265,7 @@ def build(spark, CONTEXT):
     # Filter Columns
     results = derived.select(
         "tag_key", "_decision", "_choice", "_selected", "_individual", "normed_distance", "origin_h3_index", 
-        "next_h3_index", "h3_index", "time"
+        "next_h3_index", "h3_index", "time", "_train"
     )
 
     # Write it Back
@@ -281,9 +281,9 @@ if __name__ == '__main__':
 
     CONTEXT = {
         "max_km": 100,
-        "simulate_table": "movement_model_simulation_m1_a1",
-        "build_table": "movement_model_raw_features_m1_a1_test",
-        "case": "test",
+        "simulate_table": "movement_model_simulation_m1_a2",
+        "build_table": "movement_model_raw_features_m1_a2",
+        "case": "train",
     }
     SIM_CONTEXT = {
         "features": ["distance"],

@@ -1,13 +1,13 @@
 {
-    "experiment_name": "movement-model-experiment-m1-a1",
+    "experiment_name": "movement-model-m1-a2-v1",
     "space": "mimic-log-odds",
-    "dataset": "movement-model-contrasts-m1-a1",
+    "dataset": "movement-model-contrasts-m1-a2",
     "max_choices": 2,
     "features": [
         "normed_distance"
     ],
     "database": "haven",
-    "table": "movement_model_experiment_m1_a1_r1",
+    "table": "movement_model_experiment_m1_a2_v1",
     "models": [
         {
             "batch_size": 100,
