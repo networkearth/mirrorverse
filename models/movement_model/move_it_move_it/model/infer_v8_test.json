@@ -1,0 +1,13 @@
+{
+    "database": "haven",
+    "table": "movement_model_features_m3_a2_test",
+    "train_partitions": 0,
+    "test_partitions": 1,
+    "features": [
+        "normed_distance", "movement_heading", "normalized_fork_length", "normed_log_mlt", "normed_log_npp"
+    ],
+    "space": "mimic-log-odds",
+    "experiment_name": "movement-model-m3-a2-v8",
+    "run_id": "ba11cc97ba31b37df6790f4a842654e309a9e11698fc11f6f719d86b83ba170b",
+    "upload_table": "movement_model_inference_m3_a2_v8_test"
+}
