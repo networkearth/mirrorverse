@@ -1,0 +1,14 @@
+from tensorflow.keras.layers import Dense, Dropout
+
+LAYERS = {
+    "Dropout1": lambda: Dropout(0.1),
+    "Dropout2": lambda: Dropout(0.2),
+    "Dropout3": lambda: Dropout(0.3),
+    "D2": lambda: Dense(2, activation='relu'),
+    "D4": lambda: Dense(4, activation='relu'),
+    "D8": lambda: Dense(8, activation='relu'),
+    "D16": lambda: Dense(16, activation='relu'),
+    "D24": lambda: Dense(24, activation='relu'),
+    "D32": lambda: Dense(32, activation='relu'),
+    "D64": lambda: Dense(64, activation='relu'),
+}

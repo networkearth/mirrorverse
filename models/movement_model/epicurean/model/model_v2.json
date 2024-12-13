@@ -1,0 +1,269 @@
+{
+    "experiment_name": "movement-model-m2-a2-v2",
+    "space": "mimic-log-odds",
+    "dataset": "movement-model-contrasts-m2-a2",
+    "max_choices": 2,
+    "features": [
+        "normed_distance", "movement_heading"
+    ],
+    "database": "haven",
+    "table": "movement_model_experiment_m2_a2_v2",
+    "models": [
+        {
+            "batch_size": 600,
+            "epochs": 20,
+            "layers": [
+                "D8",
+                "D16",
+                "D4"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 15,
+            "layers": [
+                "D16",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 15,
+            "layers": [
+                "D16",
+                "D16",
+                "D4"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 15,
+            "layers": [
+                "D16",
+                "D16",
+                "D4"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 15,
+            "layers": [
+                "D8",
+                "D16",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 20,
+            "layers": [
+                "D16",
+                "D16"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 15,
+            "layers": [
+                "D8",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 15,
+            "layers": [
+                "D8",
+                "D8",
+                "D16"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 15,
+            "layers": [
+                "D16",
+                "D16"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 20,
+            "layers": [
+                "D16",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 15,
+            "layers": [
+                "D16",
+                "D16",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 25,
+            "layers": [
+                "D16",
+                "D16",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 25,
+            "layers": [
+                "D16",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 15,
+            "layers": [
+                "D16",
+                "D16"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 25,
+            "layers": [
+                "D16",
+                "D16",
+                "D4"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 25,
+            "layers": [
+                "D8",
+                "D16"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 20,
+            "layers": [
+                "D16",
+                "D16",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 15,
+            "layers": [
+                "D16",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 25,
+            "layers": [
+                "D8",
+                "D16"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 25,
+            "layers": [
+                "D16",
+                "D16"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 15,
+            "layers": [
+                "D8",
+                "D16"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 25,
+            "layers": [
+                "D8",
+                "D16",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 20,
+            "layers": [
+                "D8",
+                "D16",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 25,
+            "layers": [
+                "D16",
+                "D16"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 20,
+            "layers": [
+                "D16",
+                "D16",
+                "D4"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 15,
+            "layers": [
+                "D8",
+                "D16",
+                "D16"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 15,
+            "layers": [
+                "D16",
+                "D8",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 25,
+            "layers": [
+                "D8",
+                "D8",
+                "D16"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 20,
+            "layers": [
+                "D16",
+                "D16",
+                "D16"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 20,
+            "layers": [
+                "D8",
+                "D16"
+            ]
+        }
+    ]
+}
