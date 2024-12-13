@@ -1,7 +1,7 @@
 {
     "database": "haven",
-    "table": "movement_model_contrasts_m3_a2",
-    "train_partitions": 1,
+    "table": "movement_model_contrasts_m3_a3",
+    "train_partitions": 3,
     "test_partitions": 1,
     "max_choices": 2,
     "features": [
@@ -22,5 +22,5 @@
         "sin_time": 2
     },
     "space": "mimic-log-odds",
-    "dataset": "movement-model-contrasts-m3-a2"
+    "dataset": "movement-model-contrasts-m3-a3"
 }

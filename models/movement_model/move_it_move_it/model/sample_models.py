@@ -38,16 +38,25 @@ def main(num_sets):
         "layer2": [8, 8, 16, 16, 16],
         "layer3": [4, 8, 16, 0, 0, 0],
     }
+    grids = {
+        "batch_size": [500, 600, 700],
+        "epochs": [125],
+        "dropout": [0, 1, 2, 3],
+        "layer_size": [8, 16, 24, 32]
+    }
     param_sets = build_randomized_param_sets(grids, num_sets, 10)
     for param_set in param_sets:
-        param_set["layers"] = [
-            "D" + str(param_set["layer1"]), "D" + str(param_set["layer2"])
-        ]
-        if param_set["layer3"] != 0:
-            param_set["layers"].append("D" + str(param_set["layer3"]))
-        del param_set["layer1"]
-        del param_set["layer2"]
-        del param_set["layer3"]
+        dropout = param_set["dropout"]
+        layer_size = param_set["layer_size"]
+        if dropout == 0:
+            param_set["layers"] = [
+                f"D{layer_size}", f"D{layer_size}", f"D{layer_size}"
+            ]
+        else:
+            param_set["layers"] = [
+                f"D{layer_size}", f"Dropout{dropout}", f"D{layer_size}", f"Dropout{dropout}", f"D{layer_size}", f"Dropout{dropout}"
+            ]
+
     print(param_sets)
     with open("param_sets.json", "w") as f:
         json.dump(param_sets, f, indent=4, sort_keys=True)

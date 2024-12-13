@@ -1,0 +1,13 @@
+{
+    "database": "haven",
+    "table": "movement_model_contrasts_m2_a2",
+    "train_partitions": 1,
+    "test_partitions": 1,
+    "features": [
+        "normed_distance", "movement_heading", "normed_log_mlt", "normed_log_npp"
+    ],
+    "space": "mimic-log-odds",
+    "experiment_name": "movement-model-m3-a2-v6",
+    "run_id": "db7f8079b151fe801ec855e7400c82e3015684c495ebe794eb121b8a9aa93783",
+    "upload_table": "movement_model_inference_m3_a2_v6_con_mirror"
+}

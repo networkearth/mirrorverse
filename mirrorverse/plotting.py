@@ -49,7 +49,7 @@ def plot_h3(df, value_col, h3_col='h3_index'):
     ))
     return fig
 
-def plot_h3_slider(df, value_col, h3_col, slider_col, line_color_col=None, bold_colors=None, zoom=2, center={"lat": 60, "lon": -180}, zmin=None, zmax=None):
+def plot_h3_slider(df, value_col, h3_col, slider_col, line_color_col=None, bold_colors=None, zoom=2, center={"lat": 60, "lon": -180}, zmin=None, zmax=None, colorscale="Blues"):
     zmin = zmin if zmin is not None else df[value_col].min()
     zmax = zmax if zmax is not None else df[value_col].max()
 
@@ -70,7 +70,7 @@ def plot_h3_slider(df, value_col, h3_col, slider_col, line_color_col=None, bold_
             z=sub_df[value_col],
             zmin=zmin,
             zmax=zmax,
-            colorscale="Blues",
+            colorscale=colorscale,
             visible=False,
             marker_opacity=0.5,
             marker_line=dict(
@@ -111,7 +111,7 @@ def plot_h3_slider(df, value_col, h3_col, slider_col, line_color_col=None, bold_
     return fig
 
 
-def plot_h3_animation(df, value_col, h3_col, slider_col, line_color_col=None, bold_colors=None, zoom=2, center={"lat": 60, "lon": -180}, duration=500, zmin=None, zmax=None):
+def plot_h3_animation(df, value_col, h3_col, slider_col, line_color_col=None, bold_colors=None, zoom=2, center={"lat": 60, "lon": -180}, duration=500, zmin=None, zmax=None, colorscale="Blues"):
     zmin = zmin if zmin is not None else df[value_col].min()
     zmax = zmax if zmax is not None else df[value_col].max()
 
@@ -134,7 +134,7 @@ def plot_h3_animation(df, value_col, h3_col, slider_col, line_color_col=None, bo
             z=sub_df[value_col],
             zmin=zmin,
             zmax=zmax,
-            colorscale="Blues",
+            colorscale=colorscale,
             visible=True,
             marker_opacity=0.5,
             marker_line=dict(
@@ -155,7 +155,7 @@ def plot_h3_animation(df, value_col, h3_col, slider_col, line_color_col=None, bo
                     z=sub_df[value_col],
                     zmin=zmin,
                     zmax=zmax,
-                    colorscale="Blues",
+                    colorscale=colorscale,
                     marker_opacity=0.5,
                     marker_line=dict(
                         color=sub_df[line_color_col].to_list() if line_color_col else ['black'] * len(sub_df),

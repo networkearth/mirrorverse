@@ -1,0 +1,443 @@
+{
+    "experiment_name": "movement-model-m3-a3-v11",
+    "space": "mimic-log-odds",
+    "dataset": "movement-model-contrasts-m3-a3",
+    "max_choices": 2,
+    "features": [
+        "normed_distance", "movement_heading", "normed_log_mlt", "normed_log_npp", "cos_time", "sin_time"
+    ],
+    "database": "haven",
+    "table": "movement_model_experiment_m3_a3_v11",
+    "models": [
+        {
+            "batch_size": 600,
+            "epochs": 50,
+            "layers": [
+                "D8",
+                "D4"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 50,
+            "layers": [
+                "D2",
+                "D2"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 50,
+            "layers": [
+                "D4",
+                "D2"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 50,
+            "layers": [
+                "D2",
+                "D2"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 50,
+            "layers": [
+                "D8",
+                "D2"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 50,
+            "layers": [
+                "D8",
+                "D8",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 50,
+            "layers": [
+                "D4",
+                "D4"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 50,
+            "layers": [
+                "D8",
+                "D8",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 50,
+            "layers": [
+                "D2",
+                "D2"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 50,
+            "layers": [
+                "D4",
+                "D2"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 50,
+            "layers": [
+                "D8",
+                "D4",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 50,
+            "layers": [
+                "D8",
+                "D4",
+                "D4"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 50,
+            "layers": [
+                "D4",
+                "D4",
+                "D2"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 50,
+            "layers": [
+                "D8",
+                "D2"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 50,
+            "layers": [
+                "D2",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 50,
+            "layers": [
+                "D2",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 50,
+            "layers": [
+                "D2",
+                "D2",
+                "D4"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 50,
+            "layers": [
+                "D4",
+                "D4",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 50,
+            "layers": [
+                "D2",
+                "D4",
+                "D2"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 50,
+            "layers": [
+                "D4",
+                "D8",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 50,
+            "layers": [
+                "D2",
+                "D4"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 50,
+            "layers": [
+                "D2",
+                "D2",
+                "D2"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 50,
+            "layers": [
+                "D4",
+                "D4"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 50,
+            "layers": [
+                "D2",
+                "D4"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 50,
+            "layers": [
+                "D2",
+                "D8",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 50,
+            "layers": [
+                "D2",
+                "D8",
+                "D2"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 50,
+            "layers": [
+                "D4",
+                "D4"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 50,
+            "layers": [
+                "D4",
+                "D8",
+                "D2"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 50,
+            "layers": [
+                "D4",
+                "D2",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 50,
+            "layers": [
+                "D2",
+                "D8",
+                "D2"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 50,
+            "layers": [
+                "D2",
+                "D4",
+                "D4"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 50,
+            "layers": [
+                "D4",
+                "D2",
+                "D2"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 50,
+            "layers": [
+                "D8",
+                "D2",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 50,
+            "layers": [
+                "D4",
+                "D2",
+                "D4"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 50,
+            "layers": [
+                "D8",
+                "D2",
+                "D4"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 50,
+            "layers": [
+                "D4",
+                "D2",
+                "D2"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 50,
+            "layers": [
+                "D8",
+                "D4"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 50,
+            "layers": [
+                "D2",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 50,
+            "layers": [
+                "D8",
+                "D8",
+                "D4"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 50,
+            "layers": [
+                "D8",
+                "D4",
+                "D2"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 50,
+            "layers": [
+                "D4",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 50,
+            "layers": [
+                "D4",
+                "D2"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 50,
+            "layers": [
+                "D4",
+                "D8",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 50,
+            "layers": [
+                "D8",
+                "D8"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 50,
+            "layers": [
+                "D8",
+                "D4",
+                "D4"
+            ]
+        },
+        {
+            "batch_size": 700,
+            "epochs": 50,
+            "layers": [
+                "D8",
+                "D4",
+                "D4"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 50,
+            "layers": [
+                "D8",
+                "D2",
+                "D2"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 50,
+            "layers": [
+                "D2",
+                "D2",
+                "D2"
+            ]
+        },
+        {
+            "batch_size": 500,
+            "epochs": 50,
+            "layers": [
+                "D2",
+                "D2",
+                "D4"
+            ]
+        },
+        {
+            "batch_size": 600,
+            "epochs": 50,
+            "layers": [
+                "D8",
+                "D8",
+                "D2"
+            ]
+        }
+    ]
+}
