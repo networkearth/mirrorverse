@@ -32,30 +32,25 @@ def build_randomized_param_sets(param_grids, M, max_attempts):
 @click.option('-n', '--num_sets', required=True, type=int)
 def main(num_sets):
     grids = {
-        "batch_size": [500, 600, 700],
-        "epochs": [15, 20, 25],
-        "layer1": [8, 16, 16],
-        "layer2": [8, 8, 16, 16, 16],
-        "layer3": [4, 8, 16, 0, 0, 0],
+        "batch_size": [500],
+        "random_seed": list(range(5)),
+        "epochs": [50],
+        "dropout": [2, 3],
+        "num_layers": [2, 3, 4],
+        "layer_size": [16, 24]
     }
-    grids = {
-        "batch_size": [500, 600, 700],
-        "epochs": [125],
-        "dropout": [0, 1, 2, 3],
-        "layer_size": [8, 16, 24, 32]
-    }
-    param_sets = build_randomized_param_sets(grids, num_sets, 10)
+    param_sets = build_randomized_param_sets(grids, num_sets, 100)
     for param_set in param_sets:
         dropout = param_set["dropout"]
         layer_size = param_set["layer_size"]
         if dropout == 0:
             param_set["layers"] = [
-                f"D{layer_size}", f"D{layer_size}", f"D{layer_size}"
-            ]
+                f"D{layer_size}",
+            ] * param_set["num_layers"]
         else:
             param_set["layers"] = [
-                f"D{layer_size}", f"Dropout{dropout}", f"D{layer_size}", f"Dropout{dropout}", f"D{layer_size}", f"Dropout{dropout}"
-            ]
+                f"D{layer_size}", f"Dropout{dropout}",
+            ] * param_set["num_layers"]
 
     print(param_sets)
     with open("param_sets.json", "w") as f:
