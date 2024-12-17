@@ -1,0 +1,1245 @@
+{
+    "experiment_name": "movement-model-m4-a1-v2",
+    "space": "mimic-log-odds",
+    "dataset": "movement-model-contrasts-m4-a1",
+    "max_choices": 2,
+    "features": [
+        "normed_distance", "movement_heading", 
+        "normalized_fork_length", 
+        "normed_home_lat", "normed_home_lon", 
+        "cos_time", "sin_time", 
+        "normed_log_mlt", "normed_log_npp"
+    ],
+    "database": "haven",
+    "table": "movement_model_experiment_m4_a1_v2",
+    "models": [
+        {
+            "batch_size": 500,
+            "dropout": 3,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout3",
+                "D24",
+                "Dropout3",
+                "D24",
+                "Dropout3"
+            ],
+            "num_layers": 3,
+            "random_seed": 8
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2"
+            ],
+            "num_layers": 4,
+            "random_seed": 11
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2"
+            ],
+            "num_layers": 4,
+            "random_seed": 7
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2"
+            ],
+            "num_layers": 4,
+            "random_seed": 5
+        },
+        {
+            "batch_size": 500,
+            "dropout": 3,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout3",
+                "D16",
+                "Dropout3",
+                "D16",
+                "Dropout3"
+            ],
+            "num_layers": 3,
+            "random_seed": 5
+        },
+        {
+            "batch_size": 500,
+            "dropout": 1,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1"
+            ],
+            "num_layers": 4,
+            "random_seed": 12
+        },
+        {
+            "batch_size": 500,
+            "dropout": 3,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout3",
+                "D16",
+                "Dropout3",
+                "D16",
+                "Dropout3"
+            ],
+            "num_layers": 3,
+            "random_seed": 0
+        },
+        {
+            "batch_size": 500,
+            "dropout": 1,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1"
+            ],
+            "num_layers": 3,
+            "random_seed": 2
+        },
+        {
+            "batch_size": 500,
+            "dropout": 3,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout3",
+                "D24",
+                "Dropout3",
+                "D24",
+                "Dropout3"
+            ],
+            "num_layers": 3,
+            "random_seed": 1
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2"
+            ],
+            "num_layers": 3,
+            "random_seed": 0
+        },
+        {
+            "batch_size": 500,
+            "dropout": 3,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout3",
+                "D16",
+                "Dropout3",
+                "D16",
+                "Dropout3",
+                "D16",
+                "Dropout3"
+            ],
+            "num_layers": 4,
+            "random_seed": 2
+        },
+        {
+            "batch_size": 500,
+            "dropout": 1,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1"
+            ],
+            "num_layers": 3,
+            "random_seed": 10
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2"
+            ],
+            "num_layers": 4,
+            "random_seed": 1
+        },
+        {
+            "batch_size": 500,
+            "dropout": 1,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1"
+            ],
+            "num_layers": 4,
+            "random_seed": 5
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2"
+            ],
+            "num_layers": 4,
+            "random_seed": 6
+        },
+        {
+            "batch_size": 500,
+            "dropout": 1,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1"
+            ],
+            "num_layers": 4,
+            "random_seed": 6
+        },
+        {
+            "batch_size": 500,
+            "dropout": 3,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout3",
+                "D24",
+                "Dropout3",
+                "D24",
+                "Dropout3",
+                "D24",
+                "Dropout3"
+            ],
+            "num_layers": 4,
+            "random_seed": 5
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2"
+            ],
+            "num_layers": 4,
+            "random_seed": 11
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2"
+            ],
+            "num_layers": 4,
+            "random_seed": 1
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2"
+            ],
+            "num_layers": 4,
+            "random_seed": 9
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2"
+            ],
+            "num_layers": 3,
+            "random_seed": 12
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2"
+            ],
+            "num_layers": 4,
+            "random_seed": 2
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2"
+            ],
+            "num_layers": 3,
+            "random_seed": 7
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2"
+            ],
+            "num_layers": 4,
+            "random_seed": 8
+        },
+        {
+            "batch_size": 500,
+            "dropout": 1,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1"
+            ],
+            "num_layers": 3,
+            "random_seed": 13
+        },
+        {
+            "batch_size": 500,
+            "dropout": 1,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1"
+            ],
+            "num_layers": 3,
+            "random_seed": 1
+        },
+        {
+            "batch_size": 500,
+            "dropout": 3,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout3",
+                "D16",
+                "Dropout3",
+                "D16",
+                "Dropout3",
+                "D16",
+                "Dropout3"
+            ],
+            "num_layers": 4,
+            "random_seed": 5
+        },
+        {
+            "batch_size": 500,
+            "dropout": 1,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1"
+            ],
+            "num_layers": 4,
+            "random_seed": 13
+        },
+        {
+            "batch_size": 500,
+            "dropout": 1,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1"
+            ],
+            "num_layers": 3,
+            "random_seed": 5
+        },
+        {
+            "batch_size": 500,
+            "dropout": 3,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout3",
+                "D16",
+                "Dropout3",
+                "D16",
+                "Dropout3",
+                "D16",
+                "Dropout3"
+            ],
+            "num_layers": 4,
+            "random_seed": 12
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2"
+            ],
+            "num_layers": 4,
+            "random_seed": 10
+        },
+        {
+            "batch_size": 500,
+            "dropout": 1,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1"
+            ],
+            "num_layers": 4,
+            "random_seed": 2
+        },
+        {
+            "batch_size": 500,
+            "dropout": 1,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1"
+            ],
+            "num_layers": 3,
+            "random_seed": 12
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2"
+            ],
+            "num_layers": 4,
+            "random_seed": 7
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2"
+            ],
+            "num_layers": 4,
+            "random_seed": 6
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2"
+            ],
+            "num_layers": 3,
+            "random_seed": 4
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2"
+            ],
+            "num_layers": 3,
+            "random_seed": 5
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2"
+            ],
+            "num_layers": 3,
+            "random_seed": 0
+        },
+        {
+            "batch_size": 500,
+            "dropout": 1,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1"
+            ],
+            "num_layers": 3,
+            "random_seed": 7
+        },
+        {
+            "batch_size": 500,
+            "dropout": 1,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1"
+            ],
+            "num_layers": 3,
+            "random_seed": 9
+        },
+        {
+            "batch_size": 500,
+            "dropout": 1,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1"
+            ],
+            "num_layers": 4,
+            "random_seed": 10
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2"
+            ],
+            "num_layers": 4,
+            "random_seed": 14
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2"
+            ],
+            "num_layers": 4,
+            "random_seed": 12
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2"
+            ],
+            "num_layers": 3,
+            "random_seed": 8
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2"
+            ],
+            "num_layers": 4,
+            "random_seed": 0
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2"
+            ],
+            "num_layers": 4,
+            "random_seed": 4
+        },
+        {
+            "batch_size": 500,
+            "dropout": 1,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1"
+            ],
+            "num_layers": 4,
+            "random_seed": 5
+        },
+        {
+            "batch_size": 500,
+            "dropout": 1,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1"
+            ],
+            "num_layers": 4,
+            "random_seed": 9
+        },
+        {
+            "batch_size": 500,
+            "dropout": 3,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout3",
+                "D24",
+                "Dropout3",
+                "D24",
+                "Dropout3",
+                "D24",
+                "Dropout3"
+            ],
+            "num_layers": 4,
+            "random_seed": 0
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2"
+            ],
+            "num_layers": 3,
+            "random_seed": 1
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2"
+            ],
+            "num_layers": 3,
+            "random_seed": 3
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2"
+            ],
+            "num_layers": 4,
+            "random_seed": 14
+        },
+        {
+            "batch_size": 500,
+            "dropout": 1,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1"
+            ],
+            "num_layers": 3,
+            "random_seed": 8
+        },
+        {
+            "batch_size": 500,
+            "dropout": 3,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout3",
+                "D24",
+                "Dropout3",
+                "D24",
+                "Dropout3",
+                "D24",
+                "Dropout3"
+            ],
+            "num_layers": 4,
+            "random_seed": 1
+        },
+        {
+            "batch_size": 500,
+            "dropout": 1,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1"
+            ],
+            "num_layers": 4,
+            "random_seed": 10
+        },
+        {
+            "batch_size": 500,
+            "dropout": 3,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout3",
+                "D24",
+                "Dropout3",
+                "D24",
+                "Dropout3"
+            ],
+            "num_layers": 3,
+            "random_seed": 10
+        },
+        {
+            "batch_size": 500,
+            "dropout": 3,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout3",
+                "D24",
+                "Dropout3",
+                "D24",
+                "Dropout3"
+            ],
+            "num_layers": 3,
+            "random_seed": 7
+        },
+        {
+            "batch_size": 500,
+            "dropout": 1,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1"
+            ],
+            "num_layers": 3,
+            "random_seed": 4
+        },
+        {
+            "batch_size": 500,
+            "dropout": 1,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1",
+                "D24",
+                "Dropout1"
+            ],
+            "num_layers": 3,
+            "random_seed": 12
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2"
+            ],
+            "num_layers": 4,
+            "random_seed": 2
+        },
+        {
+            "batch_size": 500,
+            "dropout": 3,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout3",
+                "D24",
+                "Dropout3",
+                "D24",
+                "Dropout3"
+            ],
+            "num_layers": 3,
+            "random_seed": 5
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2"
+            ],
+            "num_layers": 3,
+            "random_seed": 10
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2"
+            ],
+            "num_layers": 3,
+            "random_seed": 13
+        },
+        {
+            "batch_size": 500,
+            "dropout": 1,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1",
+                "D16",
+                "Dropout1"
+            ],
+            "num_layers": 3,
+            "random_seed": 5
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2"
+            ],
+            "num_layers": 3,
+            "random_seed": 9
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2"
+            ],
+            "num_layers": 3,
+            "random_seed": 14
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2"
+            ],
+            "num_layers": 3,
+            "random_seed": 6
+        },
+        {
+            "batch_size": 500,
+            "dropout": 3,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout3",
+                "D16",
+                "Dropout3",
+                "D16",
+                "Dropout3"
+            ],
+            "num_layers": 3,
+            "random_seed": 1
+        },
+        {
+            "batch_size": 500,
+            "dropout": 3,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout3",
+                "D16",
+                "Dropout3",
+                "D16",
+                "Dropout3",
+                "D16",
+                "Dropout3"
+            ],
+            "num_layers": 4,
+            "random_seed": 1
+        },
+        {
+            "batch_size": 500,
+            "dropout": 3,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout3",
+                "D16",
+                "Dropout3",
+                "D16",
+                "Dropout3",
+                "D16",
+                "Dropout3"
+            ],
+            "num_layers": 4,
+            "random_seed": 0
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 24,
+            "layers": [
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2",
+                "D24",
+                "Dropout2"
+            ],
+            "num_layers": 4,
+            "random_seed": 5
+        },
+        {
+            "batch_size": 500,
+            "dropout": 2,
+            "epochs": 100,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2",
+                "D16",
+                "Dropout2"
+            ],
+            "num_layers": 4,
+            "random_seed": 9
+        }
+    ]
+}
