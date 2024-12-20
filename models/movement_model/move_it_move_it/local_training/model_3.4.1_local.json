@@ -7,16 +7,19 @@
         "binned_normed_distance"
     ],
     "database": "haven",
-    "table": "movement_model_experiment_m3_a4_v1_local",
+    "table": "movement_model_experiment_m3_a4_v1_local2",
     "model": {
             "batch_size": 10000,
-            "epochs": 25,
+            "epochs": 5,
             "layers": [
                 "D8",
                 "D8",
                 "D8",
                 "D8"
-            ]
+            ],
+            "optimizer_kwargs": {
+                "learning_rate": 0.001
+            }
         },
-        "run_id": "local_31"
+        "run_id": "local_32"
 }
