@@ -76,13 +76,52 @@ The primary risk in using contrasts is introducing bias by disproportionately sa
 
 \section*{Application}
 
-We consider the tracks of 111 Chinook salmon (\textit{Oncorhynchus tshawytscha}) recorded using 
-
 \subsection*{Data}
 
-\subsection*{Model}
+We consider a series of tracks from 111 Chinook salmon (\textit{Oncorhynchus tshawytscha}) caught and monitored between 2013 and 2022 (CITE). These tracks were obtained from pop-up satellite archival tags which collect temperature, light level, and depth information at specified (sub day) intervals. This data is then passed through a proprietary algorithm from Wildlife Computers to determine likely longitude and latitude during each day of of monitoring (\cite{PSAT}). \newline
+
+Environmental data was derived from the Global Ocean Biogeochemistry Hindcast dataset (10.48670/moi-00019) and the Global Ocean Physics Reanalysis (10.48670/moi-00021) from the E.U. Copernicus Marine Service Information. Net primary production (mg/m3/day) and mixed layer thickness (m) were aggregated per Uber h3 resolution 4 cell in the Northern Pacific. 
+
+\subsection*{Formulation}
+
+The resolution 4 Uber h3 cell containing each salmon location was identified and then, assuming a maximum travel distance of 100km (centeroid to centeroid) all adjacent cells within the 100km were identified as choices (including the currently occupied cell). In general this represented $\sim 19$ choices per decision with the intention being to predict the probability of moving to any particular cell. Training data was derived by identifying the actual cell moved to. 
+
+\subsection*{Features} 
+
+Movement heading in radians and distance to the centroid of the choice cell were computed and then mixed layer thickness and net primary production were joined to the choices on cell and day.
+
+Distance was normalized to a range of 0-1 by division by 100, while mixed layer thickness and net primary production were both log-scaled and then centered at zero. 
+
+\subsection*{Contrast Sampling}
+
+After inspecting the distribution of number of choices per salmon and number of choices per decision, we decided on random sampling (with replacement) 200 decisions per individual and 19 choices per decision. 
+
+Over a test/validation/training split of 20, 20, 71 this resulted in 345,800 contrasts of which 269,800 were used in training and the rest in validation (no contrasts were necessary for the test set). 
+
+Note that only 14,200 training examples would've been available to a traditional probabilistic approach representing a large increase in the number of available training examples.   
 
 \subsection*{Training}
+
+Three sets models were trained, one including only distance, one with both distance and movement heading, and one with all four features. Note that while the feature dimensions of these models are 1, 2, and 4 respectively, given the maximum number of choices per decision seen was 33 they dimensionality of a standard probabilistic model would've been 33, 66, and 132 representing a large reduction in the dimensionality of our feature spaces. 
+
+Architectures/hyperparameters for the log-odds component of the model were parametrized in the following ways:
+
+\begin{center}
+\begin{tabular}{| c | c |} 
+\hline 
+Component & Options \\
+\hline
+Layers & 2, 3, 4 \\ 
+Units per Layer & 16, 24, 32 \\
+Dropout \% per Layer & 20, 30 \\ 
+Batch Size & 500 \\
+\hline
+\end{tabular}
+\end{center}
+
+With 10 models trained for each combination. Models were trained in Keras using an Adam optimizer with default settings. 
+
+Models for each set of features we selected on the basis of the loss over the validation set of contrasts. 
 
 \section*{Results}
 
