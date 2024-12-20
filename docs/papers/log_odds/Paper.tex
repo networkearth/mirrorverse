@@ -1,0 +1,133 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[super]{nth}
+\usepackage{amsthm}
+\usepackage{bm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{objective}{Objective}
+\newtheorem{model}{Model}
+\usepackage{xcolor}
+\definecolor{light-gray}{gray}{0.95}
+\newcommand{\code}[1]{\colorbox{light-gray}{\texttt{#1}}}
+\usepackage{listings}
+\usepackage{placeins}
+
+\usepackage[authoryear]{natbib}
+
+
+\makeatletter
+\renewcommand{\maketitle}{
+\begin{center}
+
+\pagestyle{empty}
+
+{\LARGE \bf \@title\par}
+\vspace{1cm}
+
+{\Large Marcel Gietzmann-Sanders, Michael Courtney, Andrew Seitz, Curry Cunningham}\\[1cm]
+
+University of Alaska Fairbanks
+
+
+\end{center}
+}\makeatother
+
+
+\title{Technique for Dimensionality Reduction in Decision Modeling}
+
+\date{2024}
+\setcounter{tocdepth}{2}
+\begin{document}
+\maketitle
+
+\section*{Introduction}
+
+\subsection*{Value of Probabilistic Modeling}
+
+\section*{Theory}
+
+Standard probabilistic deep learning networks are typically framed as a classification problem, using categorical cross-entropy as the loss function (\cite{durr}). Each output neuron represents a potential choice, with the model predicting the probability of each choice being correct based on this loss formulation. For these choices, we provide the network with features encapsulating the relevant information. Training is then comprised of providing a series such decisions. 
+
+However, this formulation introduces a critical challenge: if there are $N$ features per choice and $M$ potential choices, the overall dimensionality of the input space becomes $N \cdot M$. Adding even a single feature increases the dimensionality by $M$ not just 1.
+
+This growth poses a significant challenge due to the "curse of dimensionality", where the amount of data required to effectively train models grows exponentially with the dimensionality of the input space (CITE).
+
+\subsection*{Log-Odds Modeling}
+
+To address this issue, we propose an alternative framing. Instead of predicting the probabilities directly, we predict the log-odds $\phi_m$ for each choice and calculate the probability $p_m$ using the softmax function:
+
+$$p_m = \frac{e^{\phi_m}}{\sum_{m=1}^{M}e^{\phi_m}}$$
+
+This approach reduces the feature space dimensionality to $N$ and effectively increases the number of training examples by a factor of $M$.
+
+We can implement this log-odds model using standard probabilistic deep learning techniques by replicating the log-odds computation across all $M$ choices. The outputs are fed into a softmax layer with $M$ units, where the layer's weights are set to the identity matrix and biases are set to zero. Using categorical cross-entropy as the loss function ensures compatibility with standard probabilistic deep learning while enabling us to train the log-odds weights and significantly reduce the problem's dimensionality.
+
+\subsection*{Contrast Sampling}
+
+As $M$ grows large, a practical issue arises: for each training example, most instances of the internal log-odds model would ideally report very low log-odds, resulting in low probabilities. Ideally, only one choice should produce $p_m=1$. This is analogous to a class imbalance problem, where the model becomes prone to predicting the most common class (CITE).
+
+To address this, we balance the training data. Instead of presenting the model with full decisions containing all $M$ choices, we create training pairs, or contrasts, where each pair consists of one selected choice and one unselected choice. This approach is valid because the log-odds model focuses on the relative likelihood of choices, making the number of choices considered at any one time irrelevant.
+
+The primary risk in using contrasts is introducing bias by disproportionately sampling certain combinations of choices. To mitigate this, we randomly sample pairs from each decision, ensure an equal number of contrasts per decision, and an equal number of decisions per individual. This preserves the balance across the training data and avoids skewing the model's predictions.
+
+\section*{Application}
+
+\subsection*{Data}
+
+We consider a series of tracks from 111 Chinook salmon (\textit{Oncorhynchus tshawytscha}) caught and monitored between 2013 and 2022 (CITE). These tracks were obtained from pop-up satellite archival tags which collect temperature, light level, and depth information at specified (sub day) intervals. This data is then passed through a proprietary algorithm from Wildlife Computers to determine likely longitude and latitude during each day of of monitoring (\cite{PSAT}). \newline
+
+Environmental data was derived from the Global Ocean Biogeochemistry Hindcast dataset (10.48670/moi-00019) and the Global Ocean Physics Reanalysis (10.48670/moi-00021) from the E.U. Copernicus Marine Service Information. Net primary production (mg/m3/day) and mixed layer thickness (m) were aggregated per Uber h3 resolution 4 cell in the Northern Pacific. 
+
+\subsection*{Formulation}
+
+The resolution 4 Uber h3 cell containing each salmon location was identified and then, assuming a maximum travel distance of 100km (centeroid to centeroid) all adjacent cells within the 100km were identified as choices (including the currently occupied cell). In general this represented $\sim 19$ choices per decision with the intention being to predict the probability of moving to any particular cell. Training data was derived by identifying the actual cell moved to. 
+
+\subsection*{Features} 
+
+Movement heading in radians and distance to the centroid of the choice cell were computed and then mixed layer thickness and net primary production were joined to the choices on cell and day.
+
+Distance was normalized to a range of 0-1 by division by 100, while mixed layer thickness and net primary production were both log-scaled and then centered at zero. 
+
+\subsection*{Contrast Sampling}
+
+After inspecting the distribution of number of choices per salmon and number of choices per decision, we decided on random sampling (with replacement) 200 decisions per individual and 19 choices per decision. 
+
+Over a test/validation/training split of 20, 20, 71 this resulted in 345,800 contrasts of which 269,800 were used in training and the rest in validation (no contrasts were necessary for the test set). 
+
+Note that only 14,200 training examples would've been available to a traditional probabilistic approach representing a large increase in the number of available training examples.   
+
+\subsection*{Training}
+
+Three sets models were trained, one including only distance, one with both distance and movement heading, and one with all four features. Note that while the feature dimensions of these models are 1, 2, and 4 respectively, given the maximum number of choices per decision seen was 33 they dimensionality of a standard probabilistic model would've been 33, 66, and 132 representing a large reduction in the dimensionality of our feature spaces. 
+
+Architectures/hyperparameters for the log-odds component of the model were parametrized in the following ways:
+
+\begin{center}
+\begin{tabular}{| c | c |} 
+\hline 
+Component & Options \\
+\hline
+Layers & 2, 3, 4 \\ 
+Units per Layer & 16, 24, 32 \\
+Dropout \% per Layer & 20, 30 \\ 
+Batch Size & 500 \\
+\hline
+\end{tabular}
+\end{center}
+
+With 10 models trained for each combination. Models were trained in Keras using an Adam optimizer with default settings. 
+
+Models for each set of features we selected on the basis of the loss over the validation set of contrasts. 
+
+\section*{Results}
+
+\section*{Discussion}
+
+\bibliographystyle{apalike}
+\bibliography{reference}
+
+\end{document}
