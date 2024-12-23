@@ -96,7 +96,7 @@ Distance was normalized to a range of 0-1 by division by 100, while mixed layer 
 
 After inspecting the distribution of number of choices per salmon and number of choices per decision, we decided on random sampling (with replacement) 200 decisions per individual and 19 choices per decision. 
 
-Over a test/validation/training split of 20, 20, 71 this resulted in 345,800 contrasts of which 269,800 were used in training and the rest in validation (no contrasts were necessary for the test set). 
+Over a test/validation/training split of 40, 71 this resulted in 345,800 contrasts of which 269,800 were used in training and the rest in validation. 
 
 Note that only 14,200 training examples would've been available to a traditional probabilistic approach representing a large increase in the number of available training examples.   
 
@@ -111,23 +111,129 @@ Architectures/hyperparameters for the log-odds component of the model were param
 \hline 
 Component & Options \\
 \hline
-Layers & 2, 3, 4 \\ 
-Units per Layer & 16, 24, 32 \\
-Dropout \% per Layer & 20, 30 \\ 
-Batch Size & 500 \\
+Layers & 3, 4 \\ 
+Units per Layer & 24, 32 \\
+Batch Size & 10000 \\
+Learning Rate & 0.0005 \\
 \hline
 \end{tabular}
 \end{center}
 
-With 10 models trained for each combination. Models were trained in Keras using an Adam optimizer with default settings. 
+With 5 models trained for each combination. Models were trained in Keras using an Adam optimizer for 100 epochs. 
 
 Models for each set of features we selected on the basis of the loss over the validation set of contrasts. 
 
 \section*{Results}
 
+In training the metric of interest is the contrasts normalized log probability (C-NLP) - the average log probability per contrast. For an equivalent metric over all of the decisions we also computed the average log probability per decision for each individual and then computed an average over those across individuals (in order to not favor individuals with many decisions). This is the D-NLP reported in the table below. 
+
+\begin{center}
+\begin{tabular}{| c | c | c | c | c |}
+\hline 
+Model & Train C-NLP & Val C-NLP & Train D-NLP & Val D-NLP \\
+\hline
+No Model & -0.693 & -0.693 & -2.944 & -2.944 \\
+Model 1 & -0.172 & -0.154 & -1.336 & -1.223 \\
+Model 2 & -0.156 & -0.150 & -1.281 & -1.200 \\
+Model 3 & -0.147 & -0.146 & -1.248 & -1.180 \\
+\hline
+\end{tabular}
+\end{center}
+
+"No Model" assumes all decisions are equally likely, Model 1 is the distance only model, Model 2 adds the movement heading, and Model 3 adds the net productivity and mixed layer thickness features. \newline
+
+\begin{figure}[h!] 
+	\centering
+  \includegraphics[height=70mm]{figures/ll_increase.png}
+  \caption{Log likelihood increase (unnormalized) per individual of each model change.}
+  \label{fig:ll_increase}
+\end{figure}
+
+\begin{figure}[h!] 
+	\centering
+  \includegraphics[height=70mm]{figures/ll_increase_no_movement.png}
+  \caption{Log likelihood increase (unnormalized) per individual of each model change in cases where the selection involved no movement.}
+  \label{fig:ll_increase_no_movement}
+\end{figure}
+
+\FloatBarrier
+
+\begin{figure}[h!] 
+	\centering
+  \includegraphics[height=70mm]{figures/ll_increase_movement.png}
+  \caption{Log likelihood increase (unnormalized) per individual of each model change in cases where the selection involved movement.}
+  \label{fig:ll_increase_movement}
+\end{figure}
+
+
+
+Figure \ref{fig:ll_increase} shows the unnormalized changes in log likelihood for each individual colored by the region in which they were initially tagged as we go from one model to the next. Figures \ref{fig:ll_increase_no_movement} and \ref{fig:ll_increase_movement} break this down for decisions that resulted in no movement and movement respectively. Only individuals in the validation set were considered.
+
+The appendix contains a series of mapped examples (figures \ref{fig:chignik_map}-\ref{fig:yakutat_map}) from each of these regions (besides EBS) that shows how the log likelihood per decision (when moving) changed in moving from model 1 to model 2 and then from model 2 to model 3. As in the above, only individuals in the validation set were considered.\newline
+
+Finally as much of the behavior seems to be modulated by movement distances (or lack of movement) a summary table of empirical likelihood of movement of a specific distance is given (taken over all individuals). 
+
+\begin{center}
+\begin{tabular}{| c | c |}
+\hline
+Distance Bin (km) & Likelihood of Selection \\
+\hline
+No Movement & 65.6\% \\
+Up to 50km & 32.5\% \\
+50km to 100km & 1.9\% \\
+\hline
+
+\end{tabular}
+\end{center}
+
+
 \section*{Discussion}
 
 \bibliographystyle{apalike}
 \bibliography{reference}
+\newpage
+\section*{Appendix: Mapped Examples}
+
+\begin{figure}[h!] 
+	\centering
+  \includegraphics[width=140mm]{figures/chignik_map.png}
+  \caption{Log likehood changes per decision - Chignik}
+  \label{fig:chignik_map}
+\end{figure}
+
+\begin{figure}[h!] 
+	\centering
+  \includegraphics[width=140mm]{figures/kodiak_map.png}
+  \caption{Log likehood changes per decision - Kodiak}
+  \label{fig:kodiak_map}
+\end{figure}
+
+\begin{figure}[h!] 
+	\centering
+  \includegraphics[width=140mm]{figures/nanwalek_map.png}
+  \caption{Log likehood changes per decision - Nanwalek}
+  \label{fig:nanwalek_map}
+\end{figure}
+
+\begin{figure}[h!] 
+	\centering
+  \includegraphics[width=140mm]{figures/sitka_map.png}
+  \caption{Log likehood changes per decision - Sitka}
+  \label{fig:sitka_map}
+\end{figure}
+
+\begin{figure}[h!] 
+	\centering
+  \includegraphics[width=140mm]{figures/unalaska_map.png}
+  \caption{Log likehood changes per decision - Unalaska}
+  \label{fig:unalaska_map}
+\end{figure}
+
+\begin{figure}[h!] 
+	\centering
+  \includegraphics[width=140mm]{figures/yakutat_map.png}
+  \caption{Log likehood changes per decision - Yakutat}
+  \label{fig:yakutat_map}
+\end{figure}
 
 \end{document}
