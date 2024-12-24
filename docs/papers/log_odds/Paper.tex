@@ -37,7 +37,7 @@ University of Alaska Fairbanks
 }\makeatother
 
 
-\title{Technique for Dimensionality Reduction in Decision Modeling}
+\title{A Framework for Studying Behavior Using Deep Learning}
 
 \date{2024}
 \setcounter{tocdepth}{2}
@@ -47,6 +47,16 @@ University of Alaska Fairbanks
 \section*{Introduction}
 
 \subsection*{Value of Probabilistic Modeling}
+
+\section*{Framing}
+
+This methodology centers on a two-stage cycle of discovery: (1) testing hypotheses about covariates that are believed to predict behaviors and (2) using the results to generate new hypotheses.
+
+In the first stage, we model behaviors as decisions made from a set of choices, each associated with hypothesized covariates. Then, using machine learning, we build a predictive model to evaluate the likelihood of these selections based on the covariates.
+
+In the second stage, we evaluate how the model shifts the likelihood of specific individuals or decision groups relative to baseline models. Improved performance reveals where the covariates more effectively predict behavior, while underperformance indicates missing covariates. This focus on areas of "greatest possible effect" provides case studies for generating new hypotheses, enabling iterative refinement of the process.
+
+The keystone of this entire process becomes having a clear, quick means of producing machine learning models from our framing of decisions and choices and our covariates, an issue which we turn to next. 
 
 \section*{Theory}
 
@@ -74,6 +84,16 @@ To address this, we balance the training data. Instead of presenting the model w
 
 The primary risk in using contrasts is introducing bias by disproportionately sampling certain combinations of choices. To mitigate this, we randomly sample pairs from each decision, ensure an equal number of contrasts per decision, and an equal number of decisions per individual. This preserves the balance across the training data and avoids skewing the model's predictions.
 
+\subsection*{Alternative Approaches to Reducing Dimensionality}
+There are various strategies for reducing the dimensionality of one's data. One straightforward method is to limit the choices available. For instance if making decisions among a set of directions, one could reduce the precision of the angles allowed. While this approach reduces the model's specificity, it significantly simplifies the dimensionality of the problem, which is often a key challenge in probabilistic deep learning.
+
+The methodology proposed, however, achieves dimensionality reduction without sacrificing specificity. That said, there are scenarios where some choices are unlikely to be relevant. In such cases, dimensions corresponding to these irrelevant choices can simply be discarded, further simplifying the model. \newline
+
+Another effective strategy to enhance the data set is leveraging the order invariance of choices in traditional probabilistic problem framing. Specifically, the order in which choices are presented to the model should not matter. For instance, whether a particular choice appears in the first or the thirteenth position should have no impact on the model's operation. This property allows for data augmentation by reordering choices.
+
+In essence, for each training example, $M!$ (factorial of the number of choices) augmented examples can be created. While this exponentially increases the size of the data set as the feature space grows, it provides a mechanism to generate additional training examples from the same data.
+
+The issue with this approach is that as your augmented data size grows to match the needs of the greater dimensionality so too does the time required for training. So while the problem remains theoretically possible, the exponential uptick in time complexity poses a significant practical issue. The proposed approach does not suffer from this issue and remains linear in time with the amount of data provided. 
 \section*{Application}
 
 \subsection*{Data}
@@ -174,13 +194,13 @@ The appendix contains a series of mapped examples (figures \ref{fig:chignik_map}
 Finally as much of the behavior seems to be modulated by movement distances (or lack of movement) a summary table of empirical likelihood of movement of a specific distance is given (taken over all individuals). 
 
 \begin{center}
-\begin{tabular}{| c | c |}
+\begin{tabular}{| c | c | c |}
 \hline
-Distance Bin (km) & Likelihood of Selection \\
+Distance Bin (km) & Likelihood of Selection & \# Training Decisions \\
 \hline
-No Movement & 65.6\% \\
-Up to 50km & 32.5\% \\
-50km to 100km & 1.9\% \\
+No Movement & 65.6\% & 3163 \\
+Up to 50km & 32.5\% & 1567 \\
+50km to 100km & 1.9\% & 92 \\
 \hline
 
 \end{tabular}
@@ -188,6 +208,52 @@ Up to 50km & 32.5\% \\
 
 
 \section*{Discussion}
+
+\subsection*{Model One: Distance as a Key Feature}
+Starting with Model One, we observe a significant improvement in log-likelihood across all individuals in the validation set. This outcome is intuitive, given that the most probable action for these salmonids is to remain in place. This behavior highlights the importance of distance as a feature, as it dramatically reduces the likelihood of alternative actions. Beyond staying in place, most movement is limited to a range of 0 to 50 kilometers, with only a small percentage extending further.
+
+This demonstrates that a baseline model treating all locations as equally likely is a gross oversimplification of salmon behavior. Introducing distance as a feature alone vastly improves the model’s performance, as it aligns more closely with observed patterns.
+
+\subsection*{Model Two: Movement Heading}
+Model Two adds movement heading as a feature, offering further improvement, though not as dramatic as Model One's addition of distance. Movement heading enables the model to learn general directional trends in salmon migration, which are particularly influenced by the geography and location of the fish.
+
+Examining changes in log-likelihood between Models One and Two, we see a general pattern: southeasterly movements gain likelihood, while northern, northwesterly, and northeasterly movements often see decreases. This aligns with the data, as the farthest-moving fish predominantly migrate southeast. However, the inclusion of movement heading introduces variability—while most fish experience an increase in likelihood, some see decreases due to the model imposing a general directional preference that may not align with all individual behaviors.
+
+\subsection*{Model Three: Environmental Features}
+To refine the model further, we incorporate environmental features such as net primary productivity and mixed layer thickness in Model Three. These features provide information about productivity in the fish's habitat. Their inclusion results in another improvement in log-likelihood, particularly for fish previously associated with less-likely movements (e.g., westward or northward). This suggests a correlation between environmental productivity and movement behavior.
+
+However, as with movement heading, the addition of these features benefits some individuals while diminishing the likelihoods for others. This variability reflects the nuanced interactions between salmonid behavior and environmental conditions, reinforcing the importance of continuing to explore exemplar cases where the model performs poorly.
+
+\subsection*{Iterative Refinement Through Exemplars}
+At each stage, we identify individuals with the lowest log-likelihood improvements compared to their baselines. These exemplars provide valuable insights into potential missing covariates or unmodeled behaviors. By iteratively incorporating new features and examining their effects, we uncover diverse behavioral patterns and refine the model's predictive capability.
+
+
+Throughout this process, the value of contrast as a guide is evident. Improvements in normalized log-likelihood consistently align with better decision predictions, demonstrating that the model is effectively trained to assess the odds of observed behaviors. This contrast-driven approach allows for incremental learning and refinement, ensuring the model captures key patterns while maintaining flexibility to incorporate new information.
+
+
+This methodology proves powerful in understanding salmonid movement by enabling rapid integration of new features, establishment of revised baselines, and identification of exemplar behaviors for further analysis. By iteratively refining the model, we continue to discover and represent the complex ecological and behavioral dynamics underlying salmonid movement.
+
+\subsection*{Computational Performance and Efficiency}
+The computational performance of these log-odds models proved to be efficient and straightforward. All models were trained in the cloud using a two-core, 4GB machine, with training times ranging from 15 to 30 minutes over 100 epochs. The variation in training time depended on the complexity of the model and the number of features included.
+
+This efficiency scales well in a cloud environment, as parallelizing model training across multiple machines is both feasible and straightforward. By distributing the workload, all models for various subsets of the data can be trained simultaneously, maintaining the same 15 to 30-minute window for training and arriving at a new baseline.
+
+Within the proposed workflow—where a baseline model is built based on hypothesized important features, and poorly performing individuals are identified as exemplars for further investigation—the computational time spent on training is a minor component. The iterative process of identifying features, gathering new data, and refining the model dominates the time and energy expenditure.
+
+As such, the short training time ensures that computational efficiency is not a bottleneck, allowing for rapid iteration and refinement.
+
+Given the combination of short training times, scalability in cloud environments, and ease of integration into the iterative process, these log-odds models are highly efficient tools for data exploration and feature discovery. The author concludes that their use is well-suited to workflows requiring repeated refinement and baseline adjustments.
+
+
+
+
+
+
+
+
+
+
+
 
 \bibliographystyle{apalike}
 \bibliography{reference}
