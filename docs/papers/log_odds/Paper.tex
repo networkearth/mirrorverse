@@ -53,11 +53,11 @@ This study explores using deep learning to build Individual-Based Models (IBMs).
 
 \section*{Introduction}
 
-Individual-Based Models (IBMs) have emerged as a critical tool for studying ecological systems, particularly for capturing the nuanced behaviors and interactions of individual organisms within their environments (CITE). With them, investigators can propose hypotheses on how fish behave and then test those hypotheses against actual individual behaviors as observed in the wild (CITE).
+Individual-Based Models (IBMs) have emerged as a critical tool for studying ecological systems, particularly for capturing the nuanced behaviors and interactions of individual organisms within their environments \citep{grimm}. With them, investigators can propose hypotheses on how fish behave and then test those hypotheses against actual individual behaviors as observed in the wild.
 
-However, current methods for building IBMs are largely bespoke (CITE), tailored to specific systems or questions, and often require extensive manual development and calibration. This lack of standardization poses significant challenges to their broader adoption as a foundational methodology for studying behavior (CITE). Each model requires unique assumptions, data integrations, and computational workflows, making it difficult to generalize findings across studies or species. Moreover, the high dimensionality and computational demands of these models—exacerbated by the need to simulate individual decisions across time and space—can limit their scalability and applicability in data-limited scenarios (CITE).
+However, current methods for building IBMs are largely bespoke, tailored to specific systems or questions, and often require extensive manual development and calibration \citep{grimm}. This lack of standardization poses significant challenges to their broader adoption as a foundational methodology for studying behavior \citep{grimm}. Each model requires unique assumptions, data integrations, and computational workflows, making it difficult to generalize findings across studies or species. 
 
-Machine learning offers a way in which to at least partially address the bespoke nature of traditional Individual-Based Models (IBMs). By framing individual behaviors as probabilistic decisions among consecutive sets of choices each described by a series of features machine learning can be invoked to largely automate the process of building the decision "engine" behind IBM's. Machine learning excels at identifying patterns in high-dimensional data (CITE), enabling models to dynamically incorporate a wide range of environmental and behavioral covariates without requiring custom coding for every new hypothesis. Furthermore, by providing a consistent framing, the same systems and tools can be used across a variety of different problems. 
+Machine learning offers a way in which to at least partially address the bespoke nature of traditional Individual-Based Models (IBMs). By framing individual behaviors as probabilistic decisions among consecutive sets of choices each described by a series of features machine learning can be invoked to largely automate the process of building the decision "engine" behind IBM's. Machine learning excels at identifying patterns in high-dimensional data, enabling models to dynamically incorporate a wide range of environmental and behavioral covariates without requiring custom coding for every new hypothesis. Furthermore, by providing a consistent framing, the same systems and tools can be used across a variety of different problems. 
 
 Beyond offering a common framework, reducing the time required to build IBMs allows investigators to focus on using the modeling process to quickly test hypotheses and identify areas of uncertainty early in their studies. This efficiency enhances the utility of IBMs, making them an even more powerful tool for advancing the understanding of complex behaviors.
 
@@ -75,11 +75,11 @@ The keystone of this entire process becomes having a clear, quick means of produ
 
 \section*{Theory}
 
-Standard probabilistic deep learning networks are typically framed as a classification problem, using categorical cross-entropy as the loss function (\cite{durr}). Each output neuron represents a potential choice, with the model predicting the probability of each choice being correct based on this loss formulation. For these choices, we provide the network with features encapsulating the relevant information. Training is then comprised of providing a series such decisions. 
+Standard probabilistic deep learning networks are typically framed as a classification problem, using categorical cross-entropy as the loss function \citep{durr}. Each output neuron represents a potential choice, with the model predicting the probability of each choice being correct based on this loss formulation. For these choices, we provide the network with features encapsulating the relevant information. Training is then comprised of providing a series such decisions. 
 
 However, this formulation introduces a critical challenge: if there are $N$ features per choice and $M$ potential choices, the overall dimensionality of the input space becomes $N \cdot M$. Adding even a single feature increases the dimensionality by $M$ not just 1.
 
-This growth poses a significant challenge due to the "curse of dimensionality", where the amount of data required to effectively train models grows exponentially with the dimensionality of the input space (CITE).
+This growth poses a significant challenge due to the "curse of dimensionality", where the amount of data required to effectively train models grows exponentially with the dimensionality of the input space \citep{curse}.
 
 \subsection*{Log-Odds Modeling}
 
@@ -93,7 +93,7 @@ We can implement this log-odds model using standard probabilistic deep learning 
 
 \subsection*{Contrast Sampling}
 
-As $M$ grows large, a practical issue arises: for each training example, most instances of the internal log-odds model would ideally report very low log-odds, resulting in low probabilities. Ideally, only one choice should produce $p_m=1$. This is analogous to a class imbalance problem, where the model becomes prone to predicting the most common class (CITE).
+As $M$ grows large, a practical issue arises: for each training example, most instances of the internal log-odds model would ideally report very low log-odds, resulting in low probabilities. Ideally, only one choice should produce $p_m=1$. This is analogous to a class imbalance problem, where the model becomes prone to predicting the most common class.
 
 To address this, we balance the training data. Instead of presenting the model with full decisions containing all $M$ choices, we create training pairs, or contrasts, where each pair consists of one selected choice and one unselected choice. This approach is valid because the log-odds model focuses on the relative likelihood of choices, making the number of choices considered at any one time irrelevant.
 
@@ -113,7 +113,7 @@ The issue with this approach is that as your augmented data size grows to match 
 
 \subsection*{Data}
 
-We consider a series of tracks from 111 Chinook salmon (\textit{Oncorhynchus tshawytscha}) caught and monitored between 2013 and 2022 (CITE). These tracks were obtained from pop-up satellite archival tags which collect temperature, light level, and depth information at specified (sub day) intervals. This data is then passed through a proprietary algorithm from Wildlife Computers to determine likely longitude and latitude during each day of of monitoring (\cite{PSAT}). \newline
+We consider a series of tracks from 111 Chinook salmon (\textit{Oncorhynchus tshawytscha}) caught and monitored between 2013 and 2022 \citep{tags1} \citep{tags2}. These tracks were obtained from pop-up satellite archival tags which collect temperature, light level, and depth information at specified (sub day) intervals. This data is then passed through a proprietary algorithm from Wildlife Computers to determine likely longitude and latitude during each day of of monitoring \citep{PSAT}. \newline
 
 Environmental data was derived from the Global Ocean Biogeochemistry Hindcast dataset (10.48670/moi-00019) and the Global Ocean Physics Reanalysis (10.48670/moi-00021) from the E.U. Copernicus Marine Service Information. Net primary production (mg/m3/day) and mixed layer thickness (m) were aggregated per Uber h3 resolution 4 cell in the Northern Pacific. 
 
@@ -270,9 +270,11 @@ Clearly though, the models we have allow us to identify and focus upon individua
 
 This investigation demonstrates the power and flexibility of an iterative modeling approach for understanding behavior. By building baseline models and progressively refining them with additional covariates, we identified both predictive patterns and individuals resistant to explanation, which serve as focal points for further hypothesis generation. The efficiency of this process, enabled by quick training times and parallelization, ensures that refinement is limited only by the investigator's ability to propose and test new hypotheses. Crucially, at every stage, the models not only advance understanding but remain actionable for predictions, underscoring their dual utility as tools for both discovery and application. 
 
+\newpage
+
 \section*{Code}
 
-The tooling used to build these models as well as the means to deploy them using Amazon Web Services has been packaged at: https://github.com/networkearth/mimic
+The tooling used to build these models as well as the means to deploy them using Amazon Web Services has been packaged at: \newline https://github.com/networkearth/mimic
 
 \bibliographystyle{apalike}
 \bibliography{reference}
