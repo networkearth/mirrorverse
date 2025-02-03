@@ -1,9 +1,0 @@
-{
-    "database": "haven",
-    "source_table": "movement_model_features_m3_a4",
-    "train_partitions": 2,
-    "test_partitions": 1,
-    "destination_table": "movement_model_contrasts_m3_a4",
-    "decisions_per_individual": 200, 
-    "alternatives_per_decision": 19
-}
