@@ -1,0 +1,17 @@
+{
+    "database": "haven",
+    "table": "movement_model_features_m9_a2",
+    "train_partitions": 4,
+    "test_partitions": 1,
+    "features": [
+        "sin_mh", "cos_mh",
+        "cos_time", "sin_time",
+        "normed_salinity",
+        "normed_log_mlt",
+        "stay_put"
+    ],
+    "space": "mimic-log-odds",
+    "experiment_name": "movement-model-m9-a2-v9",
+    "run_id": "985acb97fdf84aaef5f7076a7c63bf93a7c6ee6703e71e7ffbf4b24743a0a773",
+    "upload_table": "movement_model_inference_m9_a2_v9"
+}

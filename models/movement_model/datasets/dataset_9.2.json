@@ -1,0 +1,36 @@
+{
+    "database": "haven",
+    "table": "movement_model_contrasts_m9_a2",
+    "train_partitions": 4,
+    "test_partitions": 1,
+    "max_choices": 2,
+    "features": [
+        "cos_time", "sin_time", "catch_region", "normed_log_mlt",
+        "normed_log_npp", "sin_mh", "cos_mh", "sin_wh", "cos_wh",
+        "binned_distance", "normed_home_lat", "normed_home_lon",
+        "region_unknown", "normed_fl", "normed_temp", "normed_elevation",
+        "normed_salinity", "stay_put"
+    ],
+    "missing_values_map": {
+        "cos_time": 0.0,
+        "sin_time": 0.0,
+        "catch_region": 0.0, 
+        "normed_log_mlt": 0.0,
+        "normed_log_npp": 0.0,
+        "sin_mh": 0.0,
+        "cos_mh": 0.0,
+        "sin_wh": 0.0,
+        "cos_wh": 0.0,
+        "binned_distance": 0.0,
+        "normed_home_lat": 0.0,
+        "normed_home_lon": 0.0,
+        "region_unknown": 0.0, 
+        "normed_fl": 0.0,
+        "normed_temp": 0.0,
+        "normed_elevation": 0.0,
+        "normed_salinity": 0.0,
+        "stay_put": 0.0
+    },
+    "space": "mimic-log-odds",
+    "dataset": "movement-model-contrasts-m9-a2"
+}
