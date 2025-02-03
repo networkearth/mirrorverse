@@ -1,0 +1,29 @@
+{
+    "database": "haven",
+    "table": "movement_model_contrasts_m3_a4",
+    "train_partitions": 2,
+    "test_partitions": 1,
+    "max_choices": 2,
+    "features": [
+        "normed_log_mlt", "normed_log_npp", "normed_distance", 
+        "water_heading", "movement_heading", "normalized_fork_length",
+        "normed_home_lat", "normed_home_lon", "cos_time", "sin_time",
+        "binned_normed_distance", "binned_movement_heading"
+    ],
+    "missing_values_map": {
+        "normed_log_mlt": 0,
+        "normed_log_npp": 0,
+        "normed_distance": -1,
+        "binned_normed_distance": -1,
+        "water_heading": -1,
+        "movement_heading": -10,
+        "binned_movement_heading": -10,
+        "normalized_fork_length": -1000,
+        "normed_home_lat": 4,
+        "normed_home_lon": 2,
+        "cos_time": 2,
+        "sin_time": 2
+    },
+    "space": "mimic-log-odds",
+    "dataset": "movement-model-contrasts-m3-a4"
+}

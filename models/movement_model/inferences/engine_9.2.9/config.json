@@ -1,0 +1,12 @@
+{
+    "account": "575101084097",
+    "application_name": "mirrorverse",
+    "space": "mirrorverse",
+    "execution_role": "role",
+    "bucket": "emr",
+    
+    "name": "movement-model-m9-engine",
+    "entrypoint": "run.py",
+    "arguments": ["diffuse"],
+    "venv": "mirrorverse-movement-model-v4"
+}
