@@ -1,13 +1,115 @@
 [
     {
-        "batch_size": 10000,
+        "batch_size": 100000,
         "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
+        "epochs": 75,
+        "layer_size": 24,
         "layers": [
-            "D16",
-            "D16",
-            "D16"
+            "D24",
+            "D24"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 2,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 0
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 24,
+        "layers": [
+            "D24",
+            "D24"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 2,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 1
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 24,
+        "layers": [
+            "D24",
+            "D24"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 2,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 2
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 24,
+        "layers": [
+            "D24",
+            "D24"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 2,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 3
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 24,
+        "layers": [
+            "D24",
+            "D24"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 2,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 4
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 24,
+        "layers": [
+            "D24",
+            "D24"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 2,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 5
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 24,
+        "layers": [
+            "D24",
+            "D24",
+            "D24"
         ],
         "learning_rate": 0.001,
         "num_layers": 3,
@@ -18,14 +120,320 @@
         "random_seed": 0
     },
     {
-        "batch_size": 20000,
+        "batch_size": 100000,
         "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
+        "epochs": 75,
+        "layer_size": 24,
         "layers": [
-            "D16",
-            "D16",
-            "D16"
+            "D24",
+            "D24",
+            "D24"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 3,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 1
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 24,
+        "layers": [
+            "D24",
+            "D24",
+            "D24"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 3,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 2
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 24,
+        "layers": [
+            "D24",
+            "D24",
+            "D24"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 3,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 3
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 24,
+        "layers": [
+            "D24",
+            "D24",
+            "D24"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 3,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 4
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 24,
+        "layers": [
+            "D24",
+            "D24",
+            "D24"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 3,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 5
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 24,
+        "layers": [
+            "D24",
+            "D24",
+            "D24",
+            "D24"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 4,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 0
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 24,
+        "layers": [
+            "D24",
+            "D24",
+            "D24",
+            "D24"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 4,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 1
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 24,
+        "layers": [
+            "D24",
+            "D24",
+            "D24",
+            "D24"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 4,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 2
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 24,
+        "layers": [
+            "D24",
+            "D24",
+            "D24",
+            "D24"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 4,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 3
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 24,
+        "layers": [
+            "D24",
+            "D24",
+            "D24",
+            "D24"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 4,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 4
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 24,
+        "layers": [
+            "D24",
+            "D24",
+            "D24",
+            "D24"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 4,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 5
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 32,
+        "layers": [
+            "D32",
+            "D32"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 2,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 0
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 32,
+        "layers": [
+            "D32",
+            "D32"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 2,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 1
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 32,
+        "layers": [
+            "D32",
+            "D32"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 2,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 2
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 32,
+        "layers": [
+            "D32",
+            "D32"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 2,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 3
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 32,
+        "layers": [
+            "D32",
+            "D32"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 2,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 4
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 32,
+        "layers": [
+            "D32",
+            "D32"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 2,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 5
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 32,
+        "layers": [
+            "D32",
+            "D32",
+            "D32"
         ],
         "learning_rate": 0.001,
         "num_layers": 3,
@@ -36,17 +444,108 @@
         "random_seed": 0
     },
     {
-        "batch_size": 40000,
+        "batch_size": 100000,
         "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
+        "epochs": 75,
+        "layer_size": 32,
         "layers": [
-            "D16",
-            "D16",
-            "D16"
+            "D32",
+            "D32",
+            "D32"
         ],
         "learning_rate": 0.001,
         "num_layers": 3,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 1
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 32,
+        "layers": [
+            "D32",
+            "D32",
+            "D32"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 3,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 2
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 32,
+        "layers": [
+            "D32",
+            "D32",
+            "D32"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 3,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 3
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 32,
+        "layers": [
+            "D32",
+            "D32",
+            "D32"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 3,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 4
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 32,
+        "layers": [
+            "D32",
+            "D32",
+            "D32"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 3,
+        "optimizer": "Adam",
+        "optimizer_kwargs": {
+            "learning_rate": 0.001
+        },
+        "random_seed": 5
+    },
+    {
+        "batch_size": 100000,
+        "dropout": 0,
+        "epochs": 75,
+        "layer_size": 32,
+        "layers": [
+            "D32",
+            "D32",
+            "D32",
+            "D32"
+        ],
+        "learning_rate": 0.001,
+        "num_layers": 4,
         "optimizer": "Adam",
         "optimizer_kwargs": {
             "learning_rate": 0.001
@@ -54,17 +553,18 @@
         "random_seed": 0
     },
     {
-        "batch_size": 10000,
+        "batch_size": 100000,
         "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
+        "epochs": 75,
+        "layer_size": 32,
         "layers": [
-            "D16",
-            "D16",
-            "D16"
+            "D32",
+            "D32",
+            "D32",
+            "D32"
         ],
         "learning_rate": 0.001,
-        "num_layers": 3,
+        "num_layers": 4,
         "optimizer": "Adam",
         "optimizer_kwargs": {
             "learning_rate": 0.001
@@ -72,53 +572,18 @@
         "random_seed": 1
     },
     {
-        "batch_size": 20000,
+        "batch_size": 100000,
         "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
+        "epochs": 75,
+        "layer_size": 32,
         "layers": [
-            "D16",
-            "D16",
-            "D16"
+            "D32",
+            "D32",
+            "D32",
+            "D32"
         ],
         "learning_rate": 0.001,
-        "num_layers": 3,
-        "optimizer": "Adam",
-        "optimizer_kwargs": {
-            "learning_rate": 0.001
-        },
-        "random_seed": 1
-    },
-    {
-        "batch_size": 40000,
-        "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
-        "layers": [
-            "D16",
-            "D16",
-            "D16"
-        ],
-        "learning_rate": 0.001,
-        "num_layers": 3,
-        "optimizer": "Adam",
-        "optimizer_kwargs": {
-            "learning_rate": 0.001
-        },
-        "random_seed": 1
-    },
-    {
-        "batch_size": 10000,
-        "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
-        "layers": [
-            "D16",
-            "D16",
-            "D16"
-        ],
-        "learning_rate": 0.001,
-        "num_layers": 3,
+        "num_layers": 4,
         "optimizer": "Adam",
         "optimizer_kwargs": {
             "learning_rate": 0.001
@@ -126,53 +591,18 @@
         "random_seed": 2
     },
     {
-        "batch_size": 20000,
+        "batch_size": 100000,
         "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
+        "epochs": 75,
+        "layer_size": 32,
         "layers": [
-            "D16",
-            "D16",
-            "D16"
+            "D32",
+            "D32",
+            "D32",
+            "D32"
         ],
         "learning_rate": 0.001,
-        "num_layers": 3,
-        "optimizer": "Adam",
-        "optimizer_kwargs": {
-            "learning_rate": 0.001
-        },
-        "random_seed": 2
-    },
-    {
-        "batch_size": 40000,
-        "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
-        "layers": [
-            "D16",
-            "D16",
-            "D16"
-        ],
-        "learning_rate": 0.001,
-        "num_layers": 3,
-        "optimizer": "Adam",
-        "optimizer_kwargs": {
-            "learning_rate": 0.001
-        },
-        "random_seed": 2
-    },
-    {
-        "batch_size": 10000,
-        "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
-        "layers": [
-            "D16",
-            "D16",
-            "D16"
-        ],
-        "learning_rate": 0.001,
-        "num_layers": 3,
+        "num_layers": 4,
         "optimizer": "Adam",
         "optimizer_kwargs": {
             "learning_rate": 0.001
@@ -180,53 +610,18 @@
         "random_seed": 3
     },
     {
-        "batch_size": 20000,
+        "batch_size": 100000,
         "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
+        "epochs": 75,
+        "layer_size": 32,
         "layers": [
-            "D16",
-            "D16",
-            "D16"
+            "D32",
+            "D32",
+            "D32",
+            "D32"
         ],
         "learning_rate": 0.001,
-        "num_layers": 3,
-        "optimizer": "Adam",
-        "optimizer_kwargs": {
-            "learning_rate": 0.001
-        },
-        "random_seed": 3
-    },
-    {
-        "batch_size": 40000,
-        "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
-        "layers": [
-            "D16",
-            "D16",
-            "D16"
-        ],
-        "learning_rate": 0.001,
-        "num_layers": 3,
-        "optimizer": "Adam",
-        "optimizer_kwargs": {
-            "learning_rate": 0.001
-        },
-        "random_seed": 3
-    },
-    {
-        "batch_size": 10000,
-        "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
-        "layers": [
-            "D16",
-            "D16",
-            "D16"
-        ],
-        "learning_rate": 0.001,
-        "num_layers": 3,
+        "num_layers": 4,
         "optimizer": "Adam",
         "optimizer_kwargs": {
             "learning_rate": 0.001
@@ -234,309 +629,22 @@
         "random_seed": 4
     },
     {
-        "batch_size": 20000,
+        "batch_size": 100000,
         "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
+        "epochs": 75,
+        "layer_size": 32,
         "layers": [
-            "D16",
-            "D16",
-            "D16"
+            "D32",
+            "D32",
+            "D32",
+            "D32"
         ],
         "learning_rate": 0.001,
-        "num_layers": 3,
+        "num_layers": 4,
         "optimizer": "Adam",
         "optimizer_kwargs": {
             "learning_rate": 0.001
         },
-        "random_seed": 4
-    },
-    {
-        "batch_size": 40000,
-        "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
-        "layers": [
-            "D16",
-            "D16",
-            "D16"
-        ],
-        "learning_rate": 0.001,
-        "num_layers": 3,
-        "optimizer": "Adam",
-        "optimizer_kwargs": {
-            "learning_rate": 0.001
-        },
-        "random_seed": 4
-    },
-    {
-        "batch_size": 10000,
-        "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
-        "layers": [
-            "D16",
-            "D16",
-            "D16"
-        ],
-        "learning_rate": 0.0005,
-        "num_layers": 3,
-        "optimizer": "Adam",
-        "optimizer_kwargs": {
-            "learning_rate": 0.0005
-        },
-        "random_seed": 0
-    },
-    {
-        "batch_size": 20000,
-        "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
-        "layers": [
-            "D16",
-            "D16",
-            "D16"
-        ],
-        "learning_rate": 0.0005,
-        "num_layers": 3,
-        "optimizer": "Adam",
-        "optimizer_kwargs": {
-            "learning_rate": 0.0005
-        },
-        "random_seed": 0
-    },
-    {
-        "batch_size": 40000,
-        "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
-        "layers": [
-            "D16",
-            "D16",
-            "D16"
-        ],
-        "learning_rate": 0.0005,
-        "num_layers": 3,
-        "optimizer": "Adam",
-        "optimizer_kwargs": {
-            "learning_rate": 0.0005
-        },
-        "random_seed": 0
-    },
-    {
-        "batch_size": 10000,
-        "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
-        "layers": [
-            "D16",
-            "D16",
-            "D16"
-        ],
-        "learning_rate": 0.0005,
-        "num_layers": 3,
-        "optimizer": "Adam",
-        "optimizer_kwargs": {
-            "learning_rate": 0.0005
-        },
-        "random_seed": 1
-    },
-    {
-        "batch_size": 20000,
-        "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
-        "layers": [
-            "D16",
-            "D16",
-            "D16"
-        ],
-        "learning_rate": 0.0005,
-        "num_layers": 3,
-        "optimizer": "Adam",
-        "optimizer_kwargs": {
-            "learning_rate": 0.0005
-        },
-        "random_seed": 1
-    },
-    {
-        "batch_size": 40000,
-        "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
-        "layers": [
-            "D16",
-            "D16",
-            "D16"
-        ],
-        "learning_rate": 0.0005,
-        "num_layers": 3,
-        "optimizer": "Adam",
-        "optimizer_kwargs": {
-            "learning_rate": 0.0005
-        },
-        "random_seed": 1
-    },
-    {
-        "batch_size": 10000,
-        "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
-        "layers": [
-            "D16",
-            "D16",
-            "D16"
-        ],
-        "learning_rate": 0.0005,
-        "num_layers": 3,
-        "optimizer": "Adam",
-        "optimizer_kwargs": {
-            "learning_rate": 0.0005
-        },
-        "random_seed": 2
-    },
-    {
-        "batch_size": 20000,
-        "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
-        "layers": [
-            "D16",
-            "D16",
-            "D16"
-        ],
-        "learning_rate": 0.0005,
-        "num_layers": 3,
-        "optimizer": "Adam",
-        "optimizer_kwargs": {
-            "learning_rate": 0.0005
-        },
-        "random_seed": 2
-    },
-    {
-        "batch_size": 40000,
-        "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
-        "layers": [
-            "D16",
-            "D16",
-            "D16"
-        ],
-        "learning_rate": 0.0005,
-        "num_layers": 3,
-        "optimizer": "Adam",
-        "optimizer_kwargs": {
-            "learning_rate": 0.0005
-        },
-        "random_seed": 2
-    },
-    {
-        "batch_size": 10000,
-        "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
-        "layers": [
-            "D16",
-            "D16",
-            "D16"
-        ],
-        "learning_rate": 0.0005,
-        "num_layers": 3,
-        "optimizer": "Adam",
-        "optimizer_kwargs": {
-            "learning_rate": 0.0005
-        },
-        "random_seed": 3
-    },
-    {
-        "batch_size": 20000,
-        "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
-        "layers": [
-            "D16",
-            "D16",
-            "D16"
-        ],
-        "learning_rate": 0.0005,
-        "num_layers": 3,
-        "optimizer": "Adam",
-        "optimizer_kwargs": {
-            "learning_rate": 0.0005
-        },
-        "random_seed": 3
-    },
-    {
-        "batch_size": 40000,
-        "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
-        "layers": [
-            "D16",
-            "D16",
-            "D16"
-        ],
-        "learning_rate": 0.0005,
-        "num_layers": 3,
-        "optimizer": "Adam",
-        "optimizer_kwargs": {
-            "learning_rate": 0.0005
-        },
-        "random_seed": 3
-    },
-    {
-        "batch_size": 10000,
-        "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
-        "layers": [
-            "D16",
-            "D16",
-            "D16"
-        ],
-        "learning_rate": 0.0005,
-        "num_layers": 3,
-        "optimizer": "Adam",
-        "optimizer_kwargs": {
-            "learning_rate": 0.0005
-        },
-        "random_seed": 4
-    },
-    {
-        "batch_size": 20000,
-        "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
-        "layers": [
-            "D16",
-            "D16",
-            "D16"
-        ],
-        "learning_rate": 0.0005,
-        "num_layers": 3,
-        "optimizer": "Adam",
-        "optimizer_kwargs": {
-            "learning_rate": 0.0005
-        },
-        "random_seed": 4
-    },
-    {
-        "batch_size": 40000,
-        "dropout": 0,
-        "epochs": 25,
-        "layer_size": 16,
-        "layers": [
-            "D16",
-            "D16",
-            "D16"
-        ],
-        "learning_rate": 0.0005,
-        "num_layers": 3,
-        "optimizer": "Adam",
-        "optimizer_kwargs": {
-            "learning_rate": 0.0005
-        },
-        "random_seed": 4
+        "random_seed": 5
     }
 ]

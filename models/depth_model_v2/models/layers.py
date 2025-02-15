@@ -10,6 +10,7 @@ LAYERS = {
     "D2": lambda: Dense(2, activation='relu'),
     "D4": lambda: Dense(4, activation='relu'),
     "D8": lambda: Dense(8, activation='relu'),
+    "D12": lambda: Dense(12, activation='relu'),
     "D16": lambda: Dense(16, activation='relu'),
     "D24": lambda: Dense(24, activation='relu'),
     "D32": lambda: Dense(32, activation='relu'),
