@@ -1,0 +1,9 @@
+{
+    "database": "haven",
+    "source_table": "chinook_depth_features_3",
+    "train_partitions": 4,
+    "test_partitions": 2,
+    "destination_table": "chinook_depth_contrasts_3_4",
+    "decisions_per_individual": 1000,
+    "alternatives_per_decision": 10
+}

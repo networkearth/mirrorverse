@@ -1,0 +1,31 @@
+{
+    "database": "haven",
+    "table": "chinook_depth_contrasts_3_3",
+    "train_partitions": 65,
+    "test_partitions": 35,
+    "max_choices": 2,
+    "features": [
+        "n_depth_bin",
+        "cos_moon",
+        "sin_moon",
+        "cos_orbit",
+        "sin_orbit",
+        "cos_sun",
+        "sin_sun",
+        "n_chlorophyll",
+        "n_net_primary_production",
+        "n_nitrate",
+        "n_oxygen",
+        "n_phosphate",
+        "n_silicate",
+        "n_elevation",
+        "n_mixed_layer_thickness",
+        "n_salinity",
+        "n_temperature",
+        "velocity_east",
+        "velocity_north"
+    ],
+    "missing_values_map": {},
+    "space": "mimic-log-odds",
+    "dataset": "chinook-depth-contrasts-3-3"
+}
