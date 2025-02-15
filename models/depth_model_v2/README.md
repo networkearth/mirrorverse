@@ -171,9 +171,3 @@ I also have definitive proof that things like mixed layer thickness aren't reall
 ![mlt](figures/mean_mlt_3.3.17.png)
 
 Each of these gives the mean probability per mixed layer thickness bin across the three models. Note how 3.3.3 gets the pattern before mixed layer thickness has even been added! 
-
-Okay and this is wild as well:
-
-![mlt](figures/mean_sun_3.3.3.png)
-
-the model with only the orbit found the diurnal cycle... 
