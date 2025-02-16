@@ -171,3 +171,48 @@ I also have definitive proof that things like mixed layer thickness aren't reall
 ![mlt](figures/mean_mlt_3.3.17.png)
 
 Each of these gives the mean probability per mixed layer thickness bin across the three models. Note how 3.3.3 gets the pattern before mixed layer thickness has even been added! 
+
+## Week of February 21, 2025
+
+### Full Data Models
+
+| model | features | 
+| --- | --- |
+| 3.1.1 | |
+| 3.1.3 | orbit |
+| 3.1.4 | orbit + sun |
+| 3.3.13 | orbit + nitrate | 
+| 3.3.17 | orbit + nitrate + salinity + mlt | 
+| 3.1.18 | orbit + sun + nitrate + salinity + mlt |
+
+### Building a Narrative
+
+We have models so it's time to figure out exactly how we want to build a narrative around them. The whole point of this 
+was to provide tools to help prevent bycatch. However in my experience when you're giving advice it's very important
+to avoid telling folks waht they should do (i.e. optimize for them) because they are always going to have information
+and objectives beyond what you have in hand. Therefore it is essential that you provide them with options and alternatives
+as opposed to prepackaged decisions. 
+
+The questions for us then is - what are the kinds of alternatives and how do we describe them (at least in part) 
+in a paper. Broadly speaking we have time and space where time has three scales - today (diurnal patterns), this week,
+and seasonal. 
+
+All of this comes down to risk - if I fish in a certain depth range, in a specific place what is the risk of my incurring 
+bycatch. We're phrasing this as what is the risk that _if_ there is chinook in the area that I will bump into them. 
+
+The notion of alternatives is really a classification game - what options are alike and what do they look like - and what options
+are the same and therefore I needn't discriminate between them. So let's phrase this as a series of questions:
+
+1. If I _was_ to fish in this area, when would it be least risky. 
+2. If I have to fish at this time where is my risk lessened. 
+
+This can be how we pose alternatives for a start. I'm just going to play around with this myself to start with and see what I would want to see if I was trying to use this info myself. Then we can go from there. Let's go ahead and build out a whole year. 
+
+#### Building the Year of 2022
+
+- [x] Build out temporal features for the whole year 
+- [x] Join to elevation and environmental data 
+- [x] Normalize it all 
+- [x] Run inference with 3.1.18
+
+Put all 96million points in - `chinook_depth_full_inference_3_1_18`

@@ -28,11 +28,11 @@ def build_gridded_param_sets(param_grids):
 @click.command()
 def main():
     grids = {
-        "batch_size": [100000],
+        "batch_size": [200000],
         "random_seed": list(range(6)),
         "epochs": [75],
         "dropout": [0], #[0],
-        "num_layers": [2, 3, 4], #[2, 3],
+        "num_layers": [2, 3], #[2, 3],
         "layer_size": [24, 32], #[16, 24],
         "learning_rate": [0.001], #[0.0005, 0.001]
     }
