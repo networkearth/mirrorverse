@@ -171,3 +171,74 @@ I also have definitive proof that things like mixed layer thickness aren't reall
 ![mlt](figures/mean_mlt_3.3.17.png)
 
 Each of these gives the mean probability per mixed layer thickness bin across the three models. Note how 3.3.3 gets the pattern before mixed layer thickness has even been added! 
+
+## Week of February 21, 2025
+
+### Full Data Models
+
+| model | features | NLP-C Train | NLP-C Val |
+| --- | --- | --- | --- | 
+| 3.1.1 | | 0.470 | 0.526 |
+| 3.1.3 | orbit | 0.438 | 0.487 |
+| 3.1.4 | orbit + sun | 0.429 | 0.480 | 
+| 3.3.13 | orbit + nitrate | 0.432 | 0.483 | 
+| 3.3.17 | orbit + nitrate + salinity + mlt | 0.433 | 0.484 | 
+| 3.1.18 | orbit + sun + nitrate + salinity + mlt | 0.426 | 0.474 | 
+
+### Building a Narrative
+
+We have models so it's time to figure out exactly how we want to build a narrative around them. The whole point of this 
+was to provide tools to help prevent bycatch. However in my experience when you're giving advice it's very important
+to avoid telling folks waht they should do (i.e. optimize for them) because they are always going to have information
+and objectives beyond what you have in hand. Therefore it is essential that you provide them with options and alternatives
+as opposed to prepackaged decisions. 
+
+The questions for us then is - what are the kinds of alternatives and how do we describe them (at least in part) 
+in a paper. Broadly speaking we have time and space where time has three scales - today (diurnal patterns), this week,
+and seasonal. 
+
+All of this comes down to risk - if I fish in a certain depth range, in a specific place what is the risk of my incurring 
+bycatch. We're phrasing this as what is the risk that _if_ there is chinook in the area that I will bump into them. 
+
+The notion of alternatives is really a classification game - what options are alike and what do they look like - and what options
+are the same and therefore I needn't discriminate between them. So let's phrase this as a series of questions:
+
+1. If I _was_ to fish in this area, when would it be least risky. 
+2. If I have to fish at this time where is my risk lessened. 
+
+This can be how we pose alternatives for a start. I'm just going to play around with this myself to start with and see what I would want to see if I was trying to use this info myself. Then we can go from there. Let's go ahead and build out a whole year. 
+
+#### Building the Year of 2022
+
+- [x] Build out temporal features for the whole year 
+- [x] Join to elevation and environmental data 
+- [x] Normalize it all 
+- [x] Run inference with 3.1.18
+
+Put all 96million points in - `chinook_depth_full_inference_3_1_18_2`
+
+## Week of March 5, 2025
+
+### No Need for Season?
+
+I was noticing that there's an antidiurnal pattern that arises in springtime and am wondering if this is the fish basking. Basically the water is really really cold at this time of year and sunlight is the only real option for these fish to raise their metabolic rates. So I want to build a model that doesn't actually include season as a feature. Question is what other things do we need to make up for it? 
+
+- Temperature (this is really the hypothesis we are testing in a sense)
+- Productivity levels 
+- Oxygen looks like a good candidate too 
+
+So let's play around with these features as replacements for seasonality. 
+
+| Model | NLP-C Val | Features | 
+| --- | --- | --- | 
+| 3.3.19 | 0.4956 | sun, mlt, nitrate, salinity |
+| 3.3.18 | 0.4688 | + orbit |
+| 3.3.20 | 0.4901 |
+| 3.3.21 | 0.4883 | 
+| 3.3.22 | 0.4921 | 
+| 3.3.23 | 0.4888 | 
+| 3.3.24 | 0.4926 |
+| 3.3.25 | 0.4879 | 
+| 3.3.36 | 0.4897 |
+
+I'm not seeing any real signs of overfitting either... So the noise is not all that useful either... 

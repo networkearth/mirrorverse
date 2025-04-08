@@ -301,7 +301,7 @@ def simulate(spark, model, CONTEXT):
     # TODO Temporary for testing this should be an S3 bucket
 
     from datetime import datetime, timedelta
-    date = datetime(2020, 2, 1)
+    date = datetime(2020, 4, 1)
    
     #INPUT = pd.DataFrame([
     #    {'_quanta': 10.0, 'h3_index': '840c9ebffffffff', 'time': date},
@@ -392,7 +392,7 @@ def diffuse(spark, model, CONTEXT):
     # TODO Temporary for testing this should be an S3 bucket
 
     from datetime import datetime, timedelta
-    date = datetime(2020, 5, 1)
+    date = datetime(2020, 1, 1)
    
     #INPUT = pd.DataFrame([
     #    {'_quanta': 10.0, 'h3_index': '840c9ebffffffff', 'time': date},
@@ -552,7 +552,7 @@ if __name__ == '__main__':
     CONTEXT = {
         "max_km": 50,
         "simulate_table": "movement_model_simulation_m9_a2_v9_r3",
-        "diffusion_table": "movement_model_diffusion_m9_a2_v9_t3",
+        "diffusion_table": "movement_model_diffusion_m9_a2_v9_r1",
         "build_table": "",
         "case": "train"
     }
@@ -570,7 +570,7 @@ if __name__ == '__main__':
         "essential": [
             "h3_index", "time"
         ],
-        "steps": 31,
+        "steps": 365,
     }
 
     spark = SparkSession.builder
