@@ -1,6 +1,6 @@
 {
     "database": "haven",
-    "table": "chinook_depth_full_features_3",
+    "table": "chinook_depth_full_features_3_2",
     "train_partitions": 0,
     "test_partitions": 100,
     "features": [
@@ -16,5 +16,5 @@
     "space": "mimic-log-odds",
     "experiment_name": "chinook-depth-3-1-18",
     "run_id": "dcdcf74abea8d96ff28901fcd9653fc783df9cdda20ed550adc8c2c38a11d896",
-    "upload_table": "chinook_depth_full_inference_3_1_18"
+    "upload_table": "chinook_depth_full_inference_3_1_18_2"
 }

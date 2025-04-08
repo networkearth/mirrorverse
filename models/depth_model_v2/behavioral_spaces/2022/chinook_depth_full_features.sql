@@ -1,6 +1,6 @@
-CREATE TABLE "haven"."chinook_depth_full_features_3" WITH (
+CREATE TABLE "haven"."chinook_depth_full_features_3_2" WITH (
   format = 'parquet',
-  external_location = 's3://haven-database/chinook_depth_full_features_3/',
+  external_location = 's3://haven-database/chinook_depth_full_features_3_2/',
   write_compression = 'SNAPPY',
   partitioned_by = array['region']
 ) as with features as (
@@ -10,6 +10,7 @@ CREATE TABLE "haven"."chinook_depth_full_features_3" WITH (
         _choice,
         h3_index,
         time,
+        epoch,
         depth_bin,
 
         ------------------

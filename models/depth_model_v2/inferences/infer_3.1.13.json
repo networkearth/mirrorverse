@@ -1,0 +1,16 @@
+{
+    "database": "haven",
+    "table": "chinook_depth_features_3",
+    "train_partitions": 8,
+    "test_partitions": 4,
+    "features": [
+        "n_depth_bin",
+        "cos_orbit",
+        "sin_orbit",
+        "n_nitrate"
+    ],
+    "space": "mimic-log-odds",
+    "experiment_name": "chinook-depth-3-1-13",
+    "run_id": "9d434987bad86b16423745c77236636251865800b170e2150db87b4b1157f85d",
+    "upload_table": "chinook_depth_inference_3_1_13"
+}

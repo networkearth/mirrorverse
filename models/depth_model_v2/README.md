@@ -176,14 +176,14 @@ Each of these gives the mean probability per mixed layer thickness bin across th
 
 ### Full Data Models
 
-| model | features | 
-| --- | --- |
-| 3.1.1 | |
-| 3.1.3 | orbit |
-| 3.1.4 | orbit + sun |
-| 3.3.13 | orbit + nitrate | 
-| 3.3.17 | orbit + nitrate + salinity + mlt | 
-| 3.1.18 | orbit + sun + nitrate + salinity + mlt |
+| model | features | NLP-C Train | NLP-C Val |
+| --- | --- | --- | --- | 
+| 3.1.1 | | 0.470 | 0.526 |
+| 3.1.3 | orbit | 0.438 | 0.487 |
+| 3.1.4 | orbit + sun | 0.429 | 0.480 | 
+| 3.3.13 | orbit + nitrate | 0.432 | 0.483 | 
+| 3.3.17 | orbit + nitrate + salinity + mlt | 0.433 | 0.484 | 
+| 3.1.18 | orbit + sun + nitrate + salinity + mlt | 0.426 | 0.474 | 
 
 ### Building a Narrative
 
@@ -215,4 +215,30 @@ This can be how we pose alternatives for a start. I'm just going to play around 
 - [x] Normalize it all 
 - [x] Run inference with 3.1.18
 
-Put all 96million points in - `chinook_depth_full_inference_3_1_18`
+Put all 96million points in - `chinook_depth_full_inference_3_1_18_2`
+
+## Week of March 5, 2025
+
+### No Need for Season?
+
+I was noticing that there's an antidiurnal pattern that arises in springtime and am wondering if this is the fish basking. Basically the water is really really cold at this time of year and sunlight is the only real option for these fish to raise their metabolic rates. So I want to build a model that doesn't actually include season as a feature. Question is what other things do we need to make up for it? 
+
+- Temperature (this is really the hypothesis we are testing in a sense)
+- Productivity levels 
+- Oxygen looks like a good candidate too 
+
+So let's play around with these features as replacements for seasonality. 
+
+| Model | NLP-C Val | Features | 
+| --- | --- | --- | 
+| 3.3.19 | 0.4956 | sun, mlt, nitrate, salinity |
+| 3.3.18 | 0.4688 | + orbit |
+| 3.3.20 | 0.4901 |
+| 3.3.21 | 0.4883 | 
+| 3.3.22 | 0.4921 | 
+| 3.3.23 | 0.4888 | 
+| 3.3.24 | 0.4926 |
+| 3.3.25 | 0.4879 | 
+| 3.3.36 | 0.4897 |
+
+I'm not seeing any real signs of overfitting either... So the noise is not all that useful either... 
