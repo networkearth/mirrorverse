@@ -1,5 +1,5 @@
 {
-    "experiment_name": "movement-model-10-1-2",
+    "experiment_name": "movement-model-10-1-8",
     "space": "mimic-log-odds",
     "dataset": "movement-model-contrasts-10-1",
     "max_choices": 2,
@@ -7,15 +7,15 @@
         "stay_put",
         "cos_season_radians",
         "sin_season_radians",
-        "parallel_to_shelf"
+        "toward_coast"
     ],
     "database": "haven",
-    "table": "movement_model_experiment_10_1_2",
+    "table": "movement_model_experiment_10_1_8",
     "models": [
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 16,
             "layers": [
                 "D16",
@@ -33,7 +33,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 16,
             "layers": [
                 "D16",
@@ -51,7 +51,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 16,
             "layers": [
                 "D16",
@@ -69,7 +69,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 16,
             "layers": [
                 "D16",
@@ -87,7 +87,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 16,
             "layers": [
                 "D16",
@@ -105,7 +105,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 16,
             "layers": [
                 "D16",
@@ -123,7 +123,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 16,
             "layers": [
                 "D16",
@@ -142,7 +142,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 16,
             "layers": [
                 "D16",
@@ -161,7 +161,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 16,
             "layers": [
                 "D16",
@@ -180,7 +180,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 16,
             "layers": [
                 "D16",
@@ -199,7 +199,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 16,
             "layers": [
                 "D16",
@@ -218,7 +218,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 16,
             "layers": [
                 "D16",
@@ -237,7 +237,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 16,
             "layers": [
                 "D16",
@@ -257,7 +257,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 16,
             "layers": [
                 "D16",
@@ -277,7 +277,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 16,
             "layers": [
                 "D16",
@@ -297,7 +297,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 16,
             "layers": [
                 "D16",
@@ -317,7 +317,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 16,
             "layers": [
                 "D16",
@@ -337,7 +337,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 16,
             "layers": [
                 "D16",
@@ -357,7 +357,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 24,
             "layers": [
                 "D24",
@@ -375,7 +375,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 24,
             "layers": [
                 "D24",
@@ -393,7 +393,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 24,
             "layers": [
                 "D24",
@@ -411,7 +411,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 24,
             "layers": [
                 "D24",
@@ -429,7 +429,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 24,
             "layers": [
                 "D24",
@@ -447,7 +447,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 24,
             "layers": [
                 "D24",
@@ -465,7 +465,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 24,
             "layers": [
                 "D24",
@@ -484,7 +484,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 24,
             "layers": [
                 "D24",
@@ -503,7 +503,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 24,
             "layers": [
                 "D24",
@@ -522,7 +522,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 24,
             "layers": [
                 "D24",
@@ -541,7 +541,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 24,
             "layers": [
                 "D24",
@@ -560,7 +560,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 24,
             "layers": [
                 "D24",
@@ -579,7 +579,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 24,
             "layers": [
                 "D24",
@@ -599,7 +599,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 24,
             "layers": [
                 "D24",
@@ -619,7 +619,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 24,
             "layers": [
                 "D24",
@@ -639,7 +639,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 24,
             "layers": [
                 "D24",
@@ -659,7 +659,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 24,
             "layers": [
                 "D24",
@@ -679,7 +679,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 24,
             "layers": [
                 "D24",
@@ -699,7 +699,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 32,
             "layers": [
                 "D32",
@@ -717,7 +717,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 32,
             "layers": [
                 "D32",
@@ -735,7 +735,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 32,
             "layers": [
                 "D32",
@@ -753,7 +753,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 32,
             "layers": [
                 "D32",
@@ -771,7 +771,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 32,
             "layers": [
                 "D32",
@@ -789,7 +789,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 32,
             "layers": [
                 "D32",
@@ -807,7 +807,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 32,
             "layers": [
                 "D32",
@@ -826,7 +826,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 32,
             "layers": [
                 "D32",
@@ -845,7 +845,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 32,
             "layers": [
                 "D32",
@@ -864,7 +864,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 32,
             "layers": [
                 "D32",
@@ -883,7 +883,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 32,
             "layers": [
                 "D32",
@@ -902,7 +902,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 32,
             "layers": [
                 "D32",
@@ -921,7 +921,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 32,
             "layers": [
                 "D32",
@@ -941,7 +941,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 32,
             "layers": [
                 "D32",
@@ -961,7 +961,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 32,
             "layers": [
                 "D32",
@@ -981,7 +981,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 32,
             "layers": [
                 "D32",
@@ -1001,7 +1001,7 @@
         {
             "batch_size": 7500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 32,
             "layers": [
                 "D32",
@@ -1021,7 +1021,7 @@
         {
             "batch_size": 12500,
             "dropout": 0,
-            "epochs": 50,
+            "epochs": 15,
             "layer_size": 32,
             "layers": [
                 "D32",

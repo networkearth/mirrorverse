@@ -1,0 +1,18 @@
+{
+    "database": "haven",
+    "table": "movement_model_features_10",
+    "train_partitions": 4,
+    "test_partitions": 1,
+    "features": [
+        "stay_put",
+        "cos_season_radians",
+        "sin_season_radians",
+        "parallel_to_shelf",
+        "toward_coast",
+        "coast_distance"
+    ],
+    "space": "mimic-log-odds",
+    "experiment_name": "movement-model-10-1-3",
+    "run_id": "ef05b957fd20684af87e0435e816b9141ad9a7160eb834bead1778dcbc83693f",
+    "upload_table": "movement_model_inference_10_1_3"
+}

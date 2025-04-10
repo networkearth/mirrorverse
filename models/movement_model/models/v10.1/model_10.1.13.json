@@ -1,0 +1,31 @@
+{
+    "experiment_name": "movement-model-10-1-13",
+    "space": "mimic-log-odds",
+    "dataset": "movement-model-contrasts-10-1",
+    "max_choices": 2,
+    "features": [
+        "stay_put"
+    ],
+    "database": "haven",
+    "table": "movement_model_experiment_10_1_13",
+    "models": [
+        {
+            "batch_size": 7500,
+            "dropout": 0,
+            "epochs": 15,
+            "layer_size": 16,
+            "layers": [
+                "D16",
+                "D16",
+                "D16"
+            ],
+            "learning_rate": 0.001,
+            "num_layers": 3,
+            "optimizer": "Adam",
+            "optimizer_kwargs": {
+                "learning_rate": 0.001
+            },
+            "random_seed": 0
+        }
+    ]
+}

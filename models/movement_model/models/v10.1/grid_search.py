@@ -29,11 +29,11 @@ def build_gridded_param_sets(param_grids):
 def main():
     grids = {
         "batch_size": [7500, 12500],
-        "random_seed": list(range(7)),
-        "epochs": [100],
+        "random_seed": list(range(3)),
+        "epochs": [15],
         "dropout": [0], #[0],
-        "num_layers": [3, 4], #[2, 3],
-        "layer_size": [16, 24], #[16, 24],
+        "num_layers": [3, 4, 5], #[2, 3],
+        "layer_size": [16, 24, 32], #[16, 24],
         "learning_rate": [0.001], #[0.0005, 0.001]
     }
     param_sets = build_gridded_param_sets(grids)
