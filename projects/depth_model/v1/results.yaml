@@ -1,0 +1,38 @@
+results:
+  - section: 
+    header: Model Evaluation
+    content:
+      - lead: The model with the lowest loss included depth_bin, season, diel, and salinity. 
+        development:
+          - The null model had a validation loss of 1.740.
+          - Adding depth_bin (model A) reduced the loss to 1.457.
+          - Adding season (model B) reduced the loss further to 1.368.
+          - The diel feature (model C) lowered the loss to 1.352.
+          - Salinity (model D) reduced the loss to 1.340.
+          - Additional features didn't reduce the loss by more than 0.001.
+      - lead: Both the model and the data showed a skew in depth distribution.
+        development:
+          - 46.4% of samples were in the 0-25m depth bin.
+          - 85.6% of samples were within 100m of the surface.
+          - The model also reflects this skew as adding depth_bin as a feature resulted in drop in the loss of 0.283
+      - lead: Depth occupancy varied seasonally in both the validation data and model predictions.
+        development:
+          - The proportion of samples >25m reaches a minimum in June with ~32% in the validation data and 34% in the predictions.
+          - By November this has increased to 70% in the validation data and 74% in the predictions.
+          - It stays high (60-75%) throughout the winter and then climbs again starting in March.
+      - lead: Diel variation in depth occupancy was present in both datasets, with seasonal changes in magnitude and direction.
+        development:
+          - In August, validation data showed samples >25m rose from ~27% at night to ~72% during the day — a 44% difference.
+          - This diel difference declined to ~35% in October and ~17% by January.
+          - In February, the diel signal reversed, with more samples >25m at night.
+          - Model predictions captured the diel pattern but there is still ambiguity in the true signal given the differences between validation and training data (25% in May).
+      - lead: Model predictions showed a seasonal pattern in the relationship between salinity and depth bin occupancy.
+        development:
+          - When examining the average shift in probability of occupying the 25m depth bin, there was a 4–5% increase in the months leading up to August.
+          - This was followed by a decrease from August to October.
+          - A sharp increase of approximately 10% was observed in November and December.
+          - The months showing negative responses also showed the highest diel variation.
+      
+          
+      
+      
