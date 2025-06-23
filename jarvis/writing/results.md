@@ -22,7 +22,7 @@ Please treat the input as structured YAML text.
 
 - Write for non-technical readers. If your grandparents wouldn’t understand it, rewrite.
 - Be concise. Writing is a game of removal — you can usually cut more than you think.
-- Aim for clarity, rhythm, and compression — dense with meaning, light on fluff.
+- Aim for clarity, rhythm, and compression — dense with meaning, light on fluff. (feel free to add transitional phrasing)
 - Avoid bullet-list structure unless inherently necessary. Let each paragraph build logically, with implied connections rather than mechanical listing.
 - Still avoid speculation, interpretation, or rhetorical flourishes. Stay factual and tied to the data.
 

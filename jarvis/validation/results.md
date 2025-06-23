@@ -24,5 +24,6 @@ Rules:
 - Be specific — any adjectives like “large” or “significant” must be followed by a number.
 - Do not include methodological details; those belong in the Methods section.
 - A development sentence is non-compliant if it introduces unrelated content, fails to support the lead, or adds a new claim not foreshadowed by the lead.
+- Results should be written in the past tense.
 
 Return the entire `results:` block exactly as I wrote it, but annotate any non-compliant lines with `# FIX:` comments on a line below. Do not delete or rewrite content. Just flag and explain issues.

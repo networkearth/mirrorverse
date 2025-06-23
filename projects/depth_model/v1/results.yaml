@@ -1,38 +1,57 @@
 results:
-  - section: 
-    header: Model Evaluation
+  - section: Model Evaluation
     content:
-      - lead: The model with the lowest loss included depth_bin, season, diel, and salinity. 
+      - lead: The model with the lowest loss included depth_bin, season, diel, and salinity (model D in table 1). 
         development:
           - The null model had a validation loss of 1.740.
           - Adding depth_bin (model A) reduced the loss to 1.457.
           - Adding season (model B) reduced the loss further to 1.368.
           - The diel feature (model C) lowered the loss to 1.352.
           - Salinity (model D) reduced the loss to 1.340.
-          - Additional features didn't reduce the loss by more than 0.001.
       - lead: Both the model and the data showed a skew in depth distribution.
         development:
-          - 46.4% of samples were in the 0-25m depth bin.
+          - 46.4% of samples were in the 0-25m depth bin (table 2).
           - 85.6% of samples were within 100m of the surface.
-          - The model also reflects this skew as adding depth_bin as a feature resulted in drop in the loss of 0.283
-      - lead: Depth occupancy varied seasonally in both the validation data and model predictions.
+          - When depth_bin was added to the null model, the loss dropped by 0.283, consistent with the observed skew in the data.
+      - lead: Depth occupancy varied seasonally in both the validation data and model predictions (figure 1).
         development:
-          - The proportion of samples >25m reaches a minimum in June with ~32% in the validation data and 34% in the predictions.
-          - By November this has increased to 70% in the validation data and 74% in the predictions.
-          - It stays high (60-75%) throughout the winter and then climbs again starting in March.
-      - lead: Diel variation in depth occupancy was present in both datasets, with seasonal changes in magnitude and direction.
+          - The proportion of samples >25m reached a minimum in June with ~32% in the validation data and 34% in the predictions.
+          - By November this increased to 70% in the validation data and 74% in the predictions.
+          - It stayed high (60-75%) throughout the winter and then climbed again starting in March.
+      - lead: Diel variation in depth occupancy was present in both datasets, with seasonal changes in magnitude and direction (figure 2).
         development:
           - In August, validation data showed samples >25m rose from ~27% at night to ~72% during the day — a 44% difference.
           - This diel difference declined to ~35% in October and ~17% by January.
           - In February, the diel signal reversed, with more samples >25m at night.
-          - Model predictions captured the diel pattern but there is still ambiguity in the true signal given the differences between validation and training data (25% in May).
-      - lead: Model predictions showed a seasonal pattern in the relationship between salinity and depth bin occupancy.
+          - Model predictions captured the diel pattern but it should be noted there are large differences between validation and training data (25% in May).
+      - lead: Model predictions showed a shift toward low salinity, near-surface waters in all months except August and September (figure 3).
         development:
-          - When examining the average shift in probability of occupying the 25m depth bin, there was a 4–5% increase in the months leading up to August.
-          - This was followed by a decrease from August to October.
-          - A sharp increase of approximately 10% was observed in November and December.
-          - The months showing negative responses also showed the highest diel variation.
-      
-          
-      
-      
+          - This difference was largest between the months of November and February with a peak in February of nearly 30%. 
+          - From March to June the difference stayed between 6 and 14%.
+          - In August and September, model predictions showed a shift toward higher salinity waters, with an average difference of approximately 7%.
+      - lead: However, the effect of salinity on loss varied significantly across months and between training and validation data (figure 4).
+        development:
+          - There was strong disagreement in the shift in loss between the training and validation sets between December and February.
+          - In December and January the training data showed an improvement (-0.03 and -0.05) whereas the validation data showed the opposite (+0.02 and +0.05).
+          - However, in February the training data showed no change in loss whereas that month exhibited the largest drop in loss for the validation set (-0.14). 
+          - The remaining months showed changes in loss with lower magnitude (up to 0.03) but the validation and training sets continued to disagree in magnitude even if they largely agreed in direction. 
+  - section: Assessing Likelihood of Occupancy Near the Seafloor
+    content:
+      - lead: The minimum likelihood of occupancy in the deepest bin predicted for each month varied in both space and season (figure 5).
+        development:
+          - In February the minimum likelihood was minimized along the shelf where it dropped to less than 1%. 
+          - However on the shelf, there is considerable variation with even neighboring cells showing shifts of 10% or more in minimum likelihood. 
+          - In August these minimum likelihoods were small (<1%) with the exception of some hotspots that remained from February. 
+          - One of these hotspots just West of Kodiak saw a minimum likelihood of 15% which was 3 times higher than the surrounding area. 
+      - lead: Zooming in on a specific H3 cell near Chignik (figure 6), in addition to overall depth occupancy changing over the course of the year, significant diel variation was observed as well.
+        development:
+          - The winter months saw the deepest overall occupancy with occupancy >25m at ~50%, but over the course the of winter diel variability decreased as well from shifts of nearly 20% in the 100 m depth bin in November to shifts of 10% in January. 
+          - Starting in March occupancy started to shift out of depths deeper than 25 m with only ~30% occupancy >25 m in May. 
+          - Then beginning in July and August the diel variation increased to a maximum of ~45% in September before the cycle repeated in October. 
+          - This means that while average occupancy was shallowest in spring, the period with the highest occupancy in the <25m bin was at night during the summer. 
+      - lead: Finally, at a regional level, time of day that minimizes likelihood of occupancy in the deepest bin varied by space and time as well.
+        development: 
+          - In August the minimum likelihood of occupancy in the deepest bin occurred at night with only a single exception (figure 7). 
+          - However, during February the time of day that minimized occupancy in the deepest bin varied from cell to cell. 
+          - In general, during that month, very few cells had the corresponding likelihood minimized at night (aside from the edge of the continental shelf) and instead showed minimization during the day or at dawn or dusk. 
+  
