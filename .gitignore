@@ -31,3 +31,4 @@ models/movement_model/*.html
 cdk.out
 *.tar.gz
 *.tfrecord
+*.vscode
