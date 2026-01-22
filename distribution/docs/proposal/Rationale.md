@@ -71,30 +71,38 @@
 
 **Lead:** The movement data from PSATs, however, opens a different avenue: adapting particle tracking techniques to derive distributional patterns.
 **Development:**
-- Lagrangian particle tracking has been used to understand distributions of things largely driven by ocean currents
-- Studying larval dispersal (Quigley, 2024), turtle hatchling distribution (Le Gouvello, 2020; Harrison, 2021), and the distribution of plastic (Lebreton, 2012; Onink, 2021)
-- The approach seeds simulations with particles, forward projects their movements, and identifies basins of attraction where particles accumulate
-- Ocean current models provide the movement model for these passive particles, but salmon are active swimmers not solely dependent on currents
-- However, PSAT data can be used to build movement models that capture active behavior—models that define the probabilities of moving from one position to another at a subsequent timestep
-- For building these movement models we have both positive examples (observed movements) and negative examples (possible but unobserved movements), allowing us to use traditional modeling methods
-- We can then apply particle tracking logic: starting with the distribution with maximum entropy - uniform - (Phillips, 2005) and forward projecting using our movement model to reveal basins of attraction that indicate areas of relative habitat preference
+- Lagrangian particle tracking has been used to understand distributions of larval dispersal (Quigley, 2024), turtle hatchling distribution (Le Gouvello, 2020; Harrison, 2021), and the distribution of plastic (Lebreton, 2012; Onink, 2021)
+- The approach seeds simulations with particles, forward projects their movements, and identifies areas where particles acculumate.
+- We will call these accumulation areas basins of attraction, or just basins. 
+- For larval dispersal, plastic distribution, and to some extent hatchling distribution movements are guided passively by oceanic currents, winds, and other abiotic phenomena. 
+- Pacific salmon, on the other hand, are quite active requiring that we model their movement specifically.
+- PSAT data is ideal for this kind of application as it exactly captures movement.
+- Specifically PSAT data gives us both positive examples (observed movements) and negative examples (possible but unobserved movements), allowing us to use traditional modeling methods
+- This means that we can first build a model of salmon movement using the PSAT data, then, given a uniform starting distribution, use those models to project the starting distribution forward in time in order to find basins of attraction. 
+- Moving forward we will refer to such a methodology as species redistribution models or SRMs for short. 
 
-**Lead:** However, while our approach reveals habitat preferences, it cannot capture all aspects of distribution—necessitating another source of validation.
+**Lead:** Such basins indicate areas in which fish should accumulate but other aspects of a fish's lifecycle may cause the realized distribution to differ quite dramatically.
 **Development:**
-- Migrations and the corresponding immigrations and emigrations matter, and mortality will modify distributions as well
-- Therefore, while our forward projection will identify both the basins of attraction and their relative strength, they may not, in and of themselves, be highly predictive of distribution
-- To validate whether our approach identifies areas of relatively higher concentration, we need an independent data source
+- Migrations, in which animals move from one region to another, create immigration and emmigration events that may not deposit fish precisely in the places they will later be predicted to accumulate. 
+- Likewise preferred areas may also be associated with higher mortality resulting in a suppression of expected density levels.
+- So to validate whether SRMs are useful in identifying areas of relatively higher concentration, we need an independent data source to test whether predicted basins correlate with higher density.
 
-**Lead:** Bycatch data from trawl fisheries provides a means of validation.
+**Lead:** Here fisheries dependent data can provides a means of validation.
 **Development:**
-- We would expect that locally, areas with higher concentrations predicted by our model would experience generally higher bycatch
-- We can test this by taking pairs of fishing events that are localized in time and place and see if we are able to reliably predict areas of higher or lower risk based on the forward projected relative density
-- As a case study, we will use Chinook salmon in the Gulf of Alaska where there already exists a large body of PSAT movement data (Seitz, 2024) and an active groundfish fishery where Chinook salmon is caught as bycatch
-- Specifically, we would expect our distributional model to line up more consistently with observed bycatch than a completely random distribution
+- While we have noted that fisheries dependent data is limited to where fisheries fish, and therefore cannot be reliably used to identify the full distribution, they can be used to validate whether, in areas where fishing pressure is present, whether or not a distributional model is accurate. 
+- Put another way we would expect that locally, areas where fish are predicted to accumulate (basins) would generally experience higher bycatch than areas that fish are predicted to move away from
+- One should be able to test this by taking pairs of fishing events that are localized in time and place and see if we are able to reliably predict areas of higher or lower risk based on the outcomes of an SRM
 
-**Lead:** Our goal then is to develop a set of tools for deriving species distributional data from movement data using the forward projection of movement models in order to facilitate recapture-independent studies of the marine distribution of immature and adult Pacific salmon. 
+**Lead:** Chinook salmon in the Gulf of Alaska presents itself as an ideal case study.
+**Development:**
+- There is already already exists a large body of PSAT movement data for Chinook salmon in the GOA (Seitz, 2024)
+- And there is an active groundfish fishery where Chinook salmon is caught as bycatch
+- As such this example provides us with both the data needed to build a movement model that would enable movement tracing as well as then validate the usefulness of the resulting basins of attraction. 
+
+
+**Lead:** Our goal then is to use this case study to develop an SRM for Chinook salmon in the Gulf of Alaska to understand whether this presents a means by which to provide fisheries independent marine distributions.  
 **Development:**
 
-- To do this, we will develop a movement model with Chinook salmon PSAT data in the Gulf of Alaska
-- We will use this model to make localized forward projections of movement data
-- We will then use the resulting localized distributions to predict levels of bycatch risk in the groundfish fishery in the Gulf of Alaska
+- To do this, we will first develop a movement model using Chinook salmon PSAT data in the Gulf of Alaska
+- Then use this model to do species redistribution modeling
+- And then assess the ability of the basins produced by that SRM to differentiate Chinook salmon bycatch risk. 
