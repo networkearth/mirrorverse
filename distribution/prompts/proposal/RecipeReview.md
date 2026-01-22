@@ -74,6 +74,7 @@ Proposals are intended for those familiar with fisheries science and fisheries m
 - Each topic sentence should clearly indicate both the action AND the resulting output it produces
 - **Verify completeness** - The steps should fully achieve the section heading. Check for missing steps in the logical flow from start to finish.
 - **Show your work** - Include steps that demonstrate key outputs through tables, figures, or validation metrics. Every model needs performance assessment, every analysis needs visualization, every dataset needs quality checks.
+- The very first step in every section should setup the problem we wish to solve. Don't force the reader to just dive into the recipe before its explained what we are about to make. 
 ## Level 3a: Base Recipe Completeness
 - Provide the detail required for someone to follow your process exactly
 - Specify concrete parameters: thresholds, sample sizes, time windows, distance limits
@@ -82,6 +83,7 @@ Proposals are intended for those familiar with fisheries science and fisheries m
 - Identify who performs expert tasks
 - Acknowledge when parameters will be determined from data (rather than specified upfront)
 - Ensure no gaps exist - every step should be actionable
+- The development sentences should be in the order expected in the paragraph
 
 ## Level 3b: Base Recipe Justification
 - Explain why each technique or approach was chosen
