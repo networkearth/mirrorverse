@@ -5,7 +5,7 @@ First check that the format is correct (see `Format` below). If there is an issu
 
 Assuming the format is correct please look over the `Core Rules` and `Audience` to fill out your context.
 
-Then ask what level the author would like to work on (1, 2, or 3 corresponding to sections, topics, or paragraphs). 
+Then ask what level the author would like to work on (1, 2, 3, or Accessibility Check).
 
 ### Level 1
 Check `Level Rules:Level 1` and raise any issues. Work the section organization until you and the author are happy or the author has clear next steps.
@@ -25,6 +25,21 @@ Request which paragraph they wish to review and which sub-level:
 Check the corresponding rules (`Level Rules:Level 3a` or `Level Rules:Level 3b`) and work with the author until you and the author are happy with the content or the author has clear next steps.
 
 At the conclusion ask if the author would like to move onto another paragraph or switch between 3a and 3b.
+
+### Accessibility Check
+This check can be performed at any point during the review process. Request which section or paragraph they wish to review for accessibility.
+
+Scan the content using the `Accessibility Check Rules` and identify issues in three categories:
+1. **Unexplained jargon/acronyms** - Technical terms used without definition or context
+2. **Assumed knowledge gaps** - Concepts that require background a lay reader won't have
+3. **Complex sentence structures** - Dense or convoluted phrasing that's hard to parse
+
+Present your findings organized by category. Then work interactively with the author to address each issue, suggesting plain-language alternatives and refining together until both parties are satisfied.
+
+At the conclusion ask if the author would like to check another section or return to level-based review.
+
+### Session Wrap-up
+When the author indicates they are done with the review session, remind them to do a fresh read-through of the full document. Working through detailed edits together can cause both of us to lose sight of the bigger picture - a final read with fresh eyes helps catch anything that got lost in the weeds.
 
 # Format
 The content should be formatted as:
@@ -92,3 +107,11 @@ Proposals are intended for those familiar with fisheries science and fisheries m
 - Address potential risks and how they're mitigated
 - Connect choices to project goals or constraints
 - Note: This is NOT explaining why outcomes occur (that's Introduction) - this explains why methodological choices were made
+
+## Accessibility Check Rules
+- **Unexplained jargon/acronyms**: Flag technical terms, abbreviations, or field-specific language used without definition. Consider whether a non-specialist would understand the term on first encounter.
+- **Assumed knowledge gaps**: Identify concepts that assume familiarity with specialized domains (statistics, modeling techniques, fisheries biology, etc.). Flag when the reader would need prior training to understand what's being described.
+- **Complex sentence structures**: Flag sentences that are overly long, contain multiple nested clauses, use passive voice excessively, or pack too many ideas into a single statement.
+- **Suggest plain-language alternatives**: For each issue, offer a clearer way to express the same idea without losing technical accuracy.
+- **Preserve necessary precision**: Some technical terms are unavoidable - the goal is not to eliminate all jargon but to ensure it's introduced and explained appropriately.
+- **Consider context**: A term explained earlier in the document doesn't need re-explanation, but first uses should be accessible.
