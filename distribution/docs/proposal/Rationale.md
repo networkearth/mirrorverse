@@ -1,108 +1,84 @@
-**Lead:** Pacific salmon fuel food webs that sustain both wildlife and human communities throughout the North Pacific. 
+# Introduction
+
+**Lead:** Pacific salmon fuel food webs that sustain both wildlife and human communities throughout the North Pacific.
 **Development:**
+- Born in freshwater, these fish amass 99% of their body weight in the marine environment (Gende, 2004) and when they return to spawn and die, that marine bounty becomes fertilizer for their natal watersheds (Gende, 2004; Quinn, 2005).
+- Those that don't return feed killer whales, Steller sea lions, salmon sharks, and other marine predators (Adams, 2016; Seitz, 2019).
+- For human communities, Pacific salmon have provided nourishment and shaped cultures for millennia (Atlas, 2021).
+- In Alaska alone, Pacific salmon constitute one third of the 34 million pound annual subsistence harvest (Fall, 2016) and hundreds of millions of pounds in commercial landings (NOAA, 2024).
 
-- While they are born in freshwater, Pacific salmon amass 99% of their body weight in the marine environment (Gende, 2004)
-- When they return to spawn and die, that marine bounty becomes fertilizer for their natal watersheds (Gende, 2004; Quinn, 2018)
-- Those that don't return feed killer whales, Steller sea lions, salmon sharks, and other marine predators (Adams, 2016; Seitz, 2019)
-- For human communities, Pacific salmon have provided nourishment and shaped cultures for millennia (Atlas, 2021)
-- Even now in Alaska, Pacific salmon constitute one third of the 34 million pound annual subsistence harvest (Fall, 2016) and hundreds of millions of pounds in commercial landings (NOAA, 2024)
-
-**Lead:** Unfortunately, Pacific salmon populations are destabilizing across the North Pacific, threatening the ecosystems and economies they sustain. 
+**Lead:** Unfortunately these populations are now destabilizing across the North Pacific, threatening the ecosystems and economies they sustain.
 **Development:**
+- Of the 53 populations of Pacific salmon in the continental United States, more than half are listed under the Endangered Species Act, and despite billions of dollars in recovery programs, none have been delisted (Ford, 2025).
+- Across North America, return rates of Chinook salmon have declined threefold since 1978 (Welch, 2021), while Chum salmon returns in British Columbia's Central Coast region fell by 91% between 1960 and 2020 (Atlas, 2022).
+- The Yukon River watershed saw Chinook salmon harvests drop 70% between 1998-2010 compared to the prior three decades (Krueger, 2013).
+- Sockeye salmon in the Fraser River hit such a low in 2009 that the Prime Minister of Canada established a committee to investigate—that return numbered 900,000 fish, yet by 2019 the return fell to 490,000 and by 2020 to just 290,000 (Beamish, 2022).
 
-- Of the 53 populations of Pacific salmon in the continental United States, more than half (28) are listed under the Endangered Species Act (ESA) (Ford, 2025)
-- Despite billions of dollars in recovery programs, none have been unlisted (Ford, 2025)
-- Across North America, return rates of Chinook salmon declined threefold since 1978 (Welch, 2021) and Chum salmon returns in the Central Coast region of British Columbia declined by 91% between 1960 and 2020 (Atlas, 2022)
-- In the Yukon River watershed, Chinook salmon harvests declined by 70% between 1998-2010 compared to the prior 30 years (Krueger, 2013)
-- Sockeye salmon in the Fraser River hit such a low in 2009 that the Prime Minister of Canada established a committee to investigate the low return that year (Beamish, 2022). That return numbered 900,000 fish. In 2019 the return numbered 490,000 and in 2020 290,000.
-
-**Lead:** At the same time, between 1970 and the 2010's there was a 4.9 fold increase in Pacific salmon harvests in Russia and 2.6 fold increase in the United States, indicating a drop in overall diversity (Beamish, 2022). 
+**Lead:** The picture grows more concerning when viewed through the lens of diversity.
 **Development:**
+- Between 1970 and the 2010s, Pacific salmon harvests actually increased 4.9-fold in Russia and 2.6-fold in the United States (Beamish, 2022). Combined with the aforementioned declines, this indicates an overall drop in diversity.
+- In Puget Sound, Pink and Chum salmon made up approximately half of the stock in the 1970s; between 2005 and 2016 they made up 80% (Losee, 2019).
+- The Skeena River tells a similar story through a different measure: the stabilizing effect of multiple populations - the portfolio effect - has weakened dramatically, with returns that were twice as stable as a single population between 1913-1923 dropping to only 1.1 times as stable by 2010-2017 (Price, 2020).
+- Hatcheries, an early response to these declines, have not reversed the trend (McMillan, 2023). Of 102 papers reviewed by McMillan et al. on genetic diversity in populations with hatchery fish, 66 indicated declines.
 
-- In Puget Sound, Pink and Chum salmon made up approximately half of the stock in the 1970's - between 2005 and 2016 they made up 80% of the stock (Losee, 2019)
-- In the Skeena River, the stabilizing effect of multiple populations (portfolio effect) weakened dramatically—returns were 2 times less variable than a single population between 1913-1923 but only 1.1 times in 2010-2017 (Price, 2020)
-- An early response to the declines in Pacific salmon populations was to introduce hatcheries (McMillan, 2023)
-- However, of the 102 papers MacMillan et. al. reviewed on genetic diversity in populations with hatchery fish, 66 indicated declines
-
-**Lead:** Pacific salmon are also getting smaller when they return to spawn. 
+**Lead:** Pacific salmon are also getting smaller.
 **Development:**
+- Chinook salmon in Alaska were 8% smaller in samples after 2010 than in samples before 1990, with Coho, Chum, and Sockeye showing reductions of 3.3%, 2.4%, and 2.1% respectively (Oke, 2020).
+- Part of this decline in size reflects a decrease in age at maturity. Before 1975, Alaskan Chinook salmon that had spent five years at sea represented 3-5% of returning spawners (Ohlberger, 2018), but by 2009 that proportion had dropped below 0.5%.
+- This shift is especially concerning because larger, older fish are disproportionately important to stock productivity (Hixon, 2013).
 
-- Chinook salmon in Alaska were 8% smaller in samples after 2010 than they were in samples before 1990 (Oke, 2020)
-- The numbers for Coho, Chum, and Sockeye were 3.3%, 2.4%, and 2.1% smaller respectively
-- Part of this is a decrease in age at maturity - before 1975 Alaskan Chinook salmon that had spent 5 years at sea represented 3-5% of the returning spawners (Ohlberger, 2018). By 2009 that proportion dropped below 0.5%
-- This is especially concerning as larger older fish are disproportionately important to stock productivity (Hixon, 2013)
-
-**Lead:** Unraveling Pacific salmon population dynamics depends upon understanding their marine ecology—where they travel, where they concentrate, and how they use marine habitats—as Pacific salmon utilize the marine environment to power their growth (Beamish, 2018). 
+**Lead:** Unraveling these population dynamics depends upon understanding Pacific salmon's marine ecology as all species of Pacific salmon make extensive use of the marine environment to power their growth (Beamish, 2018).
 **Development:**
+- Chum salmon migrate to coastal waters immediately after emerging from their gravel beds, rear as juveniles, then range through the open ocean for up to six years before returning to spawn. Sockeye salmon spend more time in freshwater (1-3 years) but then follow a similar trajectory, spending up to three years at sea.
+- Chinook salmon from rivers in Oregon regularly journey to the Gulf of Alaska during their four years in the ocean (Weitkamp, 2010).
+- Pink salmon are perhaps the most impressive in their movements migrating directly to the marine environment upon hatching and then traveling thousands of kilometers in their 18 months at sea. And while Coho salmon spend less time in the ocean than their relatives, they still manage to amass 99% of their weight in marine waters (Beamish, 2018).
+- Clearly, understanding the marine ecology of these species is essential to managing them effectively.
 
-- Chum salmon migrate to coastal waters immediately after emerging from their gravel beds, rear as juveniles, and then range through the open oceans of the North Pacific for up to six years before returning to spawn (Beamish, 2018)
-- Sockeye salmon spend more time in freshwater (1-3 years), but then they too migrate first to the coast and then to the open ocean where they can spend up to 3 years of their lives
-- Chinook salmon spend up to 4 years at sea and also take vast journeys - Chinook salmon from rivers in Oregon regularly make their way up to the Gulf of Alaska (Weitkamp, 2010)
-- Pink salmon are perhaps the most impressive in their movements. Like Chum salmon they migrate directly to the marine environment upon hatching but then move 1,000's of kilometers with their 18 months at sea (Beamish, 2018)
-- And while Coho salmon spend even less time in the ocean, like all other Pacific salmon, they still manage to amass 99% of their weight while in marine waters (Beamish, 2018)
-- Understanding the marine ecology of these species is essential to managing them effectively
-
-**Lead:** However, our current understanding of their marine distribution has largely depended on sampling through the capture of fish at sea - leaving us with only a partial picture. 
+**Lead:** However our current understanding of their marine distribution has largely depended on sampling through the capture of fish at sea - leaving us with a partial picture.
 **Development:**
+- Studies of distribution in the North Pacific have come through high seas tagging studies conducted first by the International North Pacific Fisheries Commission and continued by the North Pacific Anadromous Fish Commission (Langan, 2024; Myers, 2007). While these studies have been invaluable in prying open the "black box" of Pacific salmon distribution on the high seas, the spatiotemporal patchiness of sampling leaves the picture incomplete. Since the 1990s, for example, there have been fewer and fewer samples in the eastern North Pacific (Langan, 2024).
+- Closer to the North American coast, Weitkamp et al. used recaptures of tagged fish to map the overall distribution of Coho and Chinook salmon by source region and age class (2002 & 2010), but because sampling relied on a patchwork of different fisheries, the analysis could only operate at coarse geospatial scales.
+- Studies attempting finer resolution have been limited to modeling where fisheries and salmon intersect (DeFilippo, 2025; Shirk, 2023; Freshwater, 2021) - a particular problem in areas where Pacific salmon is bycatch and fishers are incentivized to avoid it (DeFilippo, 2025).
 
-- Studies of distribution in the North Pacific have come, largely, through high seas tagging studies conducted first by the International North Pacific Fisheries Commission and continued by the North Pacific Anadromous Fish Commission (Langan, 2024; Myers, 2007)
-- While these studies have been invaluable in prying open the "black box" of Pacific salmon distribution on the high seas, the spatiotemporal patchiness of the sampling means that the picture is incomplete
-- As just one example, since the 1990's there have been fewer and fewer samples in the eastern North Pacific (Langan, 2024)
-- Closer to the North American coast, Weitkamp, et. al. were able to use recaptures of tagged fish to map out the overall distribution of Coho and Chinook salmon as a function of source region and age class (2002 & 2010)
-- However, as sampling was done by patchwork of different fisheries, the analysis was only able to operate at coarse geospatial scales (Weitkamp, 2002 & 2010)
-- Those studies that have tried to resolve finer patterns are only able to model where fisheries and salmon intersect (DeFilippo, 2025; Shirk, 2023; Freshwater, 2021)
-- This presents a particular problem in areas where Pacific salmon is bycatch and so fishers are incentivized to avoid salmon (DeFilippo, 2025)
-- In summary, while the available research has been essential in expanding our understanding of Pacific salmon's marine distribution - the dependence on (re)capture leaves blind spots in our understanding
-
-**Lead:** Pop-up satellite archival tags (PSATs) provide one means to remove this dependency. 
+**Lead:** Pop-up satellite archival tags (PSATs) provide one means to remove this dependency on fisheries data.
 **Development:**
+- Once attached to a fish, PSATs record the data required for environmental geolocation for a set period before releasing from the fish, surfacing, and transmitting their data through satellite communications (Wildlife Computer, 2025).
+- Because data collection does not require fish recovery, PSAT data is fisheries independent.
+- It is also a tool that has already been successfully applied to Pacific salmon (Seitz, 2024).
 
-- Once attached to a fish, PSATs record the data required for environmental geolocation (pressure, light, and temperature) for a set period before they release from the fish, surface, and transmit their data through satellite communications (Wildlife Computers, 2025)
-- Thanks to the satellite communication link, the recollection of PSAT data is independent of fish recovery, meaning that PSATs are a tool for collecting fisheries-independent positional data—a tool that has already been applied to Chinook salmon (Seitz, 2024)
-
-**Lead:** While (re)capture independent, the data collected from PSATs have two properties that make them unsuitable for traditional species distributional modeling techniques. 
+**Lead:** The data from PSATs, however, have two properties that make them unsuitable for traditional species distribution modeling techniques.
 **Development:**
+- First, PSATs provide positive-only samples. That is, a lack of records in a specific time and place does not indicate an absence of fish.
+- Second, because the data captures individual fish movements, it is highly autocorrelated.
+- The former property alone is not necessarily prohibitive; methods such as MaxEnt and EcoCast exist for working with positive-only samples (Phillips, 2005; Hazen, 2018). Both approaches, however, implicitly require that positive samples are representative of the underlying distribution - an assumption likely contradicted by both the autocorrelated nature of the data and the extraordinary range of Pacific salmon (Beamish, 2018).
+- EcoCast also requires artificial generation of negative samples, introducing data not derived from measurement.
 
-- First, PSATs provide positive only samples - a lack of records in a specific time and place is not indicative of a lack of fish
-- Second, as the result of collecting individual fish movements, the data is highly autocorrelated
-- The former property on its own is not necessarily an issue as methods exist for working with positive only samples such as MaxEnt and EcoCast (Phillips, 2005; Hazen, 2018)
-- Both methods, however, implicitly require that the positive samples are representative of the underlying distribution being studied - an assumption likely contradicted by both the autocorrelated nature of the data and the extraordinary range of Pacific salmon (Beamish, 2018)
-- And the latter (EcoCast) requires the artificial generation of negative samples - introducing data that has not actually come from measurement. 
-- This means that inferring distribution from Pacific salmon movement data requires a new set of tools
-
-**Lead:** The movement data from PSATs, however, opens a different avenue: adapting particle tracking techniques to derive distributional patterns.
+**Lead:** An alternative that has not yet been explored is using the movement data from PSATs to adapt particle tracking techniques.
 **Development:**
-- Lagrangian particle tracking has been used to understand distributions of larval dispersal (Quigley, 2024), turtle hatchling distribution (Le Gouvello, 2020; Harrison, 2021), and the distribution of plastic (Lebreton, 2012; Onink, 2021)
-- The approach seeds simulations with particles, forward projects their movements, and identifies areas where particles acculumate.
-- We will call these accumulation areas basins of attraction, or just basins. 
-- For larval dispersal, plastic distribution, and to some extent hatchling distribution movements are guided passively by oceanic currents, winds, and other abiotic phenomena. 
-- Pacific salmon, on the other hand, are quite active requiring that we model their movement specifically.
-- PSAT data is ideal for this kind of application as it exactly captures movement.
-- Specifically PSAT data gives us both positive examples (observed movements) and negative examples (possible but unobserved movements), allowing us to use traditional modeling methods
-- This means that we can first build a model of salmon movement using the PSAT data, then, given a uniform starting distribution, use those models to project the starting distribution forward in time in order to find basins of attraction. 
-- Moving forward we will refer to such a methodology as species redistribution models or SRMs for short. 
+- Lagrangian particle tracking has already been used to understand distributions of larval dispersal (Quigley, 2024), turtle hatchling distribution (Le Gouvello, 2020; Harrison, 2021), and the movement of plastic debris (Lebreton, 2012; Onink, 2021).
+- The approach seeds simulations with particles, projects their movements forward, and identifies areas where particles accumulate - also known as basins of attraction.
+- For larvae and plastic movements are guided passively by oceanic currents, winds, and other abiotic phenomena. Pacific salmon, by contrast, present a unique challenge in that they are active swimmers. Therefore tracking their potential movements requires explicit movement modeling.
+- PSAT data is ideal for this because it captures both positive examples (observed movements) and negative examples (possible but unobserved movements) explicitly, enabling the use of traditional modeling methods. In short, PSAT data can be used to build movement models that can then be used with particle tracking techniques to identify basins of attraction. We will refer to this methodology as species redistribution modeling, or SRMs.
 
-**Lead:** These basins indicate areas in which fish should accumulate, however to close the loop on marine distribution we must assess the extent to which other aspects of a fish's lifecycle cause the realized distribution to drift from these basins.
+**Lead:** While these basins indicate predicted areas of accumulation, there are other factors affecting fish distribution.
 **Development:**
-- Migrations, in which animals move from one region to another, create immigration and emmigration events that may not deposit fish precisely in the places they will later be predicted to accumulate. 
-- Likewise preferred areas may also be associated with higher mortality resulting in a suppression of expected density levels.
-- Therefore, to validate whether the basins identified by SRMs are useful as indicators of areas of relatively higher concentration, we need an independent data source to test whether predicted basins correlate with higher density.
+- Migrations create immigration and emigration events that may not deposit fish precisely where they may later accumulate.
+- Preferred areas may also be associated with higher mortality, suppressing expected density levels.
+- To validate whether the basins identified by SRMs are useful indicators of relatively higher concentration, an independent data source is required to test whether predicted basins correlate with higher density.
 
-**Lead:** Here fisheries dependent data can provides a means of validation.
+**Lead:** Here is where fisheries-dependent data can provide validation.
 **Development:**
-- The idea here is that we would expect that, locally, areas where fish are predicted to accumulate (basins) would generally experience higher catch/bycatch than areas that fish are predicted to move away from
-- If an SRM passes this test it would provide evidence it has not only identified attractors in fish distribution, but hotspots in distribution as well.
-- Therefore to test the hypothesis that SRMs can indeed provide distributional indicators we need a case study that includes both movement data (from PSATs) from which to build the SRM and catch data we can use to test the SRM. 
+- If an SRM's predictions are meaningful, we would expect that areas where fish are predicted to accumulate would generally experience higher catch than areas where fish are predicted to move away from.
+- Passing this test would provide evidence that an SRM has not only identified attractors in fish distribution but hotspots in distribution as well.
+- Testing this hypothesis requires a case study with both movement data from which to build the SRM and catch data to validate it.
 
-**Lead:** As such, Chinook salmon in the Gulf of Alaska presents itself as an ideal case study.
+**Lead:** Chinook salmon in the Gulf of Alaska provides such a case study.
 **Development:**
-- There already exists a large body of PSAT movement data for Chinook salmon in the GOA (Seitz, 2024)
-- And there is an active groundfish fishery where Chinook salmon is caught as bycatch
+- A substantial body of PSAT movement data already exists for Chinook salmon in this region (Seitz, 2024).
+- An active groundfish fishery generates Chinook salmon bycatch data suitable for validation.
 
-
-**Lead:** Our goal then is to use this case study to understand whether SRMs can be used as a fisheries independent means of modeling Pacific salmon distributions. 
+**Lead:** Therefore our goal is to use this case study to understand whether SRMs can serve as a fisheries-independent means of modeling Pacific salmon distributions.
 **Development:**
-
-- To do this, we will first develop a movement model using Chinook salmon PSAT data in the Gulf of Alaska
-- Then use this model to do species redistribution modeling
-- And then assess the ability of the basins produced by that SRM to differentiate Chinook salmon bycatch risk. 
+- To accomplish this, we will first develop a movement model using Chinook salmon PSAT data in the Gulf of Alaska.
+- Then use this model to perform species redistribution modeling.
+- Finally assess the ability of the resulting basins to differentiate Chinook salmon bycatch risk.
