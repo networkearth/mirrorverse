@@ -1,3 +1,34 @@
+# Introduction
+
+Pacific salmon (Oncorhynchus spp) fuel food webs that sustain both wildlife and human communities throughout the North Pacific. Born in freshwater, these fish amass 99% of their body weight in the marine environment (Gende, 2004) and when they return to spawn and die, that marine bounty becomes fertilizer for their natal watersheds (Gende, 2004; Quinn, 2005). Those that don't return feed killer whales (Orcinus orca), Steller sea lions (Eumetopias jubatus), salmon sharks (Lamna ditropis), and other marine predators (Adams, 2016; Seitz, 2019). For human communities, Pacific salmon have provided nourishment and shaped cultures for millennia (Atlas, 2021). In Alaska alone, Pacific salmon constitute one third of the 34 million pound annual subsistence harvest (Fall, 2016) and hundreds of millions of pounds in commercial landings (NOAA, 2024).
+
+Unfortunately these populations are now destabilizing across the North Pacific, threatening the ecosystems and economies they sustain. Of the 53 populations of Pacific salmon in the continental United States, more than half are listed under the Endangered Species Act, and despite billions of dollars in recovery programs, none have been delisted (Ford, 2025). Across North America, return rates of Chinook salmon (Oncorhynchus tshawytscha) have declined threefold since 1978 (Welch, 2021), while Chum salmon (Oncorhynchus keta) returns in British Columbia's Central Coast region fell by 91% between 1960 and 2020 (Atlas, 2022). The Yukon River watershed saw Chinook salmon harvests drop 70% between 1998-2010 compared to the prior three decades (Krueger, 2013). Sockeye salmon (Oncorhynchus nerka) in the Fraser River hit such a low in 2009 that the Prime Minister of Canada established a committee to investigate—that return numbered 900,000 fish, yet by 2019 the return fell to 490,000 and by 2020 to just 290,000 (Beamish, 2022).
+
+The picture grows more concerning when viewed through the lens of diversity. Between 1970 and the 2010s, Pacific salmon harvests actually increased 4.9-fold in Russia and 2.6-fold in the United States (Beamish, 2022). Combined with the aforementioned declines, this indicates an overall drop in diversity. In Puget Sound, Pink (Oncorhynchus gorbuscha) and Chum salmon made up approximately half of the stock in the 1970s; between 2005 and 2016 they made up 80% (Losee, 2019). The Skeena River tells a similar story through a different measure: the stabilizing effect of multiple populations - the portfolio effect - has weakened dramatically, with returns that were twice as stable as a single population between 1913-1923 dropping to only 1.1 times as stable by 2010-2017 (Price, 2020). Hatcheries, an early response to these declines, have not reversed the trend (McMillan, 2023). Of 102 papers reviewed by McMillan et al. on genetic diversity in populations with hatchery fish, 66 indicated declines.
+
+Pacific salmon are also getting smaller. Chinook salmon in Alaska were 8% smaller in samples after 2010 than in samples before 1990, with Coho (Oncorhynchus kisutch), Chum, and Sockeye showing reductions of 3.3%, 2.4%, and 2.1% respectively (Oke, 2020). Part of this decline in size reflects a decrease in age at maturity. Before 1975, Alaskan Chinook salmon that had spent five years at sea represented 3-5% of returning spawners (Ohlberger, 2018), but by 2009 that proportion had dropped below 0.5%. This shift is especially concerning because larger, older fish are disproportionately important to stock productivity (Hixon, 2013).
+
+Unraveling these population dynamics depends upon understanding Pacific salmon's marine ecology as all species of Pacific salmon make extensive use of the marine environment to power their growth (Beamish, 2018). Chum salmon migrate to coastal waters immediately after emerging from their gravel beds, rear as juveniles, then range through the open ocean for up to six years before returning to spawn. Sockeye salmon spend more time in freshwater (1-3 years) but then follow a similar trajectory, spending up to three years at sea. Chinook salmon from rivers in Oregon regularly journey to the Gulf of Alaska during their four years in the ocean (Weitkamp, 2010). Pink salmon are perhaps the most impressive in their movements migrating directly to the marine environment upon hatching and then traveling thousands of kilometers in their 18 months at sea. And while Coho salmon spend less time in the ocean than their relatives, they still manage to amass 99% of their weight in marine waters (Beamish, 2018). Clearly, understanding the marine ecology of these species is essential to managing them effectively.
+
+However our current understanding of their marine distribution has largely depended on sampling through the capture of fish at sea - leaving us with a partial picture. Studies of distribution in the North Pacific have come through high seas tagging studies conducted first by the International North Pacific Fisheries Commission and continued by the North Pacific Anadromous Fish Commission (Langan, 2024; Myers, 2007). While these studies have been invaluable in prying open the "black box" of Pacific salmon distribution on the high seas, the spatiotemporal patchiness of sampling leaves the picture incomplete. Since the 1990s, for example, there have been fewer and fewer samples in the eastern North Pacific (Langan, 2024). Closer to the North American coast, Weitkamp et al. used recaptures of tagged fish to map the overall distribution of Coho and Chinook salmon by source region and age class (2002 & 2010), but because sampling relied on a patchwork of different fisheries, the analysis could only operate at coarse geospatial scales. Studies attempting finer resolution have been limited to modeling where fisheries and salmon intersect (DeFilippo, 2025; Shirk, 2023; Freshwater, 2021) - a particular problem in areas where Pacific salmon is bycatch and fishers are incentivized to avoid it (DeFilippo, 2025).
+
+Pop-up satellite archival tags (PSATs) provide one means to remove this dependency on fisheries data. Once attached to a fish, PSATs record the data required for environmental geolocation for a set period before releasing from the fish, surfacing, and transmitting their data through satellite communications (Wildlife Computer, 2025). Because data collection does not require fish recovery, PSAT data is fisheries independent. It is also a tool that has already been successfully applied to Pacific salmon (Seitz, 2024).
+
+The data from PSATs, however, have two properties that make them unsuitable for traditional species distribution modeling techniques. First, PSATs provide positive-only samples. That is, a lack of records in a specific time and place does not indicate an absence of fish. Second, because the data captures individual fish movements, it is highly autocorrelated. The former property alone is not necessarily prohibitive; methods such as MaxEnt and EcoCast exist for working with positive-only samples (Phillips, 2005; Hazen, 2018). Both approaches, however, implicitly require that positive samples are representative of the underlying distribution - an assumption likely contradicted by both the autocorrelated nature of the data and the extraordinary range of Pacific salmon (Beamish, 2018). EcoCast also requires artificial generation of negative samples, introducing data not derived from measurement. 
+
+An alternative that has not yet been explored is using the movement data from PSATs to adapt particle tracking techniques. Lagrangian particle tracking has already been used to understand distributions of larval dispersal (Quigley, 2024), turtle hatchling distribution (Le Gouvello, 2020; Harrison, 2021), and the movement of plastic debris (Lebreton, 2012; Onink, 2021). The approach seeds simulations with particles, projects their movements forward, and identifies areas where particles accumulate - also known as basins of attraction. For larvae and plastic movements are guided passively by oceanic currents, winds, and other abiotic phenomena. Pacific salmon, by contrast, present a unique challenge in that they are active swimmers. Therefore tracking their potential movements requires explicit movement modeling. PSAT data is ideal for this because it captures both positive examples (observed movements) and negative examples (possible but unobserved movements) explicitly, enabling the use of traditional modeling methods. In short, PSAT data can be used to build movement models that can then be used with particle tracking techniques to identify basins of attraction. We will refer to this methodology as species redistribution modeling, or SRMs.
+
+While these basins indicated predicted areas of accumulation, there are other factors affecting fish distribution.  Migrations create immigration and emigration events that may not deposit fish precisely where they may later accumulate. Preferred areas may also be associated with higher mortality, suppressing expected density levels. To validate whether the basins identified by SRMs are useful indicators of relatively higher concentration, an independent data source is required to test whether predicted basins correlate with higher density.
+
+Here is where fisheries-dependent data can provide validation. If an SRM's predictions are meaningful, we would expect that areas where fish are predicted to accumulate would generally experience higher catch than areas where fish are predicted to move away from. Passing this test would provide evidence that an SRM has not only identified attractors in fish distribution but hotspots in distribution as well. Testing this hypothesis requires a case study with both movement data from which to build the SRM and catch data to validate it.
+
+Chinook salmon in the Gulf of Alaska provides such a case study. A substantial body of PSAT movement data already exists for Chinook salmon in this region (Seitz, 2024), and an active groundfish fishery generates Chinook salmon bycatch data suitable for validation.
+
+Therefore our goal is to use this case study to understand whether SRMs can serve as a fisheries-independent means of modeling Pacific salmon distributions. To accomplish this, we will first develop a movement model using Chinook salmon PSAT data in the Gulf of Alaska, then use this model to perform species redistribution modeling, and finally assess the ability of the resulting basins to differentiate Chinook salmon bycatch risk.
+
+
+# Methods
+
 ## Validated Tag Movement Data
 
 Pop-up satellite tag data from Chinook salmon in the Gulf of Alaska will serve as the foundation for this analysis. Existing tag deployment data from Seitz (2024) will provide the core dataset, with fish captured by hook and line across multiple locations: Dutch Harbor, AK (n=20), Chignik, AK (n=16), Craig, AK (n=8), Homer, AK (n=20), Kodiak, AK (n=13), Yakutat, AK (n=16), Sitka, AK (n=15), and Central Bering Sea (n=3). Only healthy individuals meeting minimum size criteria (62-100cm fork length) were selected for tagging and pop-up satellite archival tags were attached following established protocols (Seitz, 2024). Tagged fish were released at capture locations.
@@ -73,3 +104,78 @@ A decision tree will then be trained to predict relative bycatch risk using attr
 Bycatch risk model performance will be evaluated on held-out testing data. Performance metrics comparing predictions to observed bycatch on the testing set will be reported. Results will be reported relative to a 50/50 random baseline, representing the null hypothesis (what would be expected if the model had no predictive ability). This will demonstrate whether the model provides meaningful risk predictions beyond chance.
 
 Assuming the model is predictive, interpretable spatial risk maps will be generated for specific time periods. The model will generate pairwise distances (difference in assigned probabilities) between all cells, which will be used to group similar areas. Agglomerative clustering (a method that progressively merges similar items) will group cells with similar risk levels using these distances, with flexibility to explore alternative clustering methods if needed. Clusters will be assigned colors to create discrete risk zones (minimally green/yellow/red for low/medium/high risk) that are immediately interpretable for decision-making. These visualizations will demonstrate the spatial structure of bycatch risk as predicted from movement patterns.
+
+# Success Criteria
+
+## Migration Classification Model
+
+**Goal**: Ensure the migration classifier accurately distinguishes migration from non-migration periods while minimizing contamination of the non-migration training dataset.
+
+**Criteria**: The classifier achieves a false negative rate below 5% while maintaining a true negative rate above 75% on the validation set.
+
+## Movement Probability Model
+
+**Goal**: Develop a parsimonious and generalizable movement probability model that predicts Chinook salmon movement choices based on environmental features.
+
+**Criteria**: The selected model demonstrates consistent performance across training, validation, and testing sets according to the negative log likelihood of the data given the predicted probabilities from the model.
+
+## Bycatch Risk Maps
+
+**Goal**: Predict relative bycatch risk from movement-based fish accumulation patterns to support fishing effort decisions that minimize Chinook salmon bycatch.
+
+**Criteria**: The decision tree model discriminates between high and low bycatch risk scenarios on held-out testing data at a level above a 50/50 random baseline.
+
+# Outcomes
+
+## Peer-Reviewed Publication
+
+We will produce a paper detailing the results of this study that will be submitted for publication in an appropriate peer-reviewed journal.
+
+## Presentation
+
+We will present the outcomes of this work at at least one professional workshop.
+
+## Open-Access Models and Tools
+
+We will make all migration, movement, and decision models freely available and accessible online. 
+
+## Open-Access Datasets
+
+We will make our training, validation, and testing datasets available for those who would want to extend or replicate our findings.
+
+# References
+
+- Adams J, Kaplan IC, Chasco B, Marshall KN, Acevedo-Gutiérrez A, Ward EJ. A century of Chinook salmon consumption by marine mammal predators in the Northeast Pacific Ocean. Ecological Informatics. 2016 July;34:44–51. 
+- Atlas WI, Ban NC, Moore JW, Tuohy AM, Greening S, Reid AJ, et al. Indigenous Systems of Management for Culturally and Ecologically Resilient Pacific Salmon ( Oncorhynchus spp.) Fisheries. BioScience. 2021 Feb 15;71(2):186–204. 
+- Atlas WI, Wilson KL, Whitney CK, Moody JE, Service CN, Reid M, et al. Quantifying regional patterns of collapse in British Columbia Central Coast chum salmon ( Oncorhynchus keta ) populations since 1960. Can J Fish Aquat Sci. 2022 Dec 1;79(12):2072–86. 
+- Beamish RJ, editor. The ocean ecology of Pacific salmon and trout. Bethesda, MD: American Fisheries Society; 2018. 1147 p. 
+- Beamish R. The need to see a bigger picture to understand the ups and downs of Pacific salmon abundances. Browman H, editor. ICES Journal of Marine Science. 2022 May 23;79(4):1005–14. 
+- DeFilippo LB, Larson WA, Barry PD, Cunningham CJ, Langan JA, Garcia S, et al. Drivers and Dynamics of Salmon Bycatch in the Eastern Bering Sea Pollock Fishery. Fish and Fisheries. 2025 Nov;26(6):1107–21. 
+- Fall J, Godduhn A, Halas G, et al. Alaska Subsistence and Personal Use Salmon Fisheries 2016 Annual Report. 2016
+- Ford MJ, Lindley ST, Barnas KA, Shelton AO, Spence BC, Weitkamp LA, et al. Abundance Trends of Pacific Salmon During a Quarter Century of ESA Protection. Fish and Fisheries. 2025 Nov;26(6):1087–106. 
+- Freshwater C, Anderson SC, Beacham TD, Luedke W, Wor C, King J. An integrated model of seasonal changes in stock composition and abundance with an application to Chinook salmon. PeerJ. 2021 Apr 20;9:e11163. 
+- Gende SM, Quinn TP, Willson MF, Heintz R, Scott TM. Magnitude and Fate of Salmon-Derived Nutrients and Energy in a Coastal Stream Ecosystem. Journal of Freshwater Ecology. 2004 Mar;19(1):149–60. 
+- Harrison CS, Luo JY, Putman NF, Li Q, Sheevam P, Krumhardt K, et al. Identifying global favourable habitat for early juvenile loggerhead sea turtles. J R Soc Interface. 2021 Feb;18(175):rsif.2020.0799, 20200799. 
+- Hazen EL, Scales KL, Maxwell SM, Briscoe DK, Welch H, Bograd SJ, et al. A dynamic ocean management tool to reduce bycatch and support sustainable fisheries. Sci Adv. 2018 May 4;4(5):eaar3001. 
+- Hixon MA, Johnson DW, Sogard SM. BOFFFFs: on the importance of conserving old-growth age structure in fishery populations. ICES Journal of Marine Science. 2014 Oct 1;71(8):2171–85. 
+- Krueger C, Bisson P, Bradford M, Clark B, Conitz J, Howard K, et al. AYK SSI Chinook Salmon Expert Panel.
+- Quigley C, Roughan M, Chaput R, Jeffs A, Gardner J. Simulating larval dispersal across the distribution of the New Zealand green-lipped mussel: insights into connectivity and source-sink dynamics. Mar Ecol Prog Ser. 2024 Mar 13;731:129–45.  
+- Quinn T. The behavior and ecology of Pacific salmon and trout. Second Edition. University of Washington Press, Seattle, Washington. 2018.
+- Langan JA, Cunningham CJ, Watson JT, McKinnell S. Opening the black box: New insights into the role of temperature in the marine distributions of Pacific salmon. Fish and Fisheries. 2024 July;25(4):551–68. 
+- Lebreton LCM, Greer SD, Borrero JC. Numerical modelling of floating debris in the world’s oceans. Marine Pollution Bulletin. 2012 Mar;64(3):653–61. 
+- Le Gouvello DZM, Hart-Davis MG, Backeberg BC, Nel R. Effects of swimming behaviour and oceanography on sea turtle hatchling dispersal at the intersection of two ocean current systems. Ecological Modelling. 2020 Sept;431:109130. 
+- Losee JP, Kendall NW, Dufault A. Changing salmon: An analysis of body mass, abundance, survival, and productivity trends across 45 years in Puget Sound. Fish and Fisheries. 2019 Sept;20(5):934–51. 
+- McMillan JR, Morrison B, Chambers N, Ruggerone G, Bernatchez L, Stanford J, et al. A global synthesis of peer‐reviewed research on the effects of hatchery salmonids on wild salmonids. Fisheries Management Eco. 2023 Oct;30(5):446–63. 
+- Phillips SJ, Anderson RP, Schapire RE. Maximum entropy modeling of species geographic distributions. Ecological Modelling. 2006 Jan;190(3–4):231–59. 
+- Ohlberger J, Ward EJ, Schindler DE, Lewis B. Demographic changes in Chinook salmon across the Northeast Pacific Ocean. Fish and Fisheries. 2018 May;19(3):533–46. 
+- Oke KB, Cunningham CJ, Westley PAH, Baskett ML, Carlson SM, Clark J, et al. Recent declines in salmon body size impact ecosystems and fisheries. Nat Commun. 2020 Aug 19;11(1):4155. 
+- Onink V, Jongedijk CE, Hoffman MJ, Van Sebille E, Laufkötter C. Global simulations of marine plastic transport show plastic trapping in coastal zones. Environ Res Lett. 2021 June 1;16(6):064053. 
+- Price MHH, Moore JW, Connors BM, Wilson KL, Reynolds JD. Portfolio simplification arising from a century of change in salmon population diversity and artificial production. Journal of Applied Ecology. 2021 July;58(7):1477–86.
+- Seitz AC, Courtney MB. Telemetry and Genetic Identity of Chinook Salmon in Alaska: Final Report. 2024
+- Seitz AC, Courtney MB, Evans MD, Manishin K. Pop-up satellite archival tags reveal evidence of intense predation on large immature Chinook salmon ( Oncorhynchus tshawytscha ) in the North Pacific Ocean. Can J Fish Aquat Sci. 2019 Sept;76(9):1608–15. 
+- Shirk PL, Richerson K, Banks M, Tuttle V. Predicting bycatch of Chinook salmon in the Pacific hake fishery using spatiotemporal models. Zhou S, editor. ICES Journal of Marine Science. 2023 Jan 25;80(1):133–44.
+- Welch DW, Porter AD, Rechisky EL. A synthesis of the coast‐wide decline in survival of West Coast Chinook Salmon ( Oncorhynchus tshawytscha, Salmonidae). Fish and Fisheries. 2021 Jan;22(1):194–211. 
+- Weitkamp LA. Marine Distributions of Chinook Salmon from the West Coast of North America Determined by Coded Wire Tag Recoveries. Trans Am Fish Soc. 2010 Jan;139(1):147–70. 
+- Weitkamp L, Neely K. Coho salmon ( Oncorhynchus kisutch ) ocean migration patterns: insight from marine coded-wire tag recoveries. Can J Fish Aquat Sci. 2002 July 1;59(7):1100–15. 
+- Wildlife Computers. Minipat. 2025
+- Verleysen M, François D. The Curse of Dimensionality in Data Mining and Time Series Prediction. In: Cabestany J, Prieto A, Sandoval F, editors. Computational Intelligence and Bioinspired Systems. Berlin, Heidelberg: Springer Berlin Heidelberg; 2005. p. 758–70. (Hutchison D, Kanade T, Kittler J, Kleinberg JM, Mattern F, Mitchell JC, et al., editors. Lecture Notes in Computer Science; vol. 3512). 

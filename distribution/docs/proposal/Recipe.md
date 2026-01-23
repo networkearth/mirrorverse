@@ -173,7 +173,7 @@
 
 ## Bycatch Risk Maps
 
-**Lead:** Catch data from the Gulf of Alaska pollock fleet will be processed and standardized for risk modeling.
+**Lead:** Catch data from the Gulf of Alaska pollock (Gadus chalcogrammus) fleet will be processed and standardized for risk modeling.
 **Development:**
 - Bycatch will be binned to Uber H3 resolution 4 and daily temporal resolution to match the movement model's spatiotemporal scale.
 - Two standardization approaches will be used: by effort alone (standard CPUE, or catch-per-unit-effort), and by effort weighted by depth-occupancy likelihood (how often fish are predicted to be at trawl depths) (Gietzmann-Sanders, in review).

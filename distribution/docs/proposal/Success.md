@@ -16,4 +16,4 @@
 
 **Goal**: Predict relative bycatch risk from movement-based fish accumulation patterns to support fishing effort decisions that minimize Chinook salmon bycatch.
 
-**Criteria**: The decision tree model discriminates between high and low bycatch risk scenarios on held-out testing data at a level meaningfully above the 50/50 random baseline.
+**Criteria**: The decision tree model discriminates between high and low bycatch risk scenarios on held-out testing data at a level above a 50/50 random baseline.

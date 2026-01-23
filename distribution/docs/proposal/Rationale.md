@@ -1,29 +1,29 @@
 # Introduction
 
-**Lead:** Pacific salmon fuel food webs that sustain both wildlife and human communities throughout the North Pacific.
+**Lead:** Pacific salmon (Oncorhynchus spp) fuel food webs that sustain both wildlife and human communities throughout the North Pacific.
 **Development:**
 - Born in freshwater, these fish amass 99% of their body weight in the marine environment (Gende, 2004) and when they return to spawn and die, that marine bounty becomes fertilizer for their natal watersheds (Gende, 2004; Quinn, 2005).
-- Those that don't return feed killer whales, Steller sea lions, salmon sharks, and other marine predators (Adams, 2016; Seitz, 2019).
+- Those that don't return feed killer whales (Orcinus orca), Steller sea lions (Eumetopias jubatus), salmon sharks (Lamna ditropis), and other marine predators (Adams, 2016; Seitz, 2019).
 - For human communities, Pacific salmon have provided nourishment and shaped cultures for millennia (Atlas, 2021).
 - In Alaska alone, Pacific salmon constitute one third of the 34 million pound annual subsistence harvest (Fall, 2016) and hundreds of millions of pounds in commercial landings (NOAA, 2024).
 
 **Lead:** Unfortunately these populations are now destabilizing across the North Pacific, threatening the ecosystems and economies they sustain.
 **Development:**
 - Of the 53 populations of Pacific salmon in the continental United States, more than half are listed under the Endangered Species Act, and despite billions of dollars in recovery programs, none have been delisted (Ford, 2025).
-- Across North America, return rates of Chinook salmon have declined threefold since 1978 (Welch, 2021), while Chum salmon returns in British Columbia's Central Coast region fell by 91% between 1960 and 2020 (Atlas, 2022).
+- Across North America, return rates of Chinook salmon (Oncorhynchus tshawytscha) have declined threefold since 1978 (Welch, 2021), while Chum salmon (Oncorhynchus keta) returns in British Columbia's Central Coast region fell by 91% between 1960 and 2020 (Atlas, 2022).
 - The Yukon River watershed saw Chinook salmon harvests drop 70% between 1998-2010 compared to the prior three decades (Krueger, 2013).
-- Sockeye salmon in the Fraser River hit such a low in 2009 that the Prime Minister of Canada established a committee to investigate—that return numbered 900,000 fish, yet by 2019 the return fell to 490,000 and by 2020 to just 290,000 (Beamish, 2022).
+- Sockeye salmon (Oncorhynchus nerka) in the Fraser River hit such a low in 2009 that the Prime Minister of Canada established a committee to investigate—that return numbered 900,000 fish, yet by 2019 the return fell to 490,000 and by 2020 to just 290,000 (Beamish, 2022).
 
 **Lead:** The picture grows more concerning when viewed through the lens of diversity.
 **Development:**
 - Between 1970 and the 2010s, Pacific salmon harvests actually increased 4.9-fold in Russia and 2.6-fold in the United States (Beamish, 2022). Combined with the aforementioned declines, this indicates an overall drop in diversity.
-- In Puget Sound, Pink and Chum salmon made up approximately half of the stock in the 1970s; between 2005 and 2016 they made up 80% (Losee, 2019).
+- In Puget Sound, Pink (Oncorhynchus gorbuscha) and Chum salmon made up approximately half of the stock in the 1970s; between 2005 and 2016 they made up 80% (Losee, 2019).
 - The Skeena River tells a similar story through a different measure: the stabilizing effect of multiple populations - the portfolio effect - has weakened dramatically, with returns that were twice as stable as a single population between 1913-1923 dropping to only 1.1 times as stable by 2010-2017 (Price, 2020).
 - Hatcheries, an early response to these declines, have not reversed the trend (McMillan, 2023). Of 102 papers reviewed by McMillan et al. on genetic diversity in populations with hatchery fish, 66 indicated declines.
 
 **Lead:** Pacific salmon are also getting smaller.
 **Development:**
-- Chinook salmon in Alaska were 8% smaller in samples after 2010 than in samples before 1990, with Coho, Chum, and Sockeye showing reductions of 3.3%, 2.4%, and 2.1% respectively (Oke, 2020).
+- Chinook salmon in Alaska were 8% smaller in samples after 2010 than in samples before 1990, with Coho (Oncorhynchus kisutch), Chum, and Sockeye showing reductions of 3.3%, 2.4%, and 2.1% respectively (Oke, 2020).
 - Part of this decline in size reflects a decrease in age at maturity. Before 1975, Alaskan Chinook salmon that had spent five years at sea represented 3-5% of returning spawners (Ohlberger, 2018), but by 2009 that proportion had dropped below 0.5%.
 - This shift is especially concerning because larger, older fish are disproportionately important to stock productivity (Hixon, 2013).
 
