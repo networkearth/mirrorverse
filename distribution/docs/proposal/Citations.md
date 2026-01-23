@@ -1,0 +1,34 @@
+- Adams J, Kaplan IC, Chasco B, Marshall KN, Acevedo-Gutiérrez A, Ward EJ. A century of Chinook salmon consumption by marine mammal predators in the Northeast Pacific Ocean. Ecological Informatics. 2016 July;34:44–51. 
+- Atlas WI, Ban NC, Moore JW, Tuohy AM, Greening S, Reid AJ, et al. Indigenous Systems of Management for Culturally and Ecologically Resilient Pacific Salmon ( Oncorhynchus spp.) Fisheries. BioScience. 2021 Feb 15;71(2):186–204. 
+- Atlas WI, Wilson KL, Whitney CK, Moody JE, Service CN, Reid M, et al. Quantifying regional patterns of collapse in British Columbia Central Coast chum salmon ( Oncorhynchus keta ) populations since 1960. Can J Fish Aquat Sci. 2022 Dec 1;79(12):2072–86. 
+- Beamish RJ, editor. The ocean ecology of Pacific salmon and trout. Bethesda, MD: American Fisheries Society; 2018. 1147 p. 
+- Beamish R. The need to see a bigger picture to understand the ups and downs of Pacific salmon abundances. Browman H, editor. ICES Journal of Marine Science. 2022 May 23;79(4):1005–14. 
+- DeFilippo LB, Larson WA, Barry PD, Cunningham CJ, Langan JA, Garcia S, et al. Drivers and Dynamics of Salmon Bycatch in the Eastern Bering Sea Pollock Fishery. Fish and Fisheries. 2025 Nov;26(6):1107–21. 
+- Fall J, Godduhn A, Halas G, et al. Alaska Subsistence and Personal Use Salmon Fisheries 2016 Annual Report. 2016
+- Ford MJ, Lindley ST, Barnas KA, Shelton AO, Spence BC, Weitkamp LA, et al. Abundance Trends of Pacific Salmon During a Quarter Century of ESA Protection. Fish and Fisheries. 2025 Nov;26(6):1087–106. 
+- Freshwater C, Anderson SC, Beacham TD, Luedke W, Wor C, King J. An integrated model of seasonal changes in stock composition and abundance with an application to Chinook salmon. PeerJ. 2021 Apr 20;9:e11163. 
+- Gende SM, Quinn TP, Willson MF, Heintz R, Scott TM. Magnitude and Fate of Salmon-Derived Nutrients and Energy in a Coastal Stream Ecosystem. Journal of Freshwater Ecology. 2004 Mar;19(1):149–60. 
+- Harrison CS, Luo JY, Putman NF, Li Q, Sheevam P, Krumhardt K, et al. Identifying global favourable habitat for early juvenile loggerhead sea turtles. J R Soc Interface. 2021 Feb;18(175):rsif.2020.0799, 20200799. 
+- Hazen EL, Scales KL, Maxwell SM, Briscoe DK, Welch H, Bograd SJ, et al. A dynamic ocean management tool to reduce bycatch and support sustainable fisheries. Sci Adv. 2018 May 4;4(5):eaar3001. 
+- Hixon MA, Johnson DW, Sogard SM. BOFFFFs: on the importance of conserving old-growth age structure in fishery populations. ICES Journal of Marine Science. 2014 Oct 1;71(8):2171–85. 
+- Krueger C, Bisson P, Bradford M, Clark B, Conitz J, Howard K, et al. AYK SSI Chinook Salmon Expert Panel.
+- Quigley C, Roughan M, Chaput R, Jeffs A, Gardner J. Simulating larval dispersal across the distribution of the New Zealand green-lipped mussel: insights into connectivity and source-sink dynamics. Mar Ecol Prog Ser. 2024 Mar 13;731:129–45.  
+- Quinn T. The behavior and ecology of Pacific salmon and trout. Second Edition. University of Washington Press, Seattle, Washington. 2018.
+- Langan JA, Cunningham CJ, Watson JT, McKinnell S. Opening the black box: New insights into the role of temperature in the marine distributions of Pacific salmon. Fish and Fisheries. 2024 July;25(4):551–68. 
+- Lebreton LCM, Greer SD, Borrero JC. Numerical modelling of floating debris in the world’s oceans. Marine Pollution Bulletin. 2012 Mar;64(3):653–61. 
+- Le Gouvello DZM, Hart-Davis MG, Backeberg BC, Nel R. Effects of swimming behaviour and oceanography on sea turtle hatchling dispersal at the intersection of two ocean current systems. Ecological Modelling. 2020 Sept;431:109130. 
+- Losee JP, Kendall NW, Dufault A. Changing salmon: An analysis of body mass, abundance, survival, and productivity trends across 45 years in Puget Sound. Fish and Fisheries. 2019 Sept;20(5):934–51. 
+- McMillan JR, Morrison B, Chambers N, Ruggerone G, Bernatchez L, Stanford J, et al. A global synthesis of peer‐reviewed research on the effects of hatchery salmonids on wild salmonids. Fisheries Management Eco. 2023 Oct;30(5):446–63. 
+- Phillips SJ, Anderson RP, Schapire RE. Maximum entropy modeling of species geographic distributions. Ecological Modelling. 2006 Jan;190(3–4):231–59. 
+- Ohlberger J, Ward EJ, Schindler DE, Lewis B. Demographic changes in Chinook salmon across the Northeast Pacific Ocean. Fish and Fisheries. 2018 May;19(3):533–46. 
+- Oke KB, Cunningham CJ, Westley PAH, Baskett ML, Carlson SM, Clark J, et al. Recent declines in salmon body size impact ecosystems and fisheries. Nat Commun. 2020 Aug 19;11(1):4155. 
+- Onink V, Jongedijk CE, Hoffman MJ, Van Sebille E, Laufkötter C. Global simulations of marine plastic transport show plastic trapping in coastal zones. Environ Res Lett. 2021 June 1;16(6):064053. 
+- Price MHH, Moore JW, Connors BM, Wilson KL, Reynolds JD. Portfolio simplification arising from a century of change in salmon population diversity and artificial production. Journal of Applied Ecology. 2021 July;58(7):1477–86.
+- Seitz AC, Courtney MB. Telemetry and Genetic Identity of Chinook Salmon in Alaska: Final Report. 2024
+- Seitz AC, Courtney MB, Evans MD, Manishin K. Pop-up satellite archival tags reveal evidence of intense predation on large immature Chinook salmon ( Oncorhynchus tshawytscha ) in the North Pacific Ocean. Can J Fish Aquat Sci. 2019 Sept;76(9):1608–15. 
+- Shirk PL, Richerson K, Banks M, Tuttle V. Predicting bycatch of Chinook salmon in the Pacific hake fishery using spatiotemporal models. Zhou S, editor. ICES Journal of Marine Science. 2023 Jan 25;80(1):133–44.
+- Welch DW, Porter AD, Rechisky EL. A synthesis of the coast‐wide decline in survival of West Coast Chinook Salmon ( Oncorhynchus tshawytscha, Salmonidae). Fish and Fisheries. 2021 Jan;22(1):194–211. 
+- Weitkamp LA. Marine Distributions of Chinook Salmon from the West Coast of North America Determined by Coded Wire Tag Recoveries. Trans Am Fish Soc. 2010 Jan;139(1):147–70. 
+- Weitkamp L, Neely K. Coho salmon ( Oncorhynchus kisutch ) ocean migration patterns: insight from marine coded-wire tag recoveries. Can J Fish Aquat Sci. 2002 July 1;59(7):1100–15. 
+- Wildlife Computers. Minipat. 2025
+- Verleysen M, François D. The Curse of Dimensionality in Data Mining and Time Series Prediction. In: Cabestany J, Prieto A, Sandoval F, editors. Computational Intelligence and Bioinspired Systems. Berlin, Heidelberg: Springer Berlin Heidelberg; 2005. p. 758–70. (Hutchison D, Kanade T, Kittler J, Kleinberg JM, Mattern F, Mitchell JC, et al., editors. Lecture Notes in Computer Science; vol. 3512). 

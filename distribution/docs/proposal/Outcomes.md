@@ -4,9 +4,13 @@
 
 We will produce a paper detailing the results of this study that will be submitted for publication in an appropriate peer-reviewed journal.
 
+## Presentation
+
+We will present the outcomes of this work at at least one professional workshop.
+
 ## Open-Access Models and Tools
 
-We will make all migration, movement, and decision models freely available and accessible online. This includes the embedding models required to create features from environmental data.
+We will make all migration, movement, and decision models freely available and accessible online. 
 
 ## Open-Access Datasets
 

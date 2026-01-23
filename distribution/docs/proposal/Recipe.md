@@ -99,7 +99,7 @@
 **Development:**
 - Exhaustive feature list compiled from published literature and expert panel input (Andrew Seitz, Michael Courtney, Curry Cunningham) to ensure consideration of features beyond those typically used
 - Features categorized as: stationary (unchanging features like bathymetry), temporal (features that vary with time like temperature), or stateful (features that accumulate or have memory like productivity/chlorophyll)
-- We will pull such features from ocean models such as Copernicus Marine Service
+- We will pull such features from ocean models and remote sensing platforms such as Copernicus Marine Service and Google Earth
 - All features standardized to Uber H3 resolution 4 and daily temporal resolution for joining with movement data
 
 **Lead:** Cluster features by information content using vector embedding analysis
@@ -181,7 +181,7 @@
 **Development:**
 - Plots showing how predicted movement probabilities vary with key environmental features to validate that model behavior matches ecological expectations
 - Comparison of predicted versus observed movement patterns across feature gradients
-- These visualizations build confidence in model predictions by showing where they align with observations, and reveal potential limitations where they diverge
+- These visualizations will allow us to better understand how what the model is learning is related to what is understood about the ecology and physiology of Chinook salmon.
 
 
 ## Bycatch Risk Maps
@@ -189,7 +189,7 @@
 **Lead:** Process and standardize Gulf of Alaska pollock fleet catch data for risk modeling
 **Development:**
 - Bycatch binned to Uber H3 resolution 4 and daily temporal resolution to match movement model spatiotemporal scale
-- Two standardization approaches: by effort alone (standard CPUE, or catch-per-unit-effort), and by effort weighted by depth-occupancy likelihood (how often fish are predicted to be at trawl depths)
+- Two standardization approaches: by effort alone (standard CPUE, or catch-per-unit-effort), and by effort weighted by depth-occupancy likelihood (how often fish are predicted to be at trawl depths) (Gietzmann-Sanders, in review)
 - Depth weighting accounts for pollock trawls occurring primarily near the seafloor (De Robertis, 2006), where predicted Chinook depth occupancy affects encounter probability
 - From this we create two datasets: a binary catch/no-catch dataset to test whether any bycatch can be predicted, and a normalized catch quantity dataset to test whether bycatch levels can be differentiated
 
@@ -201,14 +201,14 @@
 
 **Lead:** Generate movement probability matrices and derive attractor indices for bycatch locations
 **Development:**
-- We use density tracking to identify basins of attraction (areas where fish tend to accumulate over time)
+- We use density tracking to identify basins of attraction (areas where fish are predicted to accumulate over time)
 - Model features computed across entire Gulf of Alaska for trawl data time periods ±1 month to enable rolling window analysis
 - Use these model features to predict transition matrices per day
 - For each time point in the bycatch data, move back 1 week and start with a uniform initial distribution (equal probability across all cells)
 - Then propagate that forward using the transition matrices, revealing likely areas of fish accumulation
 - Resulting density per H3 cell represents an "attractor index" (higher values indicate areas more likely to attract fish)
 - We repeat this for 2 weeks prior, 3 weeks, and 4 weeks to assess performance across different time horizons (week to month), with flexibility to adjust windows based on findings
-- In the end we will have paired each trawl event with attractor indices derived from 1, 2, 3, and 4 week time windows
+- In the end we will have paired each trawl event with attractor indices derived from these 1, 2, 3, and 4 week time windows
 
 **Lead:** Construct training data from paired fishing events compared on bycatch outcomes
 **Development:**
@@ -229,7 +229,7 @@
 **Development:**
 - Performance metrics comparing predictions to observed bycatch on testing set
 - Results reported relative to 50/50 random baseline, representing the null hypothesis (what we'd expect if the model had no predictive ability)
-- Demonstrates model provides meaningful risk predictions beyond chance
+- Would demonstrated the model provides meaningful risk predictions beyond chance
 
 **Lead:** Generate interpretable spatial risk maps for specific time periods
 **Development:**

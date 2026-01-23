@@ -2,7 +2,7 @@
 **Development:**
 
 - While they are born in freshwater, Pacific salmon amass 99% of their body weight in the marine environment (Gende, 2004)
-- When they return to spawn and die, that marine bounty becomes fertilizer for their natal watersheds (Gende, 2004; Quinn, 2005)
+- When they return to spawn and die, that marine bounty becomes fertilizer for their natal watersheds (Gende, 2004; Quinn, 2018)
 - Those that don't return feed killer whales, Steller sea lions, salmon sharks, and other marine predators (Adams, 2016; Seitz, 2019)
 - For human communities, Pacific salmon have provided nourishment and shaped cultures for millennia (Atlas, 2021)
 - Even now in Alaska, Pacific salmon constitute one third of the 34 million pound annual subsistence harvest (Fall, 2016) and hundreds of millions of pounds in commercial landings (NOAA, 2024)
@@ -57,7 +57,7 @@
 **Lead:** Pop-up satellite archival tags (PSATs) provide one means to remove this dependency. 
 **Development:**
 
-- Once attached to a fish, PSATs record the data required for environmental geolocation (pressure, light, and temperature) for a set period before they release from the fish, surface, and transmit their data through satellite communications (Wildlife Computer, 2025)
+- Once attached to a fish, PSATs record the data required for environmental geolocation (pressure, light, and temperature) for a set period before they release from the fish, surface, and transmit their data through satellite communications (Wildlife Computers, 2025)
 - Thanks to the satellite communication link, the recollection of PSAT data is independent of fish recovery, meaning that PSATs are a tool for collecting fisheries-independent positional data—a tool that has already been applied to Chinook salmon (Seitz, 2024)
 
 **Lead:** While (re)capture independent, the data collected from PSATs have two properties that make them unsuitable for traditional species distributional modeling techniques. 
@@ -66,7 +66,8 @@
 - First, PSATs provide positive only samples - a lack of records in a specific time and place is not indicative of a lack of fish
 - Second, as the result of collecting individual fish movements, the data is highly autocorrelated
 - The former property on its own is not necessarily an issue as methods exist for working with positive only samples such as MaxEnt and EcoCast (Phillips, 2005; Hazen, 2018)
-- However these methods implicitly require that the positive samples are representative of the underlying distribution being studied - an assumption likely contradicted by both the autocorrelated nature of the data and the extraordinary range of Pacific salmon (Beamish, 2018)
+- Both methods, however, implicitly require that the positive samples are representative of the underlying distribution being studied - an assumption likely contradicted by both the autocorrelated nature of the data and the extraordinary range of Pacific salmon (Beamish, 2018)
+- And the latter (EcoCast) requires the artificial generation of negative samples - introducing data that has not actually come from measurement. 
 - This means that inferring distribution from Pacific salmon movement data requires a new set of tools
 
 **Lead:** The movement data from PSATs, however, opens a different avenue: adapting particle tracking techniques to derive distributional patterns.
@@ -81,26 +82,25 @@
 - This means that we can first build a model of salmon movement using the PSAT data, then, given a uniform starting distribution, use those models to project the starting distribution forward in time in order to find basins of attraction. 
 - Moving forward we will refer to such a methodology as species redistribution models or SRMs for short. 
 
-**Lead:** Such basins indicate areas in which fish should accumulate but other aspects of a fish's lifecycle may cause the realized distribution to differ quite dramatically.
+**Lead:** These basins indicate areas in which fish should accumulate, however to close the loop on marine distribution we must assess the extent to which other aspects of a fish's lifecycle cause the realized distribution to drift from these basins.
 **Development:**
 - Migrations, in which animals move from one region to another, create immigration and emmigration events that may not deposit fish precisely in the places they will later be predicted to accumulate. 
 - Likewise preferred areas may also be associated with higher mortality resulting in a suppression of expected density levels.
-- So to validate whether SRMs are useful in identifying areas of relatively higher concentration, we need an independent data source to test whether predicted basins correlate with higher density.
+- Therefore, to validate whether the basins identified by SRMs are useful as indicators of areas of relatively higher concentration, we need an independent data source to test whether predicted basins correlate with higher density.
 
 **Lead:** Here fisheries dependent data can provides a means of validation.
 **Development:**
-- While we have noted that fisheries dependent data is limited to where fisheries fish, and therefore cannot be reliably used to identify the full distribution, they can be used to validate whether, in areas where fishing pressure is present, whether or not a distributional model is accurate. 
-- Put another way we would expect that locally, areas where fish are predicted to accumulate (basins) would generally experience higher bycatch than areas that fish are predicted to move away from
-- One should be able to test this by taking pairs of fishing events that are localized in time and place and see if we are able to reliably predict areas of higher or lower risk based on the outcomes of an SRM
+- The idea here is that we would expect that, locally, areas where fish are predicted to accumulate (basins) would generally experience higher catch/bycatch than areas that fish are predicted to move away from
+- If an SRM passes this test it would provide evidence it has not only identified attractors in fish distribution, but hotspots in distribution as well.
+- Therefore to test the hypothesis that SRMs can indeed provide distributional indicators we need a case study that includes both movement data (from PSATs) from which to build the SRM and catch data we can use to test the SRM. 
 
-**Lead:** Chinook salmon in the Gulf of Alaska presents itself as an ideal case study.
+**Lead:** As such, Chinook salmon in the Gulf of Alaska presents itself as an ideal case study.
 **Development:**
-- There is already already exists a large body of PSAT movement data for Chinook salmon in the GOA (Seitz, 2024)
+- There already exists a large body of PSAT movement data for Chinook salmon in the GOA (Seitz, 2024)
 - And there is an active groundfish fishery where Chinook salmon is caught as bycatch
-- As such this example provides us with both the data needed to build a movement model that would enable movement tracing as well as then validate the usefulness of the resulting basins of attraction. 
 
 
-**Lead:** Our goal then is to use this case study to develop an SRM for Chinook salmon in the Gulf of Alaska to understand whether this presents a means by which to provide fisheries independent marine distributions.  
+**Lead:** Our goal then is to use this case study to understand whether SRMs can be used as a fisheries independent means of modeling Pacific salmon distributions. 
 **Development:**
 
 - To do this, we will first develop a movement model using Chinook salmon PSAT data in the Gulf of Alaska
