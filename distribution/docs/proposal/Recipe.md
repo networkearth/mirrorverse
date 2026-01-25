@@ -1,21 +1,22 @@
+# Methods
+
 ## Validated Tag Movement Data
 
 **Lead:** Pop-up satellite tag data from Chinook salmon in the Gulf of Alaska will serve as the foundation for this analysis.
 **Development:**
 - Existing tag deployment data from Seitz (2024) will provide the core dataset, with fish captured by hook and line across multiple locations: Dutch Harbor, AK (n=20), Chignik, AK (n=16), Craig, AK (n=8), Homer, AK (n=20), Kodiak, AK (n=13), Yakutat, AK (n=16), Sitka, AK (n=15), and Central Bering Sea (n=3).
-- Only healthy individuals meeting minimum size criteria (62-100cm fork length) were selected for tagging and pop-up satellite archival tags were attached following established protocols (Seitz, 2024).
-- Tagged fish were released at capture locations.
+- Only healthy individuals meeting minimum size criteria (62-100cm fork length) were selected for tagging, and pop-up satellite archival tags were attached following established protocols (Seitz, 2024).
+- Tagged fish were released at their capture locations.
 
-**Lead:** From these deployed tags, time-series depth, temperature, and position data was collected once tags surfaced.
+**Lead:** From these deployed tags, time-series depth, temperature, and position data was collected once the tags surfaced.
 **Development:**
-- The tags recorded temperature, ambient light intensity, and depth information at sub-daily intervals during deployment.
-- Tags were programmed to release from fish, surface, and transmit collected data over satellite, with data transmitted in time-series format at 15 minute intervals.
+- Tags were programmed to release from the fish, surface, and transmit collected data over satellite, with data transmitted in time-series format at 15 minute intervals.
 - These measurements enabled light-based geolocation (using sunrise and sunset events along with a GMT clock to estimate position) with temperature-based corrections that refined estimates by matching recorded temperatures to known sea surface temperature fields.
 - The exact algorithm used is a proprietary algorithm from Wildlife Computers (Wildlife Computers, 2025) that produces likely paths for individual fish.
 
 **Lead:** We will then transform these positions to a spatial grid.
 **Development:**
-- Using the likely path estimates an estimate of location for each day will be derived as the central tendency of those paths.
+- Using the likely path estimates, an estimate of location for each day will be derived as the central tendency of those paths.
 - Position estimates will then be converted to Uber H3 hexagonal grid cells at resolution 4 (~26km edge length), a hierarchical spatial indexing system that provides a spatial grid across the globe.
 - Aggregation to H3 resolution 4 accommodates geolocation uncertainty while maintaining meaningful spatial resolution, creating spatially-standardized movement tracks.
 
@@ -26,10 +27,10 @@
 
 **Lead:** Post-mortality records must also be screened and removed from the movement dataset.
 **Development:**
-- Constant depth readings (no variation in pressure measurements) indicate mortality with the tag either on the seafloor or at the surface.
-- Temperature stabilizing at the internal body temperature of known salmon predators—differing from ambient water temperature—indicates predation mortality.
-- Michael Courtney and Andrew Seitz will aid in identifing which predator body temperatures to use based on their previous Chinook salmon mortality research.
-- Each fish's track will be scanned to identify mortality transition points based on these indicators, and all data following detected mortality will be excluded from the dataset.
+- Constant depth readings (no variation in pressure measurements) indicate mortality with the tag either on the seafloor or at the surface (Seitz, 2019).
+- Temperature stabilizing at the internal body temperature of known salmon predators — differing from ambient water temperature — indicates predation mortality.
+- Michael Courtney and Andrew Seitz will aid in identifing which predator body temperatures to use based on their previous Chinook salmon mortality research (Seitz, 2019).
+- Each fish's track will be scanned to identify mortality transition points based on these indicators, and any data following a detected mortality will be excluded from the dataset.
 
 **Lead:** These validated trajectories will be visualized alongside a summary of data retention across filtering steps.
 **Development:**
@@ -41,7 +42,7 @@
 
 **Lead:** Salmon homing migrations (return journeys to natal streams) must be separated from routine at-sea movements to avoid biasing our analysis of distribution preferences (Beamish, 2018).
 **Development:**
-- A model that distinguishes, across the dataset, between migrating fish and non-migrating fish will therefore be necessary.
+- A model that distinguishes, across the dataset, between migration movements and non-migration movements will therefore be necessary.
 
 **Lead:** Construction of this classifier requires a training dataset.
 **Development:**
@@ -51,14 +52,13 @@
 **Lead:** Example trajectories with classified migration and non-migration segments will be visualized to illustrate this labeling.
 **Development:**
 - Maps will show trajectories with migration segments (red) and non-migration segments (blue) overlaid.
-- Examples will be selected to illustrate the range of movement patterns observed in classified data, demonstrating how the classifier successfully distinguishes migration patterns in geospatial context.
+- Examples will be selected to illustrate the range of movement patterns observed in the labeled data.
 
-**Lead:** From these labeled examples, temporal movement features will be derived using bidirectional time windows.
+**Lead:** From these labeled examples, temporal movement features will be derived using bidirectional time windows that examine both forward and backward in time from the point of interest.
 **Development:**
-- Temporal windows examine both forward and backward in time from the point of interest.
 - Window sizes will be constrained to one week or less to help retain data from fish with shorter tagging periods.
 - Features will be extracted from movement data only (no environmental features), as migration should be identifiable from the nature of the movement alone.
-- Feature types include momentum (sustained directional movement), behavioral consistency (erratic versus steady patterns), and temporal continuity (persistence across the window).
+- Feature types will include momentum (sustained directional movement), behavioral consistency (erratic versus steady patterns), and temporal continuity (persistence across the window).
 
 **Lead:** A supervised classifier will then be trained to predict migration periods from these movement features.
 **Development:**
@@ -66,7 +66,7 @@
 - A classification threshold (operating point) will be selected where false negatives (migration points incorrectly labeled as non-migration) are expected to be below 5% on the validation dataset.
 - The true negative rate (non-migration points correctly labeled) at that threshold will then be evaluated - higher is better, as it means more non-migration samples are retained without accidentally including migration data.
 - Class balancing will be applied during training to ensure equal representation of migration and non-migration periods.
-- Candidate models include random forests, gradient-boosted trees (XGBoost), and neural networks, with flexibility to explore other architectures if needed.
+- Candidate models will include random forests, gradient-boosted trees (XGBoost), and neural networks, with flexibility to explore other architectures if needed.
 
 **Lead:** Classifier performance will be demonstrated through standard evaluation metrics.
 **Development:**
@@ -76,7 +76,6 @@
 **Lead:** The trained classifier will then be applied to isolate non-migratory movements from the full dataset.
 **Development:**
 - All unlabeled time points will be classified using the selected operating point, and points classified as migration will be removed from the dataset.
-- The resulting dataset will contain only non-migration movements for movement model training — a dataset where migration movements have been filtered out with high confidence.
 
 **Lead:** Results of this filtering will be summarized in tabular form.
 **Development:**
@@ -88,15 +87,15 @@
 **Lead:** With validated non-migratory movement data in hand, a comprehensive list of candidate environmental features that could be used in movement modeling will be developed and categorized.
 **Development:**
 - An exhaustive feature list will be compiled from published literature and expert panel input (Andrew Seitz, Michael Courtney, Curry Cunningham) to ensure consideration of features beyond those typically used.
-- Features will be categorized as: stationary (unchanging features like bathymetry), temporal (features that vary with time like temperature), or stateful (features that accumulate or have memory like productivity/chlorophyll).
+- Features will be categorized as: stationary (unchanging features like bathymetry), temporal (features that vary with time like temperature), or stateful (features that accumulate or have memory like productivity).
 - Such features will be pulled from ocean models and remote sensing platforms such as Copernicus Marine Service and Google Earth.
-- All features will be standardized to Uber H3 resolution 4 and daily temporal resolution for joining with movement data.
+- All features will be standardized to Uber H3 resolution 4 and daily temporal resolution for joining with the movement data.
 
 **Lead:** This initial feature set will then be clustered by information content using vector embedding analysis.
 **Development:**
 - Highly correlated features can cause overfitting, so dimensionality reduction techniques will be used to identify redundant information.
 - Vector embeddings use neural networks to learn non-linear relationships between features, unlike PCA (Principal Component Analysis) which only captures linear relationships.
-- Embeddings will reduce the exhaustive feature set to a smaller set, allowing exploration of the feature space more efficiently.
+- Embeddings will reduce the exhaustive feature set to a smaller set, allowing for more efficient exploration of the feature space.
 - However, embedded features lose their physical interpretability.
 - To restore interpretability, original features that best predict the embedded features will be identified.
 - These representative features will become the modeling candidates.
@@ -106,19 +105,20 @@
 - Neural networks learn by adjusting weights based on feature values; features with larger numeric ranges can dominate the learning process if not normalized.
 - Features will be rescaled to [0,1] if non-negative (e.g., depth, distance) or [-1,1] if containing negative values (e.g., temperature anomalies), ensuring all features contribute equally during model training.
 
-**Lead:** Movement data will be resampled to ensure balance across space, time, and individual fish.
+**Lead:** Movement data will then be resampled to ensure balance across space, time, and individual fish.
 **Development:**
 - The study area will be divided into four spatial regions: Aleutian Island Chain, Kodiak to Yakutat, Southeast Alaska (to British Columbia border), and British Columbia and south.
 - These spatial regions correspond with typical fisheries management boundaries in the Gulf of Alaska.
-- Each spatial region will be further divided into seasonal blocks (Winter, Spring, Summer, Fall) as Chinook behavior varies seasonally (Gietzmann-Sanders, in review; Seitz, 2024) and finer temporal resolution would spread data too thinly.
+- Each spatial region will be further divided into seasonal blocks (Winter, Spring, Summer, Fall) as Chinook behavior varies seasonally (Gietzmann-Sanders, in review; Seitz, 2024).
+- Finer temporal resolution would likely spread data too thinly.
 - Samples will be collected into each space-time block with equal representation across all blocks (as possible).
 - Within each block, data from each individual will be resampled with replacement to ensure all individuals in each area/time are equally represented.
 
 **Lead:** From these balanced observations, examples will be created and joined to features to produce the final dataset.
 **Development:**
 - First, the 90th percentile range of movement per day per fish will be calculated.
-- Examples from each movement will include: origin location, actual destination, and all potential destinations (H3 resolution 4 cells) within the 90th percentile daily range to capture realistic movement options.
-- Actual destinations will be labeled as "selected."
+- Then, training samples from each movement will include: origin location, actual destination, and all potential destinations (H3 resolution 4 cells) within the 90th percentile daily range to capture realistic movement options.
+- Actual destinations will be labeled as "selected".
 - These positions and times will then be joined to the corresponding features described above.
 
 ## Movement Probability Model
@@ -127,8 +127,8 @@
 **Development:**
 - Classification models output the probability of selecting each destination, which can be used to build a transition matrix (a table showing the probability of moving from any location to any other location).
 - This transition matrix reveals how fish density at any point in the grid will redistribute in the next timestep - exactly what is needed for tracking population distribution.
-- This approach is more computationally efficient than traditional particle tracking, which simulates many individual fish trajectories.
-- Instead of tracing thousands of individual movements, overall density shifts over time can be tracked at once.
+- Note that this approach is more computationally efficient than traditional particle tracking, which simulates many individual fish trajectories.
+- Instead of tracing thousands of individual movements, we will be able to trace overall density shifts through time.
 
 **Lead:** A log-odds modeling framework will be used to build these movement models.
 **Development:**
@@ -152,24 +152,24 @@
 - Performance will be measured by negative log likelihood (how well the model's predicted probabilities match observed movements).
 - The model that performs best on the validation set will be selected.
 
-**Lead:** Feature predictivity will be assessed by training models with incrementally added features.
+**Lead:** Feature predictivity will then be assessed by training models with incrementally added features.
 **Development:**
 - Starting with a null model (predicting movement without any features), features will be added one at a time.
 - At each step, models with each remaining feature will be fit and the one that improves validation performance most will be selected.
 - This will be continued until the full model is reached.
 - This incremental approach quantifies how much predictive power each feature contributes beyond features already included.
-- Each incremental model will be evaluated on the held-out test set for final performance assessment, and the most predictive model will be selected for subsequent analyses.
+- Each incremental model will be evaluated on the held-out test set for final performance assessment, and the most predictive model across the test set will be selected for subsequent analyses.
 
 **Lead:** Performance metrics will be summarized across selected and incremental models.
 **Development:**
 - A performance table will compare predictive accuracy across the incremental models.
-- Metrics will include training, validation, and testing set performance for the models to identify generalization (ability to predict new data).
+- Metrics will include training, validation, and testing set performance for the models to identify generalization (ability to predict on new data).
 
 **Lead:** Relationships between environmental features, observed movements, and model predictions will be visualized.
 **Development:**
 - Plots will show how predicted movement probabilities vary with key environmental features to validate that model behavior matches ecological expectations.
 - Comparison of predicted versus observed movement patterns across feature gradients will be included.
-- These visualizations will allow better understanding of how what the model is learning relates to what is understood about the ecology and physiology of Chinook salmon.
+- These visualizations will allow better understanding of what the model is learning and how it relates to what is understood about the ecology and physiology of Chinook salmon.
 
 ## Bycatch Risk Maps
 
@@ -177,8 +177,8 @@
 **Development:**
 - Bycatch will be binned to Uber H3 resolution 4 and daily temporal resolution to match the movement model's spatiotemporal scale.
 - Two standardization approaches will be used: by effort alone (standard CPUE, or catch-per-unit-effort), and by effort weighted by depth-occupancy likelihood (how often fish are predicted to be at trawl depths) (Gietzmann-Sanders, in review).
-- Depth weighting accounts for pollock trawls occurring primarily near the seafloor (De Robertis, 2006), where predicted Chinook depth occupancy affects encounter probability.
-- From this, two datasets will be created: a binary catch/no-catch dataset to test whether any bycatch can be predicted, and a normalized catch quantity dataset to test whether bycatch levels can be differentiated.
+- Depth weighting accounts for pollock trawls occurring primarily near the seafloor (De Robertis, 2006).
+- From this, two datasets will be created: a binary catch/no-catch dataset to test whether any amount of bycatch can be predicted, and a normalized catch quantity dataset to test whether bycatch levels can be differentiated.
 
 **Lead:** Bycatch data coverage and characteristics across space and time will be summarized.
 **Development:**
@@ -191,11 +191,11 @@
 - These model features will be used to predict transition matrices per day.
 - For each time point in the bycatch data, the analysis will move back 1 week and start with a uniform initial distribution (equal probability across all cells).
 - This distribution will then be propagated forward using the transition matrices, revealing likely areas of fish accumulation.
-- Specifically the resulting density per H3 cell will be used as the "attractor index" for that cell (higher values indicate areas more likely to attract fish).
+- Specifically, the resulting density per H3 cell will be used as an "attractor index" for that cell (higher values indicating areas more likely to attract fish).
 - This process will be repeated for 2 weeks prior, 3 weeks, and 4 weeks to assess performance across different time horizons (week to month), with flexibility to adjust windows based on findings.
 - Each trawl event will ultimately be paired with attractor indices derived from these 1, 2, 3, and 4 week time windows.
 
-**Lead:** Training data will be constructed from paired fishing events compared on bycatch outcomes.
+**Lead:** Training data will then be constructed from paired fishing events.
 **Development:**
 - Given that attractor indices only have meaning relative to other nearby H3 cells, fishing events that are reasonably close in space and time (constrained by data availability) will be paired.
 - Equal representation of three outcomes will be sought: both events have bycatch, only one has bycatch, and neither has bycatch.
@@ -210,7 +210,7 @@
 - Minimizing this loss creates a decision tree that minimizes expected bycatch over the training samples.
 - The validation set will be used to explore features, model structures, and hyperparameters.
 
-**Lead:** Bycatch risk model performance will be evaluated on held-out testing data.
+**Lead:** Bycatch risk model performance will then be evaluated on the held-out testing data.
 **Development:**
 - Performance metrics comparing predictions to observed bycatch on the testing set will be reported.
 - Results will be reported relative to a 50/50 random baseline, representing the null hypothesis (what would be expected if the model had no predictive ability).
